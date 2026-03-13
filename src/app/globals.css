@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Adys";
+  src: url("/fonts/ADYSV6-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Adys";
+  src: url("/fonts/ADYSV6-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #1a1a2e;
+
+  /* Цветове по модул */
+  --module-1: #E8F4FD;
+  --module-2: #E8F8E8;
+  --module-3: #FDFBE8;
+  --module-4: #F3E8FD;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-adys: "Adys", "OpenDyslexic", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Adys", "OpenDyslexic", Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.8;
+  letter-spacing: 0.03em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Dyslexia-friendly текст */
+p, li, span {
+  max-width: 65ch;
+  line-height: 1.8;
+  letter-spacing: 0.03em;
+  word-spacing: 0.1em;
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+/* Без time pressure — никъде няма transition на opacity > 0.3s */
+* {
+  transition-duration: 0.2s;
+}
