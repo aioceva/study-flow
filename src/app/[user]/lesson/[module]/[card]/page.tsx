@@ -96,11 +96,11 @@ export default function CardPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col"
-      style={{ backgroundColor: bgColor }}
+      className="flex flex-col"
+      style={{ backgroundColor: bgColor, height: "100dvh" }}
     >
-      {/* Навигационна лента */}
-      <nav className="flex items-center gap-3 px-4 py-3 bg-white/70 backdrop-blur-sm sticky top-0 z-10">
+      {/* Навигационна лента — фиксирана горе */}
+      <nav className="flex-none flex items-center gap-3 px-4 py-3 bg-white/70 backdrop-blur-sm">
         <button
           onClick={() => router.push(`/${user}`)}
           className="text-xl text-gray-500 font-bold w-8 h-8 flex items-center justify-center"
@@ -123,57 +123,50 @@ export default function CardPage() {
             </button>
           ))}
         </div>
-        {/* Прогрес */}
         <span className="text-sm text-gray-500 font-bold w-10 text-right">
           {cardId}/5
         </span>
       </nav>
 
-      {/* Карта */}
+      {/* Съдържание — скролва ако е нужно */}
       <div
         {...swipeHandlers}
-        className="flex-1 flex flex-col p-5 max-w-lg mx-auto w-full"
+        className="flex-1 overflow-y-auto px-5 pt-4 max-w-lg mx-auto w-full"
         style={{
           opacity: animating ? 0 : 1,
           transform: animating === "left" ? "translateX(-20px)" : animating === "right" ? "translateX(20px)" : "none",
           transition: "opacity 0.2s, transform 0.2s",
         }}
       >
-        {/* Модул заглавие */}
-        <p className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">
+        <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
           Модул {moduleId} · {moduleData?.title}
         </p>
-
-        {/* Карта заглавие */}
-        <h1 className="text-2xl font-bold mb-6">{card.title}</h1>
-
-        {/* Съдържание */}
-        <div className="space-y-4 flex-1">
+        <h1 className="text-lg font-bold mb-3">{card.title}</h1>
+        <div className="space-y-2 pb-2">
           <Section icon="📌" label="Какво е" text={card.what} />
           <Section icon="💡" label="Защо е важно" text={card.why} />
           <Section icon="✏️" label="Пример" text={card.example} />
         </div>
+      </div>
 
-        {/* Swipe hint + бутони */}
-        <div className="mt-8 flex gap-3">
-          {!(moduleId === 1 && cardId === 1) && (
-            <button
-              onClick={goPrev}
-              className="flex-none w-12 h-12 rounded-2xl bg-white/80 flex items-center justify-center text-xl font-bold text-gray-500"
-            >
-              ←
-            </button>
-          )}
+      {/* Бутони — фиксирани долу */}
+      <div className="flex-none flex gap-3 px-5 py-4 bg-white/50 backdrop-blur-sm max-w-lg mx-auto w-full">
+        {!(moduleId === 1 && cardId === 1) && (
           <button
-            onClick={goNext}
-            className="flex-1 h-12 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2"
-            style={{ backgroundColor: "#4F8EF7" }}
+            onClick={goPrev}
+            className="flex-none w-12 h-12 rounded-2xl bg-white/80 flex items-center justify-center text-xl font-bold text-gray-500"
           >
-            {cardId === 5 && moduleId === 2 ? "Quiz →" :
-             cardId === 5 && moduleId === 4 ? "Quiz →" :
-             cardId === 5 ? "Следващ модул →" : "Следваща карта →"}
+            ←
           </button>
-        </div>
+        )}
+        <button
+          onClick={goNext}
+          className="flex-1 h-12 rounded-2xl text-white font-bold text-base flex items-center justify-center"
+          style={{ backgroundColor: "#4F8EF7" }}
+        >
+          {cardId === 5 && (moduleId === 2 || moduleId === 4) ? "Quiz →" :
+           cardId === 5 ? "Следващ модул →" : "Следваща карта →"}
+        </button>
       </div>
     </div>
   );
@@ -181,11 +174,11 @@ export default function CardPage() {
 
 function Section({ icon, label, text }: { icon: string; label: string; text: string }) {
   return (
-    <div className="bg-white/70 rounded-2xl p-4">
+    <div className="bg-white/70 rounded-xl p-3">
       <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">
         {icon} {label}
       </p>
-      <p className="text-base leading-relaxed">{text}</p>
+      <p className="text-sm leading-relaxed">{text}</p>
     </div>
   );
 }
