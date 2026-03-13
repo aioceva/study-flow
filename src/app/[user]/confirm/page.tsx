@@ -13,8 +13,8 @@ export default function ConfirmPage() {
   const title = searchParams.get("title") ?? "";
 
   function startLesson() {
-    const params = new URLSearchParams({ subject, lesson, title });
-    router.push(`/${user}/lesson/1/1?${params}`);
+    const params = new URLSearchParams({ subject, lesson, title, subject_bg: subjectBg });
+    router.push(`/${user}/lesson/intro?${params}`);
   }
 
   return (
