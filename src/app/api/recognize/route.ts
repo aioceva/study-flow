@@ -4,6 +4,26 @@ import { recognizePrompt } from "@/prompts/recognize";
 
 const client = new Anthropic();
 
+function extractJSON(text: string): object | null {
+  // Хваща JSON в markdown code block или директно
+  const patterns = [
+    /```json\s*([\s\S]*?)\s*```/,
+    /```\s*([\s\S]*?)\s*```/,
+    /(\{[\s\S]*\})/,
+  ];
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    if (match) {
+      try {
+        return JSON.parse(match[1]);
+      } catch {
+        continue;
+      }
+    }
+  }
+  return null;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
@@ -19,15 +39,12 @@ export async function POST(req: NextRequest) {
 
     const response = await client.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 256,
+      max_tokens: 512,
       messages: [
         {
           role: "user",
           content: [
-            {
-              type: "image",
-              source: { type: "base64", media_type: mediaType, data: base64 },
-            },
+            { type: "image", source: { type: "base64", media_type: mediaType, data: base64 } },
             { type: "text", text: recognizePrompt },
           ],
         },
@@ -35,15 +52,16 @@ export async function POST(req: NextRequest) {
     });
 
     const text = response.content[0].type === "text" ? response.content[0].text : "";
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      return NextResponse.json({ error: "Неуспешно разпознаване" }, { status: 422 });
+    const result = extractJSON(text);
+
+    if (!result) {
+      console.error("Claude response:", text);
+      return NextResponse.json({ error: "Неуспешно разпознаване", raw: text }, { status: 422 });
     }
 
-    const result = JSON.parse(jsonMatch[0]);
     return NextResponse.json(result);
   } catch (err) {
     console.error("Recognize error:", err);
-    return NextResponse.json({ error: "Грешка при разпознаване" }, { status: 500 });
+    return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 }

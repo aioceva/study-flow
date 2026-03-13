@@ -3,6 +3,54 @@
 import { useParams, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
+// Преоразмерява и компресира снимката до макс 1600px
+async function compressImage(file: File): Promise<{ blob: Blob; base64: string; type: string }> {
+  const MAX_SIZE = 1600;
+  const QUALITY = 0.85;
+
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const canvas = document.createElement("canvas");
+      let { width, height } = img;
+
+      if (width > MAX_SIZE || height > MAX_SIZE) {
+        if (width > height) {
+          height = Math.round((height * MAX_SIZE) / width);
+          width = MAX_SIZE;
+        } else {
+          width = Math.round((width * MAX_SIZE) / height);
+          height = MAX_SIZE;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) { reject(new Error("Canvas toBlob failed")); return; }
+          const reader = new FileReader();
+          reader.onload = () => {
+            const dataUrl = reader.result as string;
+            const base64 = dataUrl.split(",")[1];
+            resolve({ blob, base64, type: "image/jpeg" });
+          };
+          reader.readAsDataURL(blob);
+        },
+        "image/jpeg",
+        QUALITY
+      );
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
 export default function ScanPage() {
   const { user } = useParams<{ user: string }>();
   const router = useRouter();
@@ -27,22 +75,24 @@ export default function ScanPage() {
     setError(null);
 
     try {
-      // Запазваме снимката в sessionStorage за следващите стъпки
-      const arrayBuffer = await file.arrayBuffer();
-      const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-      sessionStorage.setItem("scan_image_base64", base64);
-      sessionStorage.setItem("scan_image_type", file.type || "image/jpeg");
+      // Компресираме снимката преди изпращане
+      const { blob, base64, type } = await compressImage(file);
 
-      // Разпознаване
+      // Запазваме компресираната снимка в sessionStorage за loading страницата
+      sessionStorage.setItem("scan_image_base64", base64);
+      sessionStorage.setItem("scan_image_type", type);
+
+      // Изпращаме за разпознаване
       const formData = new FormData();
-      formData.append("image", file);
+      formData.append("image", new File([blob], "lesson.jpg", { type }));
 
       const res = await fetch("/api/recognize", { method: "POST", body: formData });
-      if (!res.ok) throw new Error("Грешка при разпознаване");
-
       const result = await res.json();
 
-      // Към loading страницата с параметрите
+      if (!res.ok || result.error) {
+        throw new Error(result.error ?? "Грешка при разпознаване");
+      }
+
       const params = new URLSearchParams({
         subject: result.subject,
         subject_bg: result.subject_bg,
@@ -51,23 +101,20 @@ export default function ScanPage() {
         confidence: result.confidence,
       });
       router.push(`/${user}/loading?${params}`);
-    } catch {
-      setError("Неуспешно разпознаване. Опитай отново с по-ясна снимка.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Неуспешно разпознаване";
+      setError(`${msg}. Опитай отново с по-ясна снимка.`);
       setRecognizing(false);
     }
   }
 
   return (
     <main className="min-h-screen p-6 max-w-lg mx-auto">
-      {/* Header */}
       <div className="flex items-center gap-3 mb-8 mt-4">
-        <button onClick={() => router.back()} className="text-2xl text-gray-400">
-          ←
-        </button>
+        <button onClick={() => router.back()} className="text-2xl text-gray-400">←</button>
         <h1 className="text-xl font-bold">Сканирай урок</h1>
       </div>
 
-      {/* Инструкции */}
       {!preview && (
         <div className="rounded-2xl p-5 mb-6 text-base space-y-2" style={{ backgroundColor: "#E8F4FD" }}>
           <p className="font-bold">Как да снимаш:</p>
@@ -78,7 +125,6 @@ export default function ScanPage() {
         </div>
       )}
 
-      {/* Preview */}
       {preview && (
         <div className="mb-6 rounded-2xl overflow-hidden border-2 border-blue-200">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -86,18 +132,15 @@ export default function ScanPage() {
         </div>
       )}
 
-      {/* Грешка */}
       {error && (
         <div className="rounded-2xl p-4 mb-4 text-red-700 font-bold" style={{ backgroundColor: "#FEE2E2" }}>
           {error}
         </div>
       )}
 
-      {/* Бутони */}
       <div className="space-y-3">
         {!preview ? (
           <>
-            {/* Камера — основен бутон */}
             <button
               onClick={() => inputRef.current?.click()}
               className="w-full py-5 rounded-2xl text-white text-xl font-bold flex items-center justify-center gap-3"
@@ -106,14 +149,7 @@ export default function ScanPage() {
               <span className="text-2xl">📷</span>
               Снимай
             </button>
-            <input
-              ref={inputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onChange={handleFileChange}
-              className="hidden"
-            />
+            <input ref={inputRef} type="file" accept="image/*" capture="environment" onChange={handleFileChange} className="hidden" />
           </>
         ) : (
           <>
@@ -124,36 +160,19 @@ export default function ScanPage() {
               style={{ backgroundColor: "#22C55E" }}
             >
               {recognizing ? (
-                <>
-                  <span className="animate-spin">⏳</span>
-                  Разпознавам...
-                </>
+                <><span className="animate-spin">⏳</span> Разпознавам...</>
               ) : (
-                <>
-                  <span>✓</span>
-                  Използвай тази снимка
-                </>
+                <><span>✓</span> Използвай тази снимка</>
               )}
             </button>
             <button
-              onClick={() => {
-                setPreview(null);
-                setFile(null);
-                inputRef.current?.click();
-              }}
+              onClick={() => { setPreview(null); setFile(null); inputRef.current?.click(); }}
               disabled={recognizing}
               className="w-full py-3 rounded-2xl text-gray-600 font-bold border-2 border-gray-200 disabled:opacity-60"
             >
               Снимай отново
             </button>
-            <input
-              ref={inputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onChange={handleFileChange}
-              className="hidden"
-            />
+            <input ref={inputRef} type="file" accept="image/*" capture="environment" onChange={handleFileChange} className="hidden" />
           </>
         )}
       </div>
