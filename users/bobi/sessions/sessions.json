@@ -2,5 +2,27 @@
   "meta": {
     "user": "bobi"
   },
-  "sessions": []
+  "sessions": [
+    {
+      "date": "2026-03-13",
+      "subject": "chem",
+      "lesson": 11,
+      "started_at": "16:23",
+      "duration_min": 1,
+      "type": "learn",
+      "completed": true,
+      "quiz_1": {
+        "score": 4,
+        "total": 5,
+        "errors": [
+          5
+        ]
+      },
+      "quiz_2": {
+        "score": 2,
+        "total": 5,
+        "errors": []
+      }
+    }
+  ]
 }
