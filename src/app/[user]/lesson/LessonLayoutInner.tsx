@@ -14,12 +14,13 @@ const MODULE_BAR_COLORS: Record<number, string> = {
   4: "#D8B4FE", // purple-300
 };
 
-// Бутон Напред — по-тъмни и по-сиви (убити) варианти спрямо прогрес бара
+// Бутон Напред — тъмни варианти директно от хюа на MODULE_COLORS фона
+// MODULE_COLORS: 1=#E8F4FD(синьо), 2=#E8F8E8(зелено), 3=#FDFBE8(жълто), 4=#F3E8FD(лилаво)
 const MODULE_BTN_COLORS: Record<number, string> = {
-  1: "#4A79A0", // muted steel-blue
-  2: "#3D7A58", // muted sage-green
-  3: "#7A6830", // muted olive-gold
-  4: "#6B4F96", // muted plum-purple
+  1: "#2C6E99", // тъмно синьо от #E8F4FD
+  2: "#2E7A4A", // тъмно зелено от #E8F8E8
+  3: "#7A6010", // тъмно жълто/кафяво от #FDFBE8
+  4: "#6A3A9A", // тъмно лилаво от #F3E8FD
 };
 
 const BRAVO_BG = "#FFF4ED"; // топло бежово — неутрален и спокоен фон

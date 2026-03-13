@@ -76,12 +76,12 @@ h1, h2, h3 {
 }
 
 @keyframes btnReward {
-  0%   { transform: scale(1);    background-color: #4F8EF7; }
-  25%  { transform: scale(0.91); background-color: #3a7ae0; }
-  65%  { transform: scale(1.07); background-color: #4F8EF7; }
-  100% { transform: scale(1);    background-color: #4F8EF7; }
+  0%   { transform: scale(1); }
+  25%  { transform: scale(0.91); }
+  65%  { transform: scale(1.07); }
+  100% { transform: scale(1); }
 }
 
 .btn-reward {
-  animation: btnReward 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+  animation: btnReward 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97);
 }
