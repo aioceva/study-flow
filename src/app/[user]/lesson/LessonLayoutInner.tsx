@@ -139,9 +139,12 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       <nav className="flex-none flex items-center gap-3 px-4 py-3 bg-white backdrop-blur-sm">
         <button
           onClick={() => router.push(`/${user}`)}
-          className="w-8 h-8 flex items-center justify-center text-gray-500 text-lg"
+          className="w-8 h-8 flex items-center justify-center text-gray-400"
         >
-          🏠
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+            <path d="M9 21V12h6v9" />
+          </svg>
         </button>
 
         <div className="flex gap-3 flex-1 justify-center">
