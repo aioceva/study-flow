@@ -6,6 +6,14 @@ import { useSwipeable } from "react-swipeable";
 import { Adaptation, MODULE_COLORS } from "@/types";
 import { nextStep, prevStep, nextButtonLabel } from "@/lib/navigation";
 
+// По-наситени цветове за прогрес бара (пастелните MODULE_COLORS са твърде светли)
+const MODULE_BAR_COLORS: Record<number, string> = {
+  1: "#60A5FA",
+  2: "#4ADE80",
+  3: "#FACC15",
+  4: "#C084FC",
+};
+
 export default function LessonLayoutInner({ children }: { children: React.ReactNode }) {
   const { user } = useParams<{ user: string }>();
   const pathname = usePathname();
@@ -17,32 +25,26 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const nextBtnRef = useRef<HTMLButtonElement>(null);
 
   const segments = pathname.split("/").filter(Boolean);
-  // /[user]/lesson/[module]/[card] → 4 segments, both numeric
   const isCardPage =
     segments.length === 4 &&
     !isNaN(parseInt(segments[2])) &&
     !isNaN(parseInt(segments[3]));
-  // /[user]/lesson/separator
   const isSeparator = segments.length === 3 && segments[2] === "separator";
 
-  // Всички стойности преди hooks
   const moduleId = isCardPage ? parseInt(segments[2]) : 1;
   const cardId = isCardPage ? parseInt(segments[3]) : 1;
   const params = searchParams.toString();
   const isReview = searchParams.get("mode") === "review";
 
-  // За separator: from/to
   const sepFrom = isSeparator ? parseInt(searchParams.get("from") ?? "1") : 1;
   const sepTo = isSeparator ? parseInt(searchParams.get("to") ?? "2") : 2;
 
-  // Фоновият цвят: за карти — модулен цвят; за separator — цветът на следващия модул
   const bgColor = isSeparator
     ? (MODULE_COLORS[sepTo] ?? "#F8F9FA")
     : (MODULE_COLORS[moduleId] ?? "#F8F9FA");
 
   const isFirst = moduleId === 1 && cardId === 1;
 
-  // Зареждаме адаптацията веднъж
   useEffect(() => {
     if (loadedRef.current || !isCardPage) return;
     loadedRef.current = true;
@@ -75,7 +77,6 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     }
   }
 
-  // useSwipeable — преди всякакъв условен return
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => { if (isCardPage) router.push(nextStep(user, moduleId, cardId, params)); },
     onSwipedRight: () => { if (isCardPage && !isFirst) router.push(prevStep(user, moduleId, cardId, params)); },
@@ -83,48 +84,66 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     trackMouse: false,
   });
 
-  // Quiz и други strani рендерират сами себе си
   if (!isCardPage && !isSeparator) return <>{children}</>;
 
-  // --- Separator UI (inline, без смяна на layout) ---
+  // --- Separator UI ---
   if (isSeparator) {
     return (
       <div
-        className="flex flex-col items-center justify-center"
-        style={{ backgroundColor: bgColor, height: "100dvh", transition: "background-color 0.3s ease" }}
+        className="flex flex-col"
+        style={{ backgroundColor: bgColor, height: "100dvh" }}
       >
-        <div className="text-5xl mb-6">✓</div>
-        <h2 className="text-2xl font-bold mb-2">Модул {sepFrom} готов!</h2>
-        <p className="text-lg text-gray-600 mb-12">Започваме Модул {sepTo}</p>
-
-        <div className="flex gap-3 mb-12">
+        {/* Прогрес бар */}
+        <div className="flex-none flex gap-1 px-4 pt-3 pb-0 bg-white">
           {[1, 2, 3, 4].map((m) => (
-            <div
-              key={m}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
-              style={{
-                backgroundColor: m <= sepFrom ? "#22C55E" : m === sepTo ? "#4F8EF7" : "#E5E7EB",
-                color: m <= sepFrom || m === sepTo ? "white" : "#9CA3AF",
-              }}
-            >
-              {m <= sepFrom ? "✓" : m}
+            <div key={m} className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+              <div
+                className="h-full rounded-full"
+                style={{
+                  width: m <= sepFrom ? "100%" : "0%",
+                  backgroundColor: MODULE_BAR_COLORS[m],
+                  transition: "width 0.4s ease",
+                }}
+              />
             </div>
           ))}
         </div>
 
-        <div className="flex gap-3 w-full max-w-sm px-5">
+        {/* Navbar */}
+        <nav className="flex-none flex items-center px-4 py-3 bg-white">
+          <button
+            onClick={() => router.push(`/${user}`)}
+            className="w-8 h-8 flex items-center justify-center text-gray-400"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+              <path d="M9 21V12h6v9" />
+            </svg>
+          </button>
+        </nav>
+
+        {/* Съдържание */}
+        <div className="flex-1 flex flex-col items-center justify-center px-5 text-center">
+          <div className="text-6xl mb-4">🎉</div>
+          <h2 className="text-3xl font-bold mb-2">Браво!</h2>
+          <p className="text-lg text-gray-600 mb-2">Завърши тази част.</p>
+          <p className="text-base text-gray-400">Продължаваме напред!</p>
+        </div>
+
+        {/* Бутони */}
+        <div className="flex-none flex gap-3 px-5 py-4 bg-white">
           <button
             onClick={() => router.push(`/${user}/lesson/${sepFrom}/5?${params}`)}
-            className="w-12 h-12 rounded-2xl bg-white/80 flex items-center justify-center text-xl font-bold text-gray-500"
+            className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center text-xl font-bold text-gray-500"
           >
             ←
           </button>
           <button
             onClick={() => router.push(`/${user}/lesson/${sepTo}/1?${params}`)}
             className="flex-1 h-12 rounded-2xl text-white font-bold text-base"
-            style={{ backgroundColor: "#4F8EF7" }}
+            style={{ backgroundColor: "#22C55E" }}
           >
-            Започни Модул {sepTo} →
+            Напред →
           </button>
         </div>
       </div>
@@ -140,7 +159,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       className="flex flex-col"
       style={{ backgroundColor: "#ffffff", height: "100dvh" }}
     >
-      {/* Progress bar */}
+      {/* Прогрес бар */}
       <div className="flex-none flex gap-1 px-4 pt-3 pb-0 bg-white">
         {[1, 2, 3, 4].map((m) => (
           <div key={m} className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
@@ -148,7 +167,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
               className="h-full rounded-full"
               style={{
                 width: m < moduleId ? "100%" : m === moduleId ? `${(cardId / 5) * 100}%` : "0%",
-                backgroundColor: m <= moduleId ? "#4F8EF7" : "transparent",
+                backgroundColor: MODULE_BAR_COLORS[m],
                 transition: "width 0.4s ease",
               }}
             />
@@ -156,8 +175,8 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
         ))}
       </div>
 
-      {/* Navbar */}
-      <nav className="flex-none flex items-center gap-3 px-4 py-3 bg-white backdrop-blur-sm">
+      {/* Navbar — само home бутон */}
+      <nav className="flex-none flex items-center px-4 py-3 bg-white">
         <button
           onClick={() => router.push(`/${user}`)}
           className="w-8 h-8 flex items-center justify-center text-gray-400"
@@ -167,26 +186,6 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
             <path d="M9 21V12h6v9" />
           </svg>
         </button>
-
-        <div className="flex gap-3 flex-1 justify-center">
-          {[1, 2, 3, 4].map((m) => (
-            <button
-              key={m}
-              onClick={() => router.push(`/${user}/lesson/${m}/1?${params}`)}
-              className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm"
-              style={{
-                backgroundColor: MODULE_COLORS[m],
-                border: m === moduleId ? "2.5px solid #6B7280" : "2px solid #D1D5DB",
-                color: "#374151",
-                transition: "border 0.2s",
-              }}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
-
-        <div className="w-10" />
       </nav>
 
       {/* Съдържание */}
@@ -211,12 +210,14 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
         )}
       </div>
 
-      {/* Бутони */}
+      {/* Бутони — back placeholder за еднаква ширина на Next */}
       <div className="flex-none flex gap-3 px-5 py-4 bg-white">
-        {!isFirst && (
+        {isFirst ? (
+          <div className="w-12 h-12 flex-none" />
+        ) : (
           <button
             onClick={() => router.push(prevStep(user, moduleId, cardId, params))}
-            className="w-12 h-12 rounded-2xl bg-white/80 flex items-center justify-center text-xl font-bold text-gray-500"
+            className="w-12 h-12 flex-none rounded-2xl bg-gray-100 flex items-center justify-center text-xl font-bold text-gray-500"
           >
             ←
           </button>

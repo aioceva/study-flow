@@ -50,7 +50,7 @@ export default function UserHome() {
   }, [user]);
 
   return (
-    <main className="min-h-screen p-6 max-w-lg mx-auto">
+    <main className="min-h-screen p-6">
       {/* Заглавие */}
       <div className="mb-8 mt-4">
         <h1 className="text-2xl font-bold capitalize">{user}</h1>
