@@ -6,16 +6,23 @@ import { useSwipeable } from "react-swipeable";
 import { Adaptation, MODULE_COLORS } from "@/types";
 import { nextStep, prevStep, nextButtonLabel } from "@/lib/navigation";
 
-// Цветове за прогрес бара — по-тъмен вариант на MODULE_COLORS
+// Прогрес бар — средно наситени варианти на MODULE_COLORS
 const MODULE_BAR_COLORS: Record<number, string> = {
-  1: "#93C5FD", // по-тъмно синьо (MODULE 1 е #E8F4FD)
-  2: "#86EFAC", // по-тъмно зелено (MODULE 2 е #E8F8E8)
-  3: "#FDE047", // по-тъмно жълто (MODULE 3 е #FDFBE8)
-  4: "#D8B4FE", // по-тъмно лилаво (MODULE 4 е #F3E8FD)
+  1: "#93C5FD", // blue-300
+  2: "#86EFAC", // green-300
+  3: "#FDE047", // yellow-300
+  4: "#D8B4FE", // purple-300
 };
 
-const NEXT_BTN_COLOR = "#F97316"; // топло оранжево — неутрално спрямо 4-те модулни цвята
-const BRAVO_BG = "#FFF4ED";       // топло бежово — неутрален и спокоен фон
+// Бутон Напред — по-тъмни и по-сиви (убити) варианти спрямо прогрес бара
+const MODULE_BTN_COLORS: Record<number, string> = {
+  1: "#4A79A0", // muted steel-blue
+  2: "#3D7A58", // muted sage-green
+  3: "#7A6830", // muted olive-gold
+  4: "#6B4F96", // muted plum-purple
+};
+
+const BRAVO_BG = "#FFF4ED"; // топло бежово — неутрален и спокоен фон
 
 export default function LessonLayoutInner({ children }: { children: React.ReactNode }) {
   const { user } = useParams<{ user: string }>();
@@ -146,7 +153,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           <button
             onClick={() => router.push(`/${user}/lesson/1/1?${params}`)}
             className="flex-1 h-12 rounded-2xl text-white font-bold text-base"
-            style={{ backgroundColor: NEXT_BTN_COLOR }}
+            style={{ backgroundColor: MODULE_BTN_COLORS[1] }}
           >
             Започни →
           </button>
@@ -177,7 +184,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           <button
             onClick={() => router.push(`/${user}/lesson/${sepTo}/1?${params}`)}
             className="flex-1 h-12 rounded-2xl text-white font-bold text-base"
-            style={{ backgroundColor: NEXT_BTN_COLOR }}
+            style={{ backgroundColor: MODULE_BTN_COLORS[sepTo] }}
           >
             Напред →
           </button>
@@ -231,7 +238,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           ref={nextBtnRef}
           onClick={() => navigateWithReward(nextStep(user, moduleId, cardId, params))}
           className="flex-1 h-12 rounded-2xl text-white font-bold text-base"
-          style={{ backgroundColor: NEXT_BTN_COLOR }}
+          style={{ backgroundColor: MODULE_BTN_COLORS[moduleId] }}
         >
           {nextButtonLabel(moduleId, cardId, isReview)}
         </button>

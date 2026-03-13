@@ -102,44 +102,20 @@ function LessonCard({
 
   return (
     <div className="rounded-2xl p-4 border border-gray-100" style={{ backgroundColor: bgColor }}>
-      <div className="flex justify-between items-start mb-3">
-        <div>
-          <span className="text-sm font-bold text-gray-500 uppercase tracking-wide">
-            {SUBJECT_LABELS[tile.subject] ?? tile.subject}
-          </span>
-          <h3 className="font-bold text-lg">Урок {tile.lesson}</h3>
-          <p className="text-sm text-gray-400">{tile.lastDate}</p>
-        </div>
-        {tile.lastScore && (
-          <div className="text-right">
-            <span className="text-2xl font-bold" style={{ color: tile.lastScore.score / tile.lastScore.total >= 0.8 ? "#22C55E" : "#F59E0B" }}>
-              {tile.lastScore.score}/{tile.lastScore.total}
-            </span>
-          </div>
-        )}
-      </div>
-      <div className="flex gap-2">
-        <button
-          onClick={() =>
-            router.push(
-              `/${user}/lesson/1/1?subject=${tile.subject}&lesson=${tile.lesson}&mode=review`
-            )
-          }
-          className="flex-1 py-2 rounded-xl text-sm font-bold border-2 border-blue-200 text-blue-600"
-        >
-          Отвори урока
-        </button>
-        <button
-          onClick={() =>
-            router.push(
-              `/${user}/reinforcement?subject=${tile.subject}&lesson=${tile.lesson}`
-            )
-          }
-          className="flex-1 py-2 rounded-xl text-sm font-bold border-2 border-purple-200 text-purple-600"
-        >
-          📖 Преговор
-        </button>
-      </div>
+      <span className="text-sm font-bold text-gray-500 uppercase tracking-wide">
+        {SUBJECT_LABELS[tile.subject] ?? tile.subject}
+      </span>
+      <h3 className="font-bold text-lg mb-3">Урок {tile.lesson}</h3>
+      <button
+        onClick={() =>
+          router.push(
+            `/${user}/lesson/intro?subject=${tile.subject}&lesson=${tile.lesson}&mode=review`
+          )
+        }
+        className="w-full py-2 rounded-xl text-sm font-bold border-2 border-blue-200 text-blue-600"
+      >
+        Отвори урока
+      </button>
     </div>
   );
 }
