@@ -22,14 +22,36 @@ export default function CardPage() {
   const [animating, setAnimating] = useState<"left" | "right" | null>(null);
 
   useEffect(() => {
-    const raw = sessionStorage.getItem("adaptation");
-    if (!raw) { router.replace(`/${user}`); return; }
-    const data: Adaptation = JSON.parse(raw);
-    setAdaptation(data);
-    const mod = data.modules.find((m) => m.id === moduleId);
-    const c = mod?.cards.find((c) => c.id === cardId);
-    if (c) setCard(c);
-  }, [moduleId, cardId, router, user]);
+    async function load() {
+      let data: Adaptation | null = null;
+
+      // Опитваме sessionStorage първо
+      const raw = sessionStorage.getItem("adaptation");
+      if (raw) {
+        data = JSON.parse(raw);
+      } else {
+        // Зареждаме от GitHub (мобилен, нова сесия)
+        const subject = searchParams.get("subject");
+        const lesson = searchParams.get("lesson");
+        if (!subject || !lesson) { router.replace(`/${user}`); return; }
+
+        const res = await fetch(`/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`);
+        const json = await res.json();
+        if (!json.exists) { router.replace(`/${user}`); return; }
+
+        data = json.adaptation;
+        sessionStorage.setItem("adaptation", JSON.stringify(data));
+        if (json.quiz) sessionStorage.setItem("quiz", JSON.stringify(json.quiz));
+      }
+
+      if (!data) { router.replace(`/${user}`); return; }
+      setAdaptation(data);
+      const mod = data.modules.find((m) => m.id === moduleId);
+      const c = mod?.cards.find((c) => c.id === cardId);
+      if (c) setCard(c);
+    }
+    load();
+  }, [moduleId, cardId, router, user, searchParams]);
 
   function goNext() {
     setAnimating("left");

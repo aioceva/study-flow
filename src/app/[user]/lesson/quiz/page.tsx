@@ -23,19 +23,28 @@ export default function QuizPage() {
   const [scores, setScores] = useState(0);
 
   useEffect(() => {
-    const raw = sessionStorage.getItem("quiz");
-    if (!raw) return;
-    const quiz: Quiz = JSON.parse(raw);
+    async function load() {
+      let quiz: Quiz | null = null;
+      const raw = sessionStorage.getItem("quiz");
+      if (raw) {
+        quiz = JSON.parse(raw);
+      } else {
+        const res = await fetch(`/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`);
+        const json = await res.json();
+        if (!json.exists || !json.quiz) return;
+        quiz = json.quiz;
+        sessionStorage.setItem("quiz", JSON.stringify(quiz));
+        if (json.adaptation) sessionStorage.setItem("adaptation", JSON.stringify(json.adaptation));
+      }
+      if (!quiz) return;
 
-    // Quiz 1: въпроси от модули 1 и 2 — вземаме по 2-3 от всеки
-    // Quiz 2: въпроси от модули 3 и 4
-    const moduleIds = quizNumber === 1 ? [1, 2] : [3, 4];
-    const filtered = quiz.questions.filter((q) => moduleIds.includes(q.module_id));
-
-    // Вземаме 5 въпроса: shuffle + slice
-    const shuffled = [...filtered].sort(() => Math.random() - 0.5).slice(0, 5);
-    setQuestions(shuffled);
-  }, [quizNumber]);
+      const moduleIds = quizNumber === 1 ? [1, 2] : [3, 4];
+      const filtered = quiz.questions.filter((q) => moduleIds.includes(q.module_id));
+      const shuffled = [...filtered].sort(() => Math.random() - 0.5).slice(0, 5);
+      setQuestions(shuffled);
+    }
+    load();
+  }, [quizNumber, user, subject, lesson]);
 
   function handleAnswer(optionId: string) {
     if (answered) return;
