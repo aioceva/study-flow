@@ -10,6 +10,8 @@ export default function DonePage() {
   const searchParams = useSearchParams();
   const saved = useRef(false);
 
+  const mode = searchParams.get("mode");
+  const isReview = mode === "review";
   const score = parseInt(searchParams.get("score") ?? "0");
   const total = parseInt(searchParams.get("total") ?? "10");
   const subject = searchParams.get("subject") ?? "";
@@ -20,7 +22,7 @@ export default function DonePage() {
   const startTime = useRef(Date.now());
 
   useEffect(() => {
-    if (saved.current) return;
+    if (saved.current || isReview) return;
     saved.current = true;
 
     const duration = Math.round((Date.now() - startTime.current) / 60000);
@@ -49,7 +51,25 @@ export default function DonePage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user, session }),
     }).catch(console.error);
-  }, [user, subject, lesson, score]);
+  }, [user, subject, lesson, score, isReview]);
+
+  // Review mode — просто "Готово"
+  if (isReview) {
+    return (
+      <main className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
+        <div className="text-6xl mb-6">✅</div>
+        <h1 className="text-3xl font-bold mb-2">Готово!</h1>
+        <p className="text-gray-500 mb-10">Прегледа урока.</p>
+        <button
+          onClick={() => router.push(`/${user}`)}
+          className="w-full max-w-sm py-4 rounded-2xl text-white font-bold text-base"
+          style={{ backgroundColor: "#4F8EF7" }}
+        >
+          Към началото
+        </button>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8 text-center max-w-lg mx-auto">

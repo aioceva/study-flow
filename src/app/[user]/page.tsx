@@ -122,7 +122,7 @@ function LessonCard({
         <button
           onClick={() =>
             router.push(
-              `/${user}/lesson/1/1?subject=${tile.subject}&lesson=${tile.lesson}`
+              `/${user}/lesson/1/1?subject=${tile.subject}&lesson=${tile.lesson}&mode=review`
             )
           }
           className="flex-1 py-2 rounded-xl text-sm font-bold border-2 border-blue-200 text-blue-600"
@@ -137,7 +137,7 @@ function LessonCard({
           }
           className="flex-1 py-2 rounded-xl text-sm font-bold border-2 border-purple-200 text-purple-600"
         >
-          🔁 Reinforcement
+          📖 Преговор
         </button>
       </div>
     </div>
