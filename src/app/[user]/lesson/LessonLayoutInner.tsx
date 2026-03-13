@@ -16,20 +16,32 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const loadedRef = useRef(false);
 
   const segments = pathname.split("/").filter(Boolean);
+  // /[user]/lesson/[module]/[card] → 4 segments, both numeric
   const isCardPage =
     segments.length === 4 &&
     !isNaN(parseInt(segments[2])) &&
     !isNaN(parseInt(segments[3]));
+  // /[user]/lesson/separator
+  const isSeparator = segments.length === 3 && segments[2] === "separator";
 
-  // Изчисляваме всички стойности преди hooks
+  // Всички стойности преди hooks
   const moduleId = isCardPage ? parseInt(segments[2]) : 1;
   const cardId = isCardPage ? parseInt(segments[3]) : 1;
   const params = searchParams.toString();
   const isReview = searchParams.get("mode") === "review";
-  const bgColor = MODULE_COLORS[moduleId] ?? "#F8F9FA";
+
+  // За separator: from/to
+  const sepFrom = isSeparator ? parseInt(searchParams.get("from") ?? "1") : 1;
+  const sepTo = isSeparator ? parseInt(searchParams.get("to") ?? "2") : 2;
+
+  // Фоновият цвят: за карти — модулен цвят; за separator — цветът на следващия модул
+  const bgColor = isSeparator
+    ? (MODULE_COLORS[sepTo] ?? "#F8F9FA")
+    : (MODULE_COLORS[moduleId] ?? "#F8F9FA");
+
   const isFirst = moduleId === 1 && cardId === 1;
 
-  // ВСЕ hooks преди всякакъв условен return
+  // Зареждаме адаптацията веднъж
   useEffect(() => {
     if (loadedRef.current || !isCardPage) return;
     loadedRef.current = true;
@@ -52,21 +64,63 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCardPage]);
 
-  function navigate(url: string) {
-    router.push(url);
-  }
-
-  // useSwipeable ПРЕДИ условния return
+  // useSwipeable — преди всякакъв условен return
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => { if (isCardPage) navigate(nextStep(user, moduleId, cardId, params)); },
-    onSwipedRight: () => { if (isCardPage && !isFirst) navigate(prevStep(user, moduleId, cardId, params)); },
+    onSwipedLeft: () => { if (isCardPage) router.push(nextStep(user, moduleId, cardId, params)); },
+    onSwipedRight: () => { if (isCardPage && !isFirst) router.push(prevStep(user, moduleId, cardId, params)); },
     preventScrollOnSwipe: true,
     trackMouse: false,
   });
 
-  // Separator и Quiz рендерират сами себе си — СЛЕД всички hooks
-  if (!isCardPage) return <>{children}</>;
+  // Quiz и други strani рендерират сами себе си
+  if (!isCardPage && !isSeparator) return <>{children}</>;
 
+  // --- Separator UI (inline, без смяна на layout) ---
+  if (isSeparator) {
+    return (
+      <div
+        className="flex flex-col items-center justify-center"
+        style={{ backgroundColor: bgColor, height: "100dvh", transition: "background-color 0.3s ease" }}
+      >
+        <div className="text-5xl mb-6">✓</div>
+        <h2 className="text-2xl font-bold mb-2">Модул {sepFrom} готов!</h2>
+        <p className="text-lg text-gray-600 mb-12">Започваме Модул {sepTo}</p>
+
+        <div className="flex gap-3 mb-12">
+          {[1, 2, 3, 4].map((m) => (
+            <div
+              key={m}
+              className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+              style={{
+                backgroundColor: m <= sepFrom ? "#22C55E" : m === sepTo ? "#4F8EF7" : "#E5E7EB",
+                color: m <= sepFrom || m === sepTo ? "white" : "#9CA3AF",
+              }}
+            >
+              {m <= sepFrom ? "✓" : m}
+            </div>
+          ))}
+        </div>
+
+        <div className="flex gap-3 w-full max-w-sm px-5">
+          <button
+            onClick={() => router.push(`/${user}/lesson/${sepFrom}/5?${params}`)}
+            className="w-12 h-12 rounded-2xl bg-white/80 flex items-center justify-center text-xl font-bold text-gray-500"
+          >
+            ←
+          </button>
+          <button
+            onClick={() => router.push(`/${user}/lesson/${sepTo}/1?${params}`)}
+            className="flex-1 h-12 rounded-2xl text-white font-bold text-base"
+            style={{ backgroundColor: "#4F8EF7" }}
+          >
+            Започни Модул {sepTo} →
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- Card UI ---
   const moduleData = adaptation?.modules.find((m) => m.id === moduleId);
   const card = moduleData?.cards.find((c) => c.id === cardId);
 
@@ -88,7 +142,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           {[1, 2, 3, 4].map((m) => (
             <button
               key={m}
-              onClick={() => navigate(`/${user}/lesson/${m}/1?${params}`)}
+              onClick={() => router.push(`/${user}/lesson/${m}/1?${params}`)}
               className="relative w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm border-2"
               style={{ backgroundColor: MODULE_COLORS[m], borderColor: "#D1D5DB", color: "#374151" }}
             >
@@ -107,7 +161,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
         <span className="text-sm text-gray-500 font-bold w-10 text-right">{cardId}/5</span>
       </nav>
 
-      {/* Съдържание — рендерира се директно, без смяна на страница */}
+      {/* Съдържание */}
       <div {...swipeHandlers} className="flex-1 overflow-y-auto px-5 pt-4 pb-2">
         {!card ? (
           <div className="flex items-center justify-center h-full">
@@ -132,14 +186,14 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       <div className="flex-none flex gap-3 px-5 py-4 bg-white/50 backdrop-blur-sm">
         {!isFirst && (
           <button
-            onClick={() => navigate(prevStep(user, moduleId, cardId, params))}
+            onClick={() => router.push(prevStep(user, moduleId, cardId, params))}
             className="w-12 h-12 rounded-2xl bg-white/80 flex items-center justify-center text-xl font-bold text-gray-500"
           >
             ←
           </button>
         )}
         <button
-          onClick={() => navigate(nextStep(user, moduleId, cardId, params))}
+          onClick={() => router.push(nextStep(user, moduleId, cardId, params))}
           className="flex-1 h-12 rounded-2xl text-white font-bold text-base"
           style={{ backgroundColor: "#4F8EF7" }}
         >
