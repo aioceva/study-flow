@@ -20,35 +20,43 @@ export default function CardPage() {
   const [adaptation, setAdaptation] = useState<Adaptation | null>(null);
   const [card, setCard] = useState<Card | null>(null);
   const [animating, setAnimating] = useState<"left" | "right" | null>(null);
+  const [debugMsg, setDebugMsg] = useState<string>("зарежда...");
 
   useEffect(() => {
     async function load() {
       let data: Adaptation | null = null;
 
-      // Опитваме sessionStorage първо
       const raw = sessionStorage.getItem("adaptation");
       if (raw) {
+        setDebugMsg("от sessionStorage");
         data = JSON.parse(raw);
       } else {
-        // Зареждаме от GitHub (мобилен, нова сесия)
         const subject = searchParams.get("subject");
         const lesson = searchParams.get("lesson");
-        if (!subject || !lesson) { router.replace(`/${user}`); return; }
+        setDebugMsg(`от GitHub: user=${user} subject=${subject} lesson=${lesson}`);
+        if (!subject || !lesson) { setDebugMsg("ГРЕШКА: липсват subject/lesson в URL"); return; }
 
-        const res = await fetch(`/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`);
-        const json = await res.json();
-        if (!json.exists) { router.replace(`/${user}`); return; }
+        try {
+          const res = await fetch(`/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`);
+          const json = await res.json();
+          setDebugMsg(`GitHub отговор: exists=${json.exists} status=${res.status}`);
+          if (!json.exists) { setDebugMsg(`ГРЕШКА: адаптацията не съществува в GitHub`); return; }
 
-        data = json.adaptation;
-        sessionStorage.setItem("adaptation", JSON.stringify(data));
-        if (json.quiz) sessionStorage.setItem("quiz", JSON.stringify(json.quiz));
+          data = json.adaptation;
+          sessionStorage.setItem("adaptation", JSON.stringify(data));
+          if (json.quiz) sessionStorage.setItem("quiz", JSON.stringify(json.quiz));
+        } catch (e) {
+          setDebugMsg(`ГРЕШКА при fetch: ${e}`);
+          return;
+        }
       }
 
-      if (!data) { router.replace(`/${user}`); return; }
+      if (!data) { setDebugMsg("ГРЕШКА: data е null"); return; }
       setAdaptation(data);
       const mod = data.modules.find((m) => m.id === moduleId);
       const c = mod?.cards.find((c) => c.id === cardId);
-      if (c) setCard(c);
+      if (c) { setCard(c); setDebugMsg("ok"); }
+      else setDebugMsg(`ГРЕШКА: модул ${moduleId} карта ${cardId} не е намерена`);
     }
     load();
   }, [moduleId, cardId, router, user, searchParams]);
@@ -73,8 +81,12 @@ export default function CardPage() {
 
   if (!adaptation || !card) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-400">Зарежда...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 gap-4">
+        <p className="text-gray-400 text-center">Зарежда...</p>
+        <div className="w-full max-w-sm rounded-xl p-4 text-xs font-mono break-all" style={{ backgroundColor: "#FEF9C3" }}>
+          {debugMsg}
+        </div>
+        <p className="text-xs text-gray-400">URL: {typeof window !== "undefined" ? window.location.href : ""}</p>
       </div>
     );
   }
