@@ -15,14 +15,21 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const [adaptation, setAdaptation] = useState<Adaptation | null>(null);
   const loadedRef = useRef(false);
 
-  // Разпознаваме дали сме на карта: /bobi/lesson/1/3
   const segments = pathname.split("/").filter(Boolean);
   const isCardPage =
     segments.length === 4 &&
     !isNaN(parseInt(segments[2])) &&
     !isNaN(parseInt(segments[3]));
 
-  // Зареждаме адаптацията ВЕДНЪЖ — всички карти рендерират от нея
+  // Изчисляваме всички стойности преди hooks
+  const moduleId = isCardPage ? parseInt(segments[2]) : 1;
+  const cardId = isCardPage ? parseInt(segments[3]) : 1;
+  const params = searchParams.toString();
+  const isReview = searchParams.get("mode") === "review";
+  const bgColor = MODULE_COLORS[moduleId] ?? "#F8F9FA";
+  const isFirst = moduleId === 1 && cardId === 1;
+
+  // ВСЕ hooks преди всякакъв условен return
   useEffect(() => {
     if (loadedRef.current || !isCardPage) return;
     loadedRef.current = true;
@@ -45,37 +52,30 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCardPage]);
 
-  // Separator и Quiz рендерират сами себе си
-  if (!isCardPage) return <>{children}</>;
-
-  const moduleId = parseInt(segments[2]);
-  const cardId = parseInt(segments[3]);
-  const params = searchParams.toString();
-  const isReview = searchParams.get("mode") === "review";
-  const bgColor = MODULE_COLORS[moduleId] ?? "#F8F9FA";
-  const isFirst = moduleId === 1 && cardId === 1;
-
-  // Картата се взима директно от вече заредените данни — без зареждане
-  const moduleData = adaptation?.modules.find((m) => m.id === moduleId);
-  const card = moduleData?.cards.find((c) => c.id === cardId);
-
   function navigate(url: string) {
     router.push(url);
   }
 
+  // useSwipeable ПРЕДИ условния return
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => navigate(nextStep(user, moduleId, cardId, params)),
-    onSwipedRight: () => { if (!isFirst) navigate(prevStep(user, moduleId, cardId, params)); },
+    onSwipedLeft: () => { if (isCardPage) navigate(nextStep(user, moduleId, cardId, params)); },
+    onSwipedRight: () => { if (isCardPage && !isFirst) navigate(prevStep(user, moduleId, cardId, params)); },
     preventScrollOnSwipe: true,
     trackMouse: false,
   });
+
+  // Separator и Quiz рендерират сами себе си — СЛЕД всички hooks
+  if (!isCardPage) return <>{children}</>;
+
+  const moduleData = adaptation?.modules.find((m) => m.id === moduleId);
+  const card = moduleData?.cards.find((c) => c.id === cardId);
 
   return (
     <div
       className="flex flex-col"
       style={{ backgroundColor: bgColor, height: "100dvh", transition: "background-color 0.3s ease" }}
     >
-      {/* Navbar — никога не се прерисува */}
+      {/* Navbar */}
       <nav className="flex-none flex items-center gap-3 px-4 py-3 bg-white/60 backdrop-blur-sm">
         <button
           onClick={() => router.push(`/${user}`)}
@@ -90,14 +90,9 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
               key={m}
               onClick={() => navigate(`/${user}/lesson/${m}/1?${params}`)}
               className="relative w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm border-2"
-              style={{
-                backgroundColor: MODULE_COLORS[m],
-                borderColor: "#D1D5DB",
-                color: "#374151",
-              }}
+              style={{ backgroundColor: MODULE_COLORS[m], borderColor: "#D1D5DB", color: "#374151" }}
             >
               {m}
-              {/* Точка горе вдясно — винаги на място, само сменя цвят */}
               <span
                 className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white"
                 style={{
@@ -109,12 +104,10 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           ))}
         </div>
 
-        <span className="text-sm text-gray-500 font-bold w-10 text-right">
-          {cardId}/5
-        </span>
+        <span className="text-sm text-gray-500 font-bold w-10 text-right">{cardId}/5</span>
       </nav>
 
-      {/* Съдържание — рендерира се директно от layout, без смяна на страница */}
+      {/* Съдържание — рендерира се директно, без смяна на страница */}
       <div {...swipeHandlers} className="flex-1 overflow-y-auto px-5 pt-4 pb-2">
         {!card ? (
           <div className="flex items-center justify-center h-full">
@@ -135,7 +128,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
         )}
       </div>
 
-      {/* Бутони — никога не се прерисуват */}
+      {/* Бутони */}
       <div className="flex-none flex gap-3 px-5 py-4 bg-white/50 backdrop-blur-sm">
         {!isFirst && (
           <button
@@ -160,9 +153,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 function Section({ icon, label, text }: { icon: string; label: string; text: string }) {
   return (
     <div className="bg-white/70 rounded-xl p-3">
-      <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">
-        {icon} {label}
-      </p>
+      <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">{icon} {label}</p>
       <p className="text-sm leading-relaxed">{text}</p>
     </div>
   );
