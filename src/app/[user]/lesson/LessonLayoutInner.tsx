@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
 import { Adaptation, MODULE_COLORS } from "@/types";
 import { nextStep, prevStep, nextButtonLabel } from "@/lib/navigation";
@@ -14,6 +14,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 
   const [adaptation, setAdaptation] = useState<Adaptation | null>(null);
   const loadedRef = useRef(false);
+  const nextBtnRef = useRef<HTMLButtonElement>(null);
 
   const segments = pathname.split("/").filter(Boolean);
   // /[user]/lesson/[module]/[card] → 4 segments, both numeric
@@ -63,6 +64,16 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCardPage]);
+
+  function navigateWithReward(url: string) {
+    const btn = nextBtnRef.current;
+    if (btn) {
+      btn.classList.add("btn-reward");
+      setTimeout(() => router.push(url), 300);
+    } else {
+      router.push(url);
+    }
+  }
 
   // useSwipeable — преди всякакъв условен return
   const swipeHandlers = useSwipeable({
@@ -129,6 +140,22 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       className="flex flex-col"
       style={{ backgroundColor: "#ffffff", height: "100dvh" }}
     >
+      {/* Progress bar */}
+      <div className="flex-none flex gap-1 px-4 pt-3 pb-0 bg-white">
+        {[1, 2, 3, 4].map((m) => (
+          <div key={m} className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+            <div
+              className="h-full rounded-full"
+              style={{
+                width: m < moduleId ? "100%" : m === moduleId ? `${(cardId / 5) * 100}%` : "0%",
+                backgroundColor: m <= moduleId ? "#4F8EF7" : "transparent",
+                transition: "width 0.4s ease",
+              }}
+            />
+          </div>
+        ))}
+      </div>
+
       {/* Navbar */}
       <nav className="flex-none flex items-center gap-3 px-4 py-3 bg-white backdrop-blur-sm">
         <button
@@ -159,7 +186,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           ))}
         </div>
 
-        <span className="text-sm text-gray-500 font-bold w-10 text-right">{cardId}/5</span>
+        <div className="w-10" />
       </nav>
 
       {/* Съдържание */}
@@ -195,7 +222,8 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           </button>
         )}
         <button
-          onClick={() => router.push(nextStep(user, moduleId, cardId, params))}
+          ref={nextBtnRef}
+          onClick={() => navigateWithReward(nextStep(user, moduleId, cardId, params))}
           className="flex-1 h-12 rounded-2xl text-white font-bold text-base"
           style={{ backgroundColor: "#4F8EF7" }}
         >
