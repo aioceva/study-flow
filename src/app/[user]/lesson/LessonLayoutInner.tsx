@@ -13,6 +13,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const router = useRouter();
 
   const [adaptation, setAdaptation] = useState<Adaptation | null>(null);
+  const [navigating, setNavigating] = useState(false);
   const loadedRef = useRef(false);
 
   const segments = pathname.split("/").filter(Boolean);
@@ -64,10 +65,15 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCardPage]);
 
+  function navigate(url: string) {
+    setNavigating(true);
+    setTimeout(() => router.push(url), 180);
+  }
+
   // useSwipeable — преди всякакъв условен return
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => { if (isCardPage) router.push(nextStep(user, moduleId, cardId, params)); },
-    onSwipedRight: () => { if (isCardPage && !isFirst) router.push(prevStep(user, moduleId, cardId, params)); },
+    onSwipedLeft: () => { if (isCardPage) navigate(nextStep(user, moduleId, cardId, params)); },
+    onSwipedRight: () => { if (isCardPage && !isFirst) navigate(prevStep(user, moduleId, cardId, params)); },
     preventScrollOnSwipe: true,
     trackMouse: false,
   });
@@ -185,16 +191,20 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       <div className="flex-none flex gap-3 px-5 py-4 bg-white">
         {!isFirst && (
           <button
-            onClick={() => router.push(prevStep(user, moduleId, cardId, params))}
+            onClick={() => navigate(prevStep(user, moduleId, cardId, params))}
             className="w-12 h-12 rounded-2xl bg-white/80 flex items-center justify-center text-xl font-bold text-gray-500"
           >
             ←
           </button>
         )}
         <button
-          onClick={() => router.push(nextStep(user, moduleId, cardId, params))}
+          onClick={() => navigate(nextStep(user, moduleId, cardId, params))}
           className="flex-1 h-12 rounded-2xl text-white font-bold text-base"
-          style={{ backgroundColor: "#4F8EF7" }}
+          style={{
+            backgroundColor: navigating ? "#3a7ae0" : "#4F8EF7",
+            transform: navigating ? "scale(0.96)" : "scale(1)",
+            transition: "transform 0.15s ease, background-color 0.15s ease",
+          }}
         >
           {nextButtonLabel(moduleId, cardId, isReview)}
         </button>
