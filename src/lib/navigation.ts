@@ -43,8 +43,8 @@ export function prevStep(
 }
 
 export function nextButtonLabel(moduleId: number, cardId: number, isReview: boolean): string {
-  if (cardId < 5) return "Следваща карта →";
-  if (moduleId === 1 || moduleId === 3) return "Следващ модул →";
-  if (moduleId === 2 || moduleId === 4) return isReview ? "Следващ модул →" : "Quiz →";
-  return "Следваща →";
+  if (cardId < 5) return "Напред →";
+  if (moduleId === 1 || moduleId === 3) return "Напред →";
+  if (moduleId === 2 || moduleId === 4) return isReview ? "Напред →" : "Quiz →";
+  return "Напред →";
 }
