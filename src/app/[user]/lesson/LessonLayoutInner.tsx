@@ -167,7 +167,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           </div>
         ) : (
           <div>
-            <p className="text-base font-semibold mb-3">
+            <p className="text-lg font-semibold mb-4">
               <span className="text-gray-400">{moduleData?.title}</span>
               <span className="text-gray-300 mx-2">/</span>
               <span className="text-gray-800">{card.title}</span>
@@ -205,9 +205,9 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 
 function Section({ icon, label, text }: { icon: string; label: string; text: string }) {
   return (
-    <div className="bg-white/70 rounded-xl p-3">
-      <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">{icon} {label}</p>
-      <p className="text-sm leading-relaxed">{text}</p>
+    <div className="bg-white/70 rounded-xl p-4">
+      <p className="text-sm font-bold text-gray-400 uppercase tracking-wide mb-1">{icon} {label}</p>
+      <p className="text-base leading-relaxed">{text}</p>
     </div>
   );
 }
