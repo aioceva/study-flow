@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 import { MODULE_COLORS } from "@/types";
 import { nextStep, prevStep, nextButtonLabel } from "@/lib/navigation";
 
@@ -9,16 +10,14 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-  // Разпознаваме дали сме на карта: /bobi/lesson/1/3
   const segments = pathname.split("/").filter(Boolean);
-  // segments: ["bobi", "lesson", "1", "3"]
   const isCardPage =
     segments.length === 4 &&
     !isNaN(parseInt(segments[2])) &&
     !isNaN(parseInt(segments[3]));
 
-  // Ако не сме на карта — separator/quiz рендерират сами себе си
   if (!isCardPage) return <>{children}</>;
 
   const moduleId = parseInt(segments[2]);
@@ -28,15 +27,21 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const bgColor = MODULE_COLORS[moduleId] ?? "#F8F9FA";
   const isFirst = moduleId === 1 && cardId === 1;
 
+  function navigate(url: string) {
+    startTransition(() => {
+      router.push(url);
+    });
+  }
+
   return (
     <div
       className="flex flex-col"
       style={{ backgroundColor: bgColor, height: "100dvh", transition: "background-color 0.3s ease" }}
     >
-      {/* Navbar — никога не се прерисува при смяна на карта */}
+      {/* Navbar — не се прерисува */}
       <nav className="flex-none flex items-center gap-3 px-4 py-3 bg-white/60 backdrop-blur-sm">
         <button
-          onClick={() => router.push(`/${user}`)}
+          onClick={() => navigate(`/${user}`)}
           className="w-8 h-8 flex items-center justify-center text-gray-500 text-lg"
         >
           🏠
@@ -46,7 +51,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           {[1, 2, 3, 4].map((m) => (
             <button
               key={m}
-              onClick={() => router.push(`/${user}/lesson/${m}/1?${params}`)}
+              onClick={() => navigate(`/${user}/lesson/${m}/1?${params}`)}
               className="relative w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm border-2"
               style={{
                 backgroundColor: MODULE_COLORS[m],
@@ -55,7 +60,6 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
               }}
             >
               {m}
-              {/* Зелена точка за минат модул */}
               {m < moduleId && (
                 <span
                   className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border border-white flex items-center justify-center"
@@ -64,7 +68,6 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
                   ✓
                 </span>
               )}
-              {/* Синя точка за текущ модул */}
               {m === moduleId && (
                 <span
                   className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full"
@@ -80,27 +83,29 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
         </span>
       </nav>
 
-      {/* Съдържание — само тук се сменя при навигация */}
+      {/* Съдържание — остарялото се задържа докато новото е готово */}
       <div
-        key={pathname}
-        className="flex-1 overflow-y-auto card-fade-in"
+        className="flex-1 overflow-y-auto"
+        style={{ opacity: isPending ? 0.4 : 1, transition: "opacity 0.15s ease" }}
       >
         {children}
       </div>
 
-      {/* Бутони — никога не се прерисуват */}
+      {/* Бутони — не се прерисуват */}
       <div className="flex-none flex gap-3 px-5 py-4 bg-white/50 backdrop-blur-sm">
         {!isFirst && (
           <button
-            onClick={() => router.push(prevStep(user, moduleId, cardId, params))}
-            className="w-12 h-12 rounded-2xl bg-white/80 flex items-center justify-center text-xl font-bold text-gray-500"
+            onClick={() => navigate(prevStep(user, moduleId, cardId, params))}
+            disabled={isPending}
+            className="w-12 h-12 rounded-2xl bg-white/80 flex items-center justify-center text-xl font-bold text-gray-500 disabled:opacity-50"
           >
             ←
           </button>
         )}
         <button
-          onClick={() => router.push(nextStep(user, moduleId, cardId, params))}
-          className="flex-1 h-12 rounded-2xl text-white font-bold text-base"
+          onClick={() => navigate(nextStep(user, moduleId, cardId, params))}
+          disabled={isPending}
+          className="flex-1 h-12 rounded-2xl text-white font-bold text-base disabled:opacity-50"
           style={{ backgroundColor: "#4F8EF7" }}
         >
           {nextButtonLabel(moduleId, cardId, isReview)}
