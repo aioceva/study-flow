@@ -68,6 +68,12 @@ export default function LoadingPage() {
       genFormData.append("user", user);
 
       const genRes = await fetch("/api/generate", { method: "POST", body: genFormData });
+      if (genRes.status === 429) {
+        const data = await genRes.json();
+        setError(data.error ?? "Лимитът за сканиране е достигнат. Опитай утре.");
+        setStatus("error");
+        return;
+      }
       if (!genRes.ok) throw new Error("Грешка при генериране на адаптация");
       const adaptation: Adaptation = await genRes.json();
 
