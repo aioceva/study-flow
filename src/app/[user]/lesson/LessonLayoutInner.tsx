@@ -167,10 +167,11 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           </div>
         ) : (
           <div>
-            <p className="text-xs font-semibold text-gray-400 tracking-wide mb-1 border-l-2 border-gray-300 pl-2">
-              {moduleData?.title}
+            <p className="text-base font-semibold mb-3">
+              <span className="text-gray-400">{moduleData?.title}</span>
+              <span className="text-gray-300 mx-2">/</span>
+              <span className="text-gray-800">{card.title}</span>
             </p>
-            <h1 className="text-lg font-bold mb-3">{card.title}</h1>
             <div className="space-y-2">
               <Section icon="📌" label="Какво е" text={card.what} />
               <Section icon="💡" label="Защо е важно" text={card.why} />
