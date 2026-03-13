@@ -48,6 +48,31 @@
         "total": 5,
         "errors": []
       }
+    },
+    {
+      "date": "2026-03-13",
+      "subject": "chem",
+      "lesson": 11,
+      "started_at": "17:27",
+      "duration_min": 1,
+      "type": "learn",
+      "completed": true,
+      "quiz_1": {
+        "score": 0,
+        "total": 5,
+        "errors": [
+          4,
+          5,
+          6,
+          3,
+          1
+        ]
+      },
+      "quiz_2": {
+        "score": 2,
+        "total": 5,
+        "errors": []
+      }
     }
   ]
 }
