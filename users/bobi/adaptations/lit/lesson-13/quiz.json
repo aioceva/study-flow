@@ -1,0 +1,471 @@
+{
+  "meta": {
+    "user": "bobi",
+    "subject": "lit",
+    "lesson": 13,
+    "generated": "2026-03-14",
+    "total": 20
+  },
+  "questions": [
+    {
+      "id": 1,
+      "module_id": 1,
+      "card_id": 1,
+      "question": "Какво показва наклонението на глагола?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Как говорещият се отнася към действието",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Кога се е случило действието",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Кой извършва действието",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "module_id": 1,
+      "card_id": 2,
+      "question": "За какво се използва повелителното наклонение?",
+      "options": [
+        {
+          "id": "a",
+          "text": "За да разказваме за минали събития",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "За да задаваме въпроси",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "За да искаме някой да направи нещо",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "module_id": 1,
+      "card_id": 4,
+      "question": "Изречението 'Кажете ми, моля!' е пример за:",
+      "options": [
+        {
+          "id": "a",
+          "text": "Учтива молба с повелително наклонение",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Груба заповед с повелително наклонение",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Въпрос с повелително наклонение",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "module_id": 2,
+      "card_id": 1,
+      "question": "За кое лице се образуват простите форми на повелителното наклонение?",
+      "options": [
+        {
+          "id": "a",
+          "text": "За 1-во лице единствено число",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "За 2-ро лице единствено и множествено число",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "За 3-то лице единствено и множествено число",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "module_id": 2,
+      "card_id": 2,
+      "question": "Коя наставка добавяме за 2-ро лице единствено число при глаголи като 'отива'?",
+      "options": [
+        {
+          "id": "a",
+          "text": "-ете",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "-йте",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "-й",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "module_id": 2,
+      "card_id": 5,
+      "question": "Кой е верният начин да кажем на целия клас да дойде?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Ела!",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Елате!",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Нека ела!",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "module_id": 3,
+      "card_id": 1,
+      "question": "Как се образуват сложните форми на повелителното наклонение?",
+      "options": [
+        {
+          "id": "a",
+          "text": "С наставките -й и -йте пред глагола",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "С частиците 'нека' или 'да' пред глагола",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "С частицата 'не' пред глагола",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "module_id": 3,
+      "card_id": 5,
+      "question": "Кое изречение е по-подходящо, когато говорим на учителя?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Да помогна!",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Помогни!",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Нека помогна.",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "module_id": 3,
+      "card_id": 3,
+      "question": "Кое от следните изречения използва частицата 'да' за повелителна форма?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Да станем!",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Станете!",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Не ставайте!",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "module_id": 4,
+      "card_id": 1,
+      "question": "Какво изразява отрицателната повелителна форма?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Покана за действие",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Забрана или предупреждение да не се прави нещо",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Въпрос дали някой ще извърши действие",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "module_id": 4,
+      "card_id": 3,
+      "question": "Коя форма е по-учтива забрана за един човек?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Не преписвай!",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Спри да преписваш!",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Недей да преписваш!",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "module_id": 4,
+      "card_id": 5,
+      "question": "Кое изречение е подходящо, когато учтиво молим гости да не бързат?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Не бързайте!",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Недейте да бързате!",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Не бързай!",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Кое от следните изречения е в повелително наклонение?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Той чете книга.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Четеше ли книга?",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Чети книгата!",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Кой от следните глаголи е в повелително наклонение за много хора?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Играй",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Играете",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Играйте",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "С коя частица се образува мека забрана за група хора?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Не",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Недейте",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Нека",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Коя е правилната повелителна форма на глагола 'говоря' за много хора?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Говорите",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Говорете",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Говорейте",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Кое изречение НЕ е в повелително наклонение?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Нека да отидем заедно!",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Затвори вратата!",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Тя затвори вратата.",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Повелителното наклонение може да изразява:",
+      "options": [
+        {
+          "id": "a",
+          "text": "Само заповеди",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Само молби",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Заповеди, молби и инструкции",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Кое от следните е сложна форма на повелителното наклонение?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Спри!",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Не спирай!",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Нека спра!",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Как се казва на един човек да играе, използвайки наставката -й?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Играйте",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Играй",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Нека играе",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}
