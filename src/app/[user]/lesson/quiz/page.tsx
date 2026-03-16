@@ -101,7 +101,7 @@ export default function QuizPage() {
       <div className="flex-none mb-4 mt-4">
         <div className="flex justify-between items-center mb-2">
           <p className="text-sm font-bold uppercase tracking-wide" style={{ color: NAV.textMuted }}>
-            Quiz {quizNumber}
+            Проверка {quizNumber}
           </p>
           <p className="text-sm" style={{ color: NAV.textMuted }}>
             {current + 1} / {questions.length}
