@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, startTransition } from "react";
 import { useSwipeable } from "react-swipeable";
 import { Adaptation, MODULE_COLORS, MODULE_SURFACE, MODULE_PROGRESS, MODULE_BTN, NAV, SUBJECT_LABELS, Subject } from "@/types";
 import { nextStep, prevStep, nextButtonLabel } from "@/lib/navigation";
@@ -13,7 +13,11 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [adaptation, setAdaptation] = useState<Adaptation | null>(null);
+  const [adaptation, setAdaptation] = useState<Adaptation | null>(() => {
+    if (typeof window === "undefined") return null;
+    const raw = sessionStorage.getItem("adaptation");
+    return raw ? (JSON.parse(raw) as Adaptation) : null;
+  });
   const loadedRef = useRef(false);
 
   const segments = pathname.split("/").filter(Boolean);
@@ -63,7 +67,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   }, [isCardPage]);
 
   function navigate(url: string) {
-    setTimeout(() => router.push(url), 150);
+    setTimeout(() => startTransition(() => router.push(url)), 150);
   }
 
   const swipeHandlers = useSwipeable({
@@ -209,7 +213,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           </div>
         ) : (
           <div>
-            <p className="text-lg font-bold mb-4" style={{ color: NAV.text }}>{card.title}</p>
+            <p className="text-xl font-bold mb-4 leading-snug" style={{ color: NAV.text }}>{card.title}</p>
             <div className="space-y-2">
               <Section icon="📌" label="Какво е"      text={card.what}    moduleId={moduleId} />
               <Section icon="💡" label="Защо е важно" text={card.why}     moduleId={moduleId} />

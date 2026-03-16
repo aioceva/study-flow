@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, startTransition } from "react";
 import { SUBJECT_LABELS, Subject, NAV, MODULE_BTN } from "@/types";
 import Image from "next/image";
 
@@ -24,7 +24,7 @@ export default function DonePage() {
   const accentColor = MODULE_BTN[3]; // топло злато за subject label
 
   function navigate(url: string) {
-    setTimeout(() => router.push(url), 150);
+    setTimeout(() => startTransition(() => router.push(url)), 150);
   }
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Sessions, SUBJECT_LABELS, Subject, NAV, MODULE_BTN } from "@/types";
 
@@ -45,7 +45,7 @@ export default function UserHome() {
   const displayName = user.charAt(0).toUpperCase() + user.slice(1);
 
   function navigate(url: string) {
-    setTimeout(() => router.push(url), 150);
+    setTimeout(() => startTransition(() => router.push(url)), 150);
   }
 
   return (
