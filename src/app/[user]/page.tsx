@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Sessions, SUBJECT_LABELS, Subject } from "@/types";
+import { Sessions, SUBJECT_LABELS, Subject, NAV, MODULE_BTN } from "@/types";
 
 interface LessonTile {
   subject: Subject;
   lesson: number;
-  title?: string;
   lastDate: string;
-  lastScore?: { score: number; total: number };
   sessionCount: number;
 }
 
@@ -27,16 +25,11 @@ export default function UserHome() {
         for (const s of data.sessions ?? []) {
           const key = `${s.subject}-${s.lesson}`;
           const existing = map.get(key);
-          const score =
-            s.type === "learn"
-              ? { score: s.quiz_2.score, total: s.quiz_2.total }
-              : { score: s.score, total: s.total };
           if (!existing || s.date > existing.lastDate) {
             map.set(key, {
               subject: s.subject as Subject,
               lesson: s.lesson,
               lastDate: s.date,
-              lastScore: score,
               sessionCount: (existing?.sessionCount ?? 0) + 1,
             });
           } else {
@@ -49,70 +42,81 @@ export default function UserHome() {
       .finally(() => setLoading(false));
   }, [user]);
 
+  const displayName = user.charAt(0).toUpperCase() + user.slice(1);
+
   return (
-    <main className="min-h-screen p-6">
-      {/* Заглавие */}
-      <div className="mb-8 mt-4">
-        <h1 className="text-2xl font-bold capitalize">{user}</h1>
-        <p className="text-gray-500 text-base">Какво учим днес?</p>
+    <div className="flex flex-col min-h-screen" style={{ backgroundColor: NAV.bg }}>
+
+      {/* Хедър */}
+      <div className="px-4 pt-6 pb-5" style={{ backgroundColor: NAV.headerBg }}>
+        <div className="text-2xl mb-2">👋</div>
+        <h1 className="text-white font-bold text-xl mb-1">Здравей, {displayName}!</h1>
+        <p className="text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>Какво учим днес?</p>
       </div>
 
-      {/* Бутон сканирай */}
-      <button
-        onClick={() => router.push(`/${user}/scan`)}
-        className="w-full py-5 rounded-2xl text-white text-xl font-bold mb-8 flex items-center justify-center gap-3"
-        style={{ backgroundColor: "#4F8EF7" }}
-      >
-        <span className="text-2xl">📷</span>
-        Сканирай нов урок
-      </button>
+      {/* Тяло */}
+      <div className="flex-1 px-4 pt-4">
 
-      {/* Последни уроци */}
-      {loading ? (
-        <p className="text-gray-400 text-center">Зарежда...</p>
-      ) : tiles.length === 0 ? (
-        <div className="text-center py-12 text-gray-400">
-          <p className="text-4xl mb-3">📚</p>
-          <p>Все още няма уроци.</p>
-          <p>Сканирай първата страница!</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          <h2 className="text-lg font-bold text-gray-600">Последни уроци</h2>
-          {tiles.map((tile) => (
-            <LessonCard key={`${tile.subject}-${tile.lesson}`} tile={tile} user={user} router={router} />
-          ))}
-        </div>
-      )}
-    </main>
+        {/* Сканирай бутон */}
+        <button
+          onClick={() => router.push(`/${user}/scan`)}
+          className="w-full rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-semibold text-sm mb-5"
+          style={{ backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
+        >
+          <span className="text-base">📷</span>
+          Сканирай нов урок
+        </button>
+
+        {/* Последни уроци */}
+        {loading ? (
+          <p className="text-sm text-center" style={{ color: NAV.textMuted }}>Зарежда...</p>
+        ) : tiles.length === 0 ? (
+          <div className="text-center py-12" style={{ color: NAV.textMuted }}>
+            <p className="text-4xl mb-3">📚</p>
+            <p className="text-sm">Все още няма уроци.</p>
+            <p className="text-sm">Сканирай първата страница!</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <h2 className="font-semibold text-xs" style={{ color: NAV.textMuted }}>Последни уроци</h2>
+            {tiles.map((tile) => (
+              <LessonCard key={`${tile.subject}-${tile.lesson}`} tile={tile} user={user} router={router} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
 function LessonCard({
-  tile,
-  user,
-  router,
+  tile, user, router,
 }: {
   tile: LessonTile;
   user: string;
   router: ReturnType<typeof useRouter>;
 }) {
-  const moduleColor: Record<number, string> = { 0: "#E8F4FD" };
-  const bgColor = "#F8F9FA";
+  // Dot color: determinstic from subject
+  const subjects = ["math","bio","chem","phys","hist","lit","gen"];
+  const dotColor = MODULE_BTN[(subjects.indexOf(tile.subject) % 4) + 1] ?? MODULE_BTN[1];
+  const subjectLabel = SUBJECT_LABELS[tile.subject] ?? tile.subject;
 
   return (
-    <div className="rounded-2xl p-4 border border-gray-100" style={{ backgroundColor: bgColor }}>
-      <span className="text-sm font-bold text-gray-500 uppercase tracking-wide">
-        {SUBJECT_LABELS[tile.subject] ?? tile.subject}
-      </span>
-      <h3 className="font-bold text-lg mb-3">Урок {tile.lesson}</h3>
+    <div
+      className="rounded-xl p-3"
+      style={{ backgroundColor: NAV.surface, border: `1px solid ${NAV.border}` }}
+    >
+      <div className="flex items-center gap-2 mb-1">
+        <div className="w-2 h-2 rounded-full flex-none" style={{ backgroundColor: dotColor }} />
+        <span className="text-[10px] font-semibold tracking-wider uppercase" style={{ color: NAV.textMuted }}>
+          {subjectLabel}
+        </span>
+      </div>
+      <p className="font-bold text-sm mb-2" style={{ color: NAV.text }}>Урок {tile.lesson}</p>
       <button
-        onClick={() =>
-          router.push(
-            `/${user}/lesson/intro?subject=${tile.subject}&lesson=${tile.lesson}&mode=review`
-          )
-        }
-        className="w-full py-2 rounded-xl text-sm font-bold border-2 border-blue-200 text-blue-600"
+        onClick={() => router.push(`/${user}/lesson/intro?subject=${tile.subject}&lesson=${tile.lesson}&mode=review`)}
+        className="w-full rounded-lg py-2 text-xs font-semibold text-center"
+        style={{ backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
       >
         Отвори урока
       </button>

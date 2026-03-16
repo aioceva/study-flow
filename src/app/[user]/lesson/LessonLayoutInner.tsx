@@ -3,27 +3,9 @@
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
-import { Adaptation, MODULE_COLORS } from "@/types";
+import { Adaptation, MODULE_COLORS, MODULE_SURFACE, MODULE_PROGRESS, MODULE_BTN, NAV, SUBJECT_LABELS, Subject } from "@/types";
 import { nextStep, prevStep, nextButtonLabel } from "@/lib/navigation";
-
-// Прогрес бар — средно наситени варианти на MODULE_COLORS
-const MODULE_BAR_COLORS: Record<number, string> = {
-  1: "#93C5FD", // blue-300
-  2: "#86EFAC", // green-300
-  3: "#FDE047", // yellow-300
-  4: "#D8B4FE", // purple-300
-};
-
-// Бутон Напред — тъмни варианти директно от хюа на MODULE_COLORS фона
-// MODULE_COLORS: 1=#E8F4FD(синьо), 2=#E8F8E8(зелено), 3=#FDFBE8(жълто), 4=#F3E8FD(лилаво)
-const MODULE_BTN_COLORS: Record<number, string> = {
-  1: "#2C6E99", // тъмно синьо от #E8F4FD
-  2: "#2E7A4A", // тъмно зелено от #E8F8E8
-  3: "#7A6010", // тъмно жълто/кафяво от #FDFBE8
-  4: "#6A3A9A", // тъмно лилаво от #F3E8FD
-};
-
-const BRAVO_BG = "#FFF4ED"; // топло бежово — неутрален и спокоен фон
+import Image from "next/image";
 
 export default function LessonLayoutInner({ children }: { children: React.ReactNode }) {
   const { user } = useParams<{ user: string }>();
@@ -48,9 +30,13 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const params   = searchParams.toString();
   const isReview = searchParams.get("mode") === "review";
 
-  const sepFrom    = isSeparator ? parseInt(searchParams.get("from") ?? "1") : 1;
-  const sepTo      = isSeparator ? parseInt(searchParams.get("to")   ?? "2") : 2;
+  const sepFrom     = isSeparator ? parseInt(searchParams.get("from") ?? "1") : 1;
+  const sepTo       = isSeparator ? parseInt(searchParams.get("to")   ?? "2") : 2;
   const lessonTitle = searchParams.get("title") ?? "";
+  const subject     = searchParams.get("subject") ?? "";
+  const lesson      = searchParams.get("lesson") ?? "";
+  const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
+  const accentColor = MODULE_BTN[3]; // топло злато за subject·lesson label
 
   const bgColor = MODULE_COLORS[moduleId] ?? "#F8F9FA";
   const isFirst = moduleId === 1 && cardId === 1;
@@ -62,11 +48,11 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     const raw = sessionStorage.getItem("adaptation");
     if (raw) { setAdaptation(JSON.parse(raw)); return; }
 
-    const subject = searchParams.get("subject");
-    const lesson  = searchParams.get("lesson");
-    if (!subject || !lesson) return;
+    const subj = searchParams.get("subject");
+    const les  = searchParams.get("lesson");
+    if (!subj || !les) return;
 
-    fetch(`/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`)
+    fetch(`/api/adaptation?user=${user}&subject=${subj}&lesson=${les}`)
       .then((r) => r.json())
       .then((json) => {
         if (!json.exists) return;
@@ -96,19 +82,32 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 
   if (!isCardPage && !isSeparator && !isIntro) return <>{children}</>;
 
-  // ── Shared fragments ───────────────────────────────────────────────────────
+  // ── Home icon (shared) ─────────────────────────────────────────────────────
+  const homeIcon = (
+    <div className="px-4 py-2">
+      <button
+        onClick={() => router.push(`/${user}`)}
+        className="w-8 h-8 flex items-center justify-center"
+        style={{ opacity: 0.5 }}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+          <path d="M9 21V12h6v9" />
+        </svg>
+      </button>
+    </div>
+  );
 
-  const progressBar = (filledUpTo: number, currentFill = 1) => (
+  // ── Progress bar (card pages only) ────────────────────────────────────────
+  const progressBar = (
     <div className="flex-none flex gap-1 px-4 pt-3 pb-0 bg-white">
       {[1, 2, 3, 4].map((m) => (
         <div key={m} className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
           <div
             className="h-full rounded-full"
             style={{
-              width: m < filledUpTo ? "100%"
-                   : m === filledUpTo ? `${currentFill * 100}%`
-                   : "0%",
-              backgroundColor: MODULE_BAR_COLORS[m],
+              width: m < moduleId ? "100%" : m === moduleId ? `${(cardId / 5) * 100}%` : "0%",
+              backgroundColor: MODULE_PROGRESS[m],
               transition: "width 0.4s ease",
             }}
           />
@@ -117,47 +116,23 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     </div>
   );
 
-  const navBar = (moduleTitle?: string) => (
-    <nav className="flex-none flex items-center gap-3 px-4 py-3 bg-white">
-      <button
-        onClick={() => router.push(`/${user}`)}
-        className="w-8 h-8 flex-none flex items-center justify-center text-gray-400"
-      >
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
-          <path d="M9 21V12h6v9" />
-        </svg>
-      </button>
-      {moduleTitle && (
-        <span className="text-sm font-semibold text-gray-400 truncate">{moduleTitle}</span>
-      )}
-    </nav>
-  );
-
   // ── Intro screen ───────────────────────────────────────────────────────────
   if (isIntro) {
     return (
-      <div className="flex flex-col" style={{ backgroundColor: BRAVO_BG, height: "100dvh" }}>
-        {progressBar(0)}
-        {navBar()}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-          <div className="text-5xl mb-6">📖</div>
-          <p className="text-sm font-bold text-gray-400 uppercase tracking-wide mb-2">
-            {searchParams.get("subject_bg") ?? ""}
-          </p>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Урок {searchParams.get("lesson") ?? ""}
+      <div className="flex flex-col" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
+        {homeIcon}
+        <div className="flex-1 flex flex-col items-center justify-center px-4 gap-3 text-center">
+          <Image src="/icons/icon-lesson.svg" width={96} height={96} alt="урок" />
+          <h1 className="font-bold text-xl" style={{ color: NAV.text }}>
+            {lessonTitle || `Урок ${lesson}`}
           </h1>
-          {lessonTitle && (
-            <p className="text-lg text-gray-600">{lessonTitle}</p>
-          )}
+          <p className="text-sm" style={{ color: NAV.textMuted }}>{subjectLabel}</p>
         </div>
-        <div className="flex-none flex gap-3 px-5 py-4 bg-white">
-          <div className="w-12 h-12 flex-none" />
+        <div className="px-4 pb-6">
           <button
             onClick={() => router.push(`/${user}/lesson/1/1?${params}`)}
-            className="flex-1 h-12 rounded-2xl text-white font-bold text-base"
-            style={{ backgroundColor: MODULE_BTN_COLORS[1] }}
+            className="w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
+            style={{ backgroundColor: NAV.btnSolid }}
           >
             Започни →
           </button>
@@ -166,29 +141,38 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     );
   }
 
-  // ── Separator / Braво screen ───────────────────────────────────────────────
+  // ── Separator / Браво screen ───────────────────────────────────────────────
   if (isSeparator) {
     return (
-      <div className="flex flex-col" style={{ backgroundColor: BRAVO_BG, height: "100dvh" }}>
-        {progressBar(sepFrom)}
-        {navBar()}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-          <div className="text-6xl mb-4">🎉</div>
-          <h2 className="text-3xl font-bold mb-2">Браво!</h2>
-          <p className="text-lg text-gray-600">Завърши тази част.</p>
-          <p className="text-base text-gray-400 mt-1">Продължаваме напред!</p>
+      <div className="flex flex-col" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
+        {homeIcon}
+        <div className="flex-1 flex flex-col items-center justify-center px-4 gap-2.5 text-center">
+          <span className="text-7xl leading-none">🎉</span>
+          <h1 className="font-bold text-xl" style={{ color: NAV.text }}>Браво!</h1>
+          <p className="text-sm" style={{ color: NAV.textMuted }}>Завърши тази секция.</p>
+          {subjectLabel && lesson && (
+            <p className="text-xs font-semibold" style={{ color: accentColor }}>
+              {subjectLabel} · Урок {lesson}
+            </p>
+          )}
         </div>
-        <div className="flex-none flex gap-3 px-5 py-4 bg-white">
+        <div className="px-4 pb-6 flex gap-2">
           <button
             onClick={() => router.push(`/${user}/lesson/${sepFrom}/5?${params}`)}
-            className="w-12 h-12 flex-none rounded-2xl bg-gray-100 flex items-center justify-center text-xl font-bold text-gray-500"
+            className="rounded-xl flex items-center justify-center font-bold text-base flex-none"
+            style={{
+              width: 46, height: 46,
+              backgroundColor: NAV.bg,
+              border: `2px solid ${NAV.btnBorder}`,
+              color: NAV.text,
+            }}
           >
-            ←
+            ‹
           </button>
           <button
             onClick={() => router.push(`/${user}/lesson/${sepTo}/1?${params}`)}
-            className="flex-1 h-12 rounded-2xl text-white font-bold text-base"
-            style={{ backgroundColor: MODULE_BTN_COLORS[sepTo] }}
+            className="flex-1 rounded-xl text-white font-semibold text-sm text-center"
+            style={{ backgroundColor: NAV.btnSolid, height: 46 }}
           >
             Напред →
           </button>
@@ -203,42 +187,68 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 
   return (
     <div className="flex flex-col" style={{ backgroundColor: "#ffffff", height: "100dvh" }}>
-      {progressBar(moduleId, cardId / 5)}
-      {navBar(moduleData?.title)}
+      {progressBar}
 
+      {/* Navbar с модул title */}
+      <nav className="flex-none flex items-center gap-3 px-4 py-3 bg-white">
+        <button
+          onClick={() => router.push(`/${user}`)}
+          className="w-8 h-8 flex-none flex items-center justify-center"
+          style={{ opacity: 0.5 }}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+            <path d="M9 21V12h6v9" />
+          </svg>
+        </button>
+        {moduleData?.title && (
+          <span className="text-sm font-semibold truncate" style={{ color: NAV.textMuted }}>
+            {moduleData.title}
+          </span>
+        )}
+      </nav>
+
+      {/* Съдържание */}
       <div {...swipeHandlers} className="flex-1 overflow-y-auto px-5 pt-4 pb-2" style={{ backgroundColor: bgColor }}>
         {!card ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-gray-400">Зарежда...</p>
+            <p style={{ color: NAV.textMuted }}>Зарежда...</p>
           </div>
         ) : (
           <div>
-            <p className="text-lg font-bold text-gray-800 mb-4">{card.title}</p>
+            <p className="text-lg font-bold mb-4" style={{ color: NAV.text }}>{card.title}</p>
             <div className="space-y-2">
-              <Section icon="📌" label="Какво е"       text={card.what}    />
-              <Section icon="💡" label="Защо е важно"  text={card.why}     />
-              <Section icon="✏️" label="Пример"        text={card.example} />
+              <Section icon="📌" label="Какво е"      text={card.what}    moduleId={moduleId} />
+              <Section icon="💡" label="Защо е важно" text={card.why}     moduleId={moduleId} />
+              <Section icon="✏️" label="Пример"       text={card.example} moduleId={moduleId} />
             </div>
           </div>
         )}
       </div>
 
-      <div className="flex-none flex gap-3 px-5 py-4 bg-white">
+      {/* Бутони */}
+      <div className="flex-none flex gap-2 px-4 pb-6 pt-3 bg-white">
         {isFirst ? (
-          <div className="w-12 h-12 flex-none" />
+          <div style={{ width: 46, height: 46, flexShrink: 0 }} />
         ) : (
           <button
             onClick={() => router.push(prevStep(user, moduleId, cardId, params))}
-            className="w-12 h-12 flex-none rounded-2xl bg-gray-100 flex items-center justify-center text-xl font-bold text-gray-500"
+            className="rounded-xl flex items-center justify-center font-bold text-base flex-none"
+            style={{
+              width: 46, height: 46,
+              backgroundColor: NAV.bg,
+              border: `2px solid ${NAV.btnBorder}`,
+              color: NAV.text,
+            }}
           >
-            ←
+            ‹
           </button>
         )}
         <button
           ref={nextBtnRef}
           onClick={() => navigateWithReward(nextStep(user, moduleId, cardId, params))}
-          className="flex-1 h-12 rounded-2xl text-white font-bold text-base"
-          style={{ backgroundColor: MODULE_BTN_COLORS[moduleId] }}
+          className="flex-1 rounded-xl text-white font-semibold text-sm text-center"
+          style={{ backgroundColor: MODULE_BTN[moduleId], height: 46 }}
         >
           {nextButtonLabel(moduleId, cardId, isReview)}
         </button>
@@ -247,10 +257,12 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   );
 }
 
-function Section({ icon, label, text }: { icon: string; label: string; text: string }) {
+function Section({ icon, label, text, moduleId }: { icon: string; label: string; text: string; moduleId: number }) {
   return (
-    <div className="bg-white/70 rounded-xl p-4">
-      <p className="text-sm font-bold text-gray-400 uppercase tracking-wide mb-1">{icon} {label}</p>
+    <div className="rounded-xl p-4" style={{ backgroundColor: MODULE_SURFACE[moduleId] ?? "#F0F0F0" }}>
+      <p className="text-sm font-bold uppercase tracking-wide mb-1" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>
+        {icon} {label}
+      </p>
       <p className="text-base leading-relaxed">{text}</p>
     </div>
   );
