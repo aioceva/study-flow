@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import { Adaptation, MODULE_COLORS, MODULE_SURFACE, MODULE_PROGRESS, MODULE_BTN, NAV, SUBJECT_LABELS, Subject } from "@/types";
 import { nextStep, prevStep, nextButtonLabel } from "@/lib/navigation";
@@ -15,7 +15,6 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 
   const [adaptation, setAdaptation] = useState<Adaptation | null>(null);
   const loadedRef = useRef(false);
-  const nextBtnRef = useRef<HTMLButtonElement>(null);
 
   const segments = pathname.split("/").filter(Boolean);
   const isCardPage =
@@ -63,16 +62,6 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCardPage]);
 
-  function navigateWithReward(url: string) {
-    const btn = nextBtnRef.current;
-    if (btn) {
-      btn.classList.add("btn-reward");
-      setTimeout(() => router.push(url), 300);
-    } else {
-      router.push(url);
-    }
-  }
-
   const swipeHandlers = useSwipeable({
     onSwipedLeft:  () => { if (isCardPage) router.push(nextStep(user, moduleId, cardId, params)); },
     onSwipedRight: () => { if (isCardPage && !isFirst) router.push(prevStep(user, moduleId, cardId, params)); },
@@ -87,7 +76,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     <div className="px-4 py-2">
       <button
         onClick={() => router.push(`/${user}`)}
-        className="w-8 h-8 flex items-center justify-center"
+        className="btn-press w-8 h-8 flex items-center justify-center"
         style={{ opacity: 0.5 }}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -131,7 +120,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
         <div className="px-4 pb-6">
           <button
             onClick={() => router.push(`/${user}/lesson/1/1?${params}`)}
-            className="w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
+            className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
             style={{ backgroundColor: NAV.btnSolid }}
           >
             Започни →
@@ -159,7 +148,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
         <div className="px-4 pb-6 flex gap-2">
           <button
             onClick={() => router.push(`/${user}/lesson/${sepFrom}/5?${params}`)}
-            className="rounded-xl flex items-center justify-center font-bold text-base flex-none"
+            className="btn-press rounded-xl flex items-center justify-center font-bold text-base flex-none"
             style={{
               width: 46, height: 46,
               backgroundColor: NAV.bg,
@@ -171,7 +160,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           </button>
           <button
             onClick={() => router.push(`/${user}/lesson/${sepTo}/1?${params}`)}
-            className="flex-1 rounded-xl text-white font-semibold text-sm text-center"
+            className="btn-press flex-1 rounded-xl text-white font-semibold text-sm text-center"
             style={{ backgroundColor: NAV.btnSolid, height: 46 }}
           >
             Напред →
@@ -193,7 +182,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       <nav className="flex-none flex items-center gap-3 px-4 py-3 bg-white">
         <button
           onClick={() => router.push(`/${user}`)}
-          className="w-8 h-8 flex-none flex items-center justify-center"
+          className="btn-press w-8 h-8 flex-none flex items-center justify-center"
           style={{ opacity: 0.5 }}
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -233,7 +222,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
         ) : (
           <button
             onClick={() => router.push(prevStep(user, moduleId, cardId, params))}
-            className="rounded-xl flex items-center justify-center font-bold text-base flex-none"
+            className="btn-press rounded-xl flex items-center justify-center font-bold text-base flex-none"
             style={{
               width: 46, height: 46,
               backgroundColor: NAV.bg,
@@ -245,9 +234,8 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           </button>
         )}
         <button
-          ref={nextBtnRef}
-          onClick={() => navigateWithReward(nextStep(user, moduleId, cardId, params))}
-          className="flex-1 rounded-xl text-white font-semibold text-sm text-center"
+          onClick={() => router.push(nextStep(user, moduleId, cardId, params))}
+          className="btn-press flex-1 rounded-xl text-white font-semibold text-sm text-center"
           style={{ backgroundColor: MODULE_BTN[moduleId], height: 46 }}
         >
           {nextButtonLabel(moduleId, cardId, isReview)}

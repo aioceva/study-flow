@@ -67,7 +67,7 @@ export default function DonePage() {
         <div className="px-4 pb-6">
           <button
             onClick={() => router.push(`/${user}`)}
-            className="w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
+            className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
             style={{ backgroundColor: NAV.btnSolid }}
           >
             Към началото
@@ -110,14 +110,14 @@ export default function DonePage() {
       <div className="px-4 pb-6 flex flex-col gap-3">
         <button
           onClick={() => router.push(`/${user}/reinforcement?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
-          className="w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
+          className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
           style={{ backgroundColor: NAV.btnSolid }}
         >
           Вземи теста за преговор →
         </button>
         <button
           onClick={() => router.push(`/${user}`)}
-          className="w-full rounded-xl py-3 font-semibold text-sm text-center"
+          className="btn-press w-full rounded-xl py-3 font-semibold text-sm text-center"
           style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
         >
           Към началото

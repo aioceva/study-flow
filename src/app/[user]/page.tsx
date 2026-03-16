@@ -60,7 +60,7 @@ export default function UserHome() {
         {/* Сканирай бутон */}
         <button
           onClick={() => router.push(`/${user}/scan`)}
-          className="w-full rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-semibold text-sm mb-5"
+          className="btn-press w-full rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-semibold text-sm mb-5"
           style={{ backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
         >
           <span className="text-base">📷</span>
@@ -115,7 +115,7 @@ function LessonCard({
       <p className="font-bold text-sm mb-2" style={{ color: NAV.text }}>Урок {tile.lesson}</p>
       <button
         onClick={() => router.push(`/${user}/lesson/intro?subject=${tile.subject}&lesson=${tile.lesson}&mode=review`)}
-        className="w-full rounded-lg py-2 text-xs font-semibold text-center"
+        className="btn-press w-full rounded-lg py-2 text-xs font-semibold text-center"
         style={{ backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
       >
         Отвори урока
