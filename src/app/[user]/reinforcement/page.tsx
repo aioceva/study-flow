@@ -53,7 +53,13 @@ export default function ReinforcementPage() {
   return (
     <main className="min-h-screen p-6 max-w-lg mx-auto">
       <div className="flex items-center gap-3 mb-6 mt-4">
-        <button onClick={() => navigate(`/${user}`)} className="btn-press text-2xl text-gray-400">←</button>
+        <button
+          onClick={() => navigate(`/${user}`)}
+          className="btn-press rounded-xl flex items-center justify-center font-bold text-base flex-none"
+          style={{ width: 46, height: 46, backgroundColor: NAV.surface, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
+        >
+          ‹
+        </button>
         <div>
           <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
             {SUBJECT_LABELS[subject as Subject] ?? subject}

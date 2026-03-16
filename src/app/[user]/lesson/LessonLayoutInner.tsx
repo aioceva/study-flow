@@ -214,7 +214,13 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       {/* Бутони */}
       <div className="flex-none flex gap-2 px-4 pb-6 pt-3 bg-white">
         {isFirst ? (
-          <div style={{ width: 46, height: 46, flexShrink: 0 }} />
+          <button
+            onClick={() => navigate(`/${user}/confirm?${params}`)}
+            className="btn-press rounded-xl flex items-center justify-center font-bold text-base flex-none"
+            style={{ width: 46, height: 46, backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
+          >
+            ‹
+          </button>
         ) : (
           <button
             onClick={() => navigate(prevStep(user, moduleId, cardId, params))}

@@ -94,20 +94,20 @@ export default function DonePage() {
         </p>
       </div>
 
-      <div className="px-4 pb-6 flex flex-col gap-3">
-        <button
-          onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
-          className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
-          style={{ backgroundColor: NAV.btnSolid }}
-        >
-          Провери знанията си →
-        </button>
+      <div className="px-4 pb-6 flex gap-2">
         <button
           onClick={() => navigate(`/${user}`)}
-          className="btn-press w-full rounded-xl py-3 font-semibold text-sm text-center"
-          style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
+          className="btn-press rounded-xl flex items-center justify-center font-bold text-base flex-none"
+          style={{ width: 46, height: 46, backgroundColor: NAV.surface, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
         >
-          Към началото
+          ‹
+        </button>
+        <button
+          onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
+          className="btn-press flex-1 rounded-xl text-white font-semibold text-sm text-center"
+          style={{ backgroundColor: NAV.btnSolid, height: 46 }}
+        >
+          Провери знанията си →
         </button>
       </div>
     </div>

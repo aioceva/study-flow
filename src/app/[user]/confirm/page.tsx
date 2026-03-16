@@ -112,13 +112,22 @@ export default function ConfirmPage() {
 
       {/* Бутони */}
       <div className="flex-none px-4 pb-6 pt-3 space-y-2">
-        <button
-          onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
-          className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
-          style={{ backgroundColor: NAV.btnSolid }}
-        >
-          Провери знанията си →
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => navigate(`/${user}`)}
+            className="btn-press rounded-xl flex items-center justify-center font-bold text-base flex-none"
+            style={{ width: 46, height: 46, backgroundColor: NAV.surface, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
+          >
+            ‹
+          </button>
+          <button
+            onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
+            className="btn-press flex-1 rounded-xl py-3.5 text-white font-semibold text-sm text-center"
+            style={{ backgroundColor: NAV.btnSolid }}
+          >
+            Провери знанията си →
+          </button>
+        </div>
         <button
           onClick={() => navigate(`/${user}/lesson/1/1?${params}`)}
           className="btn-press w-full rounded-xl py-3 font-semibold text-sm text-center"
