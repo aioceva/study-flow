@@ -96,6 +96,20 @@
         "total": 5,
         "errors": []
       }
+    },
+    {
+      "date": "2026-03-16",
+      "subject": "bio",
+      "lesson": 45,
+      "started_at": "20:30",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "score": 8,
+      "total": 10,
+      "errors": [
+        3,
+        6
+      ]
     }
   ]
 }
