@@ -73,6 +73,29 @@
         "total": 5,
         "errors": []
       }
+    },
+    {
+      "date": "2026-03-16",
+      "subject": "bio",
+      "lesson": 45,
+      "started_at": "20:13",
+      "duration_min": 1,
+      "type": "learn",
+      "completed": true,
+      "quiz_1": {
+        "score": 2,
+        "total": 5,
+        "errors": [
+          5,
+          2,
+          1
+        ]
+      },
+      "quiz_2": {
+        "score": 2,
+        "total": 5,
+        "errors": []
+      }
     }
   ]
 }
