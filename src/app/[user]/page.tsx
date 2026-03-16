@@ -4,11 +4,18 @@ import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Sessions, SUBJECT_LABELS, Subject, NAV, MODULE_BTN } from "@/types";
 
+interface IndexEntry {
+  subject: string;
+  lesson: number;
+  title: string;
+  savedAt: string;
+}
+
 interface LessonTile {
   subject: Subject;
   lesson: number;
-  lastDate: string;
-  sessionCount: number;
+  title: string;
+  lastDate: string; // от сесия или savedAt
 }
 
 export default function UserHome() {
@@ -18,25 +25,29 @@ export default function UserHome() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/session?user=${user}`)
-      .then((r) => r.json())
-      .then((data: Sessions) => {
-        const map = new Map<string, LessonTile>();
-        for (const s of data.sessions ?? []) {
+    Promise.all([
+      fetch(`/api/adaptation?user=${user}`).then((r) => r.json()),
+      fetch(`/api/session?user=${user}`).then((r) => r.json()).catch(() => ({ sessions: [] })),
+    ])
+      .then(([adaptData, sessData]: [{ lessons: IndexEntry[] }, Sessions]) => {
+        const lessons = adaptData.lessons ?? [];
+
+        // Последна дата от сесии за всеки урок
+        const lastDateMap = new Map<string, string>();
+        for (const s of sessData.sessions ?? []) {
           const key = `${s.subject}-${s.lesson}`;
-          const existing = map.get(key);
-          if (!existing || s.date > existing.lastDate) {
-            map.set(key, {
-              subject: s.subject as Subject,
-              lesson: s.lesson,
-              lastDate: s.date,
-              sessionCount: (existing?.sessionCount ?? 0) + 1,
-            });
-          } else {
-            existing.sessionCount += 1;
-          }
+          const cur = lastDateMap.get(key);
+          if (!cur || s.date > cur) lastDateMap.set(key, s.date);
         }
-        setTiles(Array.from(map.values()).sort((a, b) => b.lastDate.localeCompare(a.lastDate)));
+
+        const result: LessonTile[] = lessons.map((e) => ({
+          subject: e.subject as Subject,
+          lesson: e.lesson,
+          title: e.title,
+          lastDate: lastDateMap.get(`${e.subject}-${e.lesson}`) ?? e.savedAt.split("T")[0],
+        }));
+
+        setTiles(result.sort((a, b) => b.lastDate.localeCompare(a.lastDate)));
       })
       .catch(() => setTiles([]))
       .finally(() => setLoading(false));
@@ -100,7 +111,6 @@ function LessonCard({
   user: string;
   router: ReturnType<typeof useRouter>;
 }) {
-  // Dot color: determinstic from subject
   const subjects = ["math","bio","chem","phys","hist","lit","gen"];
   const dotColor = MODULE_BTN[(subjects.indexOf(tile.subject) % 4) + 1] ?? MODULE_BTN[1];
   const subjectLabel = SUBJECT_LABELS[tile.subject] ?? tile.subject;
@@ -114,12 +124,14 @@ function LessonCard({
       <div className="flex items-center gap-2 mb-1">
         <div className="w-2 h-2 rounded-full flex-none" style={{ backgroundColor: dotColor }} />
         <span className="text-[10px] font-semibold tracking-wider uppercase" style={{ color: NAV.textMuted }}>
-          {subjectLabel}
+          {subjectLabel} · Урок {tile.lesson}
         </span>
       </div>
-      <p className="font-bold text-sm mb-2" style={{ color: NAV.text }}>Урок {tile.lesson}</p>
+      {tile.title && (
+        <p className="text-sm font-semibold mb-2 leading-snug" style={{ color: NAV.text }}>{tile.title}</p>
+      )}
       <button
-        onClick={() => navigate(`/${user}/confirm?subject=${tile.subject}&lesson=${tile.lesson}`)}
+        onClick={() => navigate(`/${user}/confirm?subject=${tile.subject}&lesson=${tile.lesson}&title=${encodeURIComponent(tile.title)}`)}
         className="btn-press w-full rounded-lg py-2 text-xs font-semibold text-center"
         style={{ backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
       >

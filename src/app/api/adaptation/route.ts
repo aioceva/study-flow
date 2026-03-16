@@ -2,15 +2,29 @@ import { NextRequest, NextResponse } from "next/server";
 import { readJSON, writeJSON } from "@/lib/github";
 import { Adaptation, Quiz } from "@/types";
 
-// GET /api/adaptation?user=bobi&subject=math&lesson=14
+interface IndexEntry {
+  subject: string;
+  lesson: number;
+  title: string;
+  savedAt: string;
+}
+
+// GET /api/adaptation?user=bobi               → списък на всички адаптации
+// GET /api/adaptation?user=bobi&subject=math&lesson=14 → конкретна адаптация
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const user = searchParams.get("user");
   const subject = searchParams.get("subject");
   const lesson = searchParams.get("lesson");
 
-  if (!user || !subject || !lesson) {
-    return NextResponse.json({ error: "Липсват параметри" }, { status: 400 });
+  if (!user) {
+    return NextResponse.json({ error: "Липсва user" }, { status: 400 });
+  }
+
+  // Листване на всички адаптации за потребителя
+  if (!subject || !lesson) {
+    const index = await readJSON<IndexEntry[]>(`users/${user}/adaptations/_index.json`);
+    return NextResponse.json({ lessons: index?.data ?? [] });
   }
 
   const basePath = `users/${user}/adaptations/${subject}/lesson-${lesson}`;
@@ -46,6 +60,21 @@ export async function POST(req: NextRequest) {
     if (quiz) {
       await writeJSON(`${basePath}/quiz.json`, quiz);
     }
+
+    // Актуализираме индекса
+    const indexPath = `users/${user}/adaptations/_index.json`;
+    const existing = await readJSON<IndexEntry[]>(indexPath);
+    const entries: IndexEntry[] = existing?.data ?? [];
+    const filtered = entries.filter(
+      (e) => !(e.subject === subject && String(e.lesson) === String(lesson))
+    );
+    const newEntry: IndexEntry = {
+      subject,
+      lesson: parseInt(lesson),
+      title: (adaptation as Adaptation).meta?.title ?? "",
+      savedAt: new Date().toISOString(),
+    };
+    await writeJSON(indexPath, [...filtered, newEntry], existing?.sha);
 
     return NextResponse.json({ success: true });
   } catch (err) {
