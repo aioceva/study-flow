@@ -31,8 +31,9 @@ Anthropic*
 # Claude Code settings
 .claude/
 
-# Документация — не в репото (с изключение на docs/context/)
+# Документация — не в репото (с изключение на docs/context/ и CLAUDE.md)
 *.md
+!CLAUDE.md
 !docs/context/*.md
 06.03.2026/
 07.03.2026/

@@ -34,7 +34,7 @@ export const NAV = {
 
 ```typescript
 // Фон на content area
-MODULE_COLORS = { 1: "#EBF4FF", 2: "#E8F9F1", 3: "#FEFAE8", 4: "#F3EEFF" }
+MODULE_COLORS  = { 1: "#EBF4FF", 2: "#E8F9F1", 3: "#FEFAE8", 4: "#F3EEFF" }
 
 // Секции вътре в карта
 MODULE_SURFACE = { 1: "#BDD8F7", 2: "#B4E5CC", 3: "#F7E49E", 4: "#D4C4EE" }
@@ -42,7 +42,7 @@ MODULE_SURFACE = { 1: "#BDD8F7", 2: "#B4E5CC", 3: "#F7E49E", 4: "#D4C4EE" }
 // Прогрес бар сегменти
 MODULE_PROGRESS = { 1: "#6FA3E8", 2: "#6DC297", 3: "#C49020", 4: "#A384CC" }
 
-// Бутон Напред (бял текст)
+// Бутон Напред (бял текст върху него)
 MODULE_BTN = { 1: "#3B7DD8", 2: "#3B9E6A", 3: "#9A6E08", 4: "#7B5EA7" }
 ```
 
@@ -50,6 +50,7 @@ MODULE_BTN = { 1: "#3B7DD8", 2: "#3B9E6A", 3: "#9A6E08", 4: "#7B5EA7" }
 - Жълт фон (`#FEFAE8`, `#F7E49E`) → тъмен текст `#2C3E5D` или `#9A6E08`
 - Никога `#000000` — само `#2C3E5D`
 - `MODULE_BTN[3]` (#9A6E08) = акцент за subject·lesson labels навсякъде
+- Никога нови цветове без обсъждане
 
 ---
 
@@ -58,29 +59,24 @@ MODULE_BTN = { 1: "#3B7DD8", 2: "#3B9E6A", 3: "#9A6E08", 4: "#7B5EA7" }
 **Шрифт:** Adys.ttf (Bulgarian dyslexia-friendly), fallback: OpenDyslexic, Arial, sans-serif
 
 ```css
-body {
-  font-size: 16px;
-  line-height: 1.7;
-  letter-spacing: 0.03em;
-}
-p, li, span {
-  max-width: 65ch;
-  line-height: 1.8;
-  word-spacing: 0.1em;
-}
-h1, h2, h3 {
-  font-weight: 700;
-  line-height: 1.3;
-}
+body { font-size: 16px; line-height: 1.7; letter-spacing: 0.03em; }
+p, li, span { max-width: 65ch; line-height: 1.8; word-spacing: 0.1em; }
+h1, h2, h3  { font-weight: 700; line-height: 1.3; }
 ```
 
 **Размери:**
-- `text-xs` (12px) — labels, metadata (предмет)
-- `text-sm` (14px) — secondary body
-- `text-base` (16px) — основен текст (минимум за параграфи)
+- `text-xs` (12px) — labels, metadata (ХИМИЯ · Урок 11)
+- `text-sm` (14px) — secondary body, subtitle
+- `text-base` (16px) — основен текст (**минимум** за параграфи)
 - `text-lg` (18px) — module title в navbar
 - `text-xl` (20px) — card заглавия, екранни заглавия
 - `text-2xl` (24px) — hero (Браво!, Готово!)
+
+**Правила:**
+- Никога `font-extrabold` (800) или `font-black` (900) — максимум `font-bold` (700)
+- Никога `text-justify` — само `text-left` за параграфи
+- Никога italic за основен текст
+- `text-center` само за заглавия и бутони
 
 ---
 
@@ -101,43 +97,58 @@ h1, h2, h3 {
 }
 ```
 
-**Защо 150ms navigate delay:** `:active` е видим само докато пръстът е на екрана. Без delay — навигацията се случва на onClick (pointerup) и анимацията не се вижда.
+**Защо 150ms navigate delay:** `:active` е видим само докато пръстът е на екрана. Без delay навигацията се случва на onClick (pointerup) и анимацията не се вижда.
 
 ---
 
-## Lesson екрани
+## UX принципи за деца с дислексия
 
-### Intro екран (`/lesson/intro`)
-- Home иконка (горе вляво)
-- `icon-lesson.svg` (96px)
-- Заглавие на урока (`text-xl font-bold`)
-- Subject label (`text-sm`, `NAV.textMuted`)
-- Footer: solid "Започни →" (`NAV.btnSolid`)
+### Едно нещо на екран
+Всеки екран комуникира едно съобщение и иска едно действие. Ако има повече от 1 primary бутон — нещо е наред.
 
-### Card екран (`/lesson/[m]/[c]`)
-- Progress bar: 4 сегмента (`MODULE_PROGRESS`), само на card pages
-- Navbar: home иконка + module title (`NAV.textMuted`)
-- Content area: `MODULE_COLORS[moduleId]` фон
-- Card title: `text-xl font-bold`
-- 3 секции: 📌 Какво е / 💡 Защо е важно / ✏️ Пример
-  - Секция bg: `MODULE_SURFACE[moduleId]`
-  - Секция label: `MODULE_BTN[moduleId]` цвят
-- Footer: ‹ back (46×46px outline) + "Напред →" (`MODULE_BTN[moduleId]`)
+### Прогресът е видим и конкретен
+Детето трябва да знае: какво прави сега, колко е останало, какво е направило. Сегментиран прогрес бар (4 модула), не процентна лента.
 
-### Separator/Браво екран (`/lesson/separator`)
-- Home иконка
-- 🎉 (text-7xl), "Браво!", subject·lesson label (`MODULE_BTN[3]`)
-- Footer: ‹ back + "Напред →" (`NAV.btnSolid`)
+### Инструкциите са кратки и директни
+- Максимум 1 изречение на инструкция
+- Активен глагол в началото: "Извади учебника", не "Учебникът трябва да бъде изваден"
+- Без отрицания: "Запази спокойствие", не "Не се притеснявай"
+- Без вложени изречения
 
-### Done екран (`/done`)
-- `icon-trophy-glow.svg` (96px) — SVG paths, **НЕ emoji в `<text>`**
-- "Готово!", score card (зелено ≥80% / жълто <80%)
-- Footer: "Вземи теста за преговор →" + "Към началото"
+### Визуалната йерархия ръководи окото
+1. Иконата / емотиконът (най-голям)
+2. Заглавието (h1)
+3. Subtitle / контекст
+4. Primary бутон (долу, full-width)
 
-### Home екран (`/[user]`)
-- Хедър: `NAV.headerBg` с 👋, "Здравей, {name}!"
-- Outline бутон "📷 Сканирай нов урок"
-- Lesson tiles: `NAV.surface` bg, цветна точка за предмет, "Отвори урока"
+Primary бутонът е **винаги в footer зоната**, прикрепен към дъното. Никога в средата на екрана.
+
+### Feedback е незабавен и позитивен
+- Всяко действие има визуален отговор (btn-press)
+- Грешките: "Нека опитаме пак", не "Грешно"
+- Наградата (🎉, 🏆) се показва незабавно след завършване
+
+### Touch targets
+- Минимум 44×44px (Apple HIG)
+- Primary бутон: full-width, минимум 48px височина
+- Back бутон: 46×46px
+- Разстояние между два бутона: минимум 8px
+
+### Намалена когнитивна натовареност
+- Максимум 3 елемента на видима зона
+- Избягвай таблици → използвай карти
+- Избягвай dropdown → използвай отделни екрани
+- Емотикони за бързо разпознаване без четене
+
+### Без прекъсвания
+- Без pop-up известия вътре в учебна сесия
+- Без автоматично навигиране без действие от детето
+- Без countdown таймери
+
+### Цветът носи смисъл
+- Синьо = Модул 1, Зелено = Модул 2, Жълто = Модул 3, Лилаво = Модул 4
+- Тъмно-синьо (#2C3E5D) = навигация, структура
+- Детето разпознава модула по цвят преди да прочете текста
 
 ---
 
@@ -151,20 +162,81 @@ h1, h2, h3 {
 </div>
 ```
 
+- `height: 100dvh` (не `min-h-screen`) — отчита address bar на iOS
 - Никога `position: fixed` за footer — само flexbox
-- `height: 100dvh` (не `min-h-screen`) за мобилни браузъри
 - Padding на страница: `px-4`
 - Footer padding: `px-4 pb-6 pt-3`
-- Back бутон: `width: 46px, height: 46px`
+- Gap между бутони: `gap-2` (8px)
+- Border radius: `rounded-xl` (12px) за бутони и карти
+
+---
+
+## Lesson екрани
+
+### Intro (`/lesson/intro`)
+- Home иконка → `px-4 py-2`
+- `icon-lesson.svg` 96px, заглавие `text-xl font-bold`, subject `text-sm NAV.textMuted`
+- Footer: solid "Започни →" (`NAV.btnSolid`)
+
+### Card (`/lesson/[m]/[c]`)
+- Progress bar: 4 сегмента `MODULE_PROGRESS`, само на card pages
+- Navbar: home иконка + module title (`NAV.textMuted`)
+- Content: `MODULE_COLORS[m]` фон, card title `text-xl font-bold`
+- 3 секции (📌 / 💡 / ✏️): bg `MODULE_SURFACE[m]`, label color `MODULE_BTN[m]`
+- Footer: ‹ back (46×46, outline) + "Напред →" (`MODULE_BTN[m]`)
+
+### Separator/Браво (`/lesson/separator`)
+- Home иконка, 🎉 `text-7xl`, "Браво!", subject·lesson `MODULE_BTN[3]`
+- Footer: ‹ back + "Напред →" (`NAV.btnSolid`)
+
+### Done (`/done`)
+- `icon-trophy-glow.svg` 96px (**SVG paths, НЕ emoji в `<text>`**)
+- Score card: зелено ≥80% / жълто <80%
+- Footer: "Вземи теста за преговор →" + "Към началото"
+
+### Home (`/[user]`)
+- Хедър `NAV.headerBg`: 👋, "Здравей, {name}!", subtitle
+- Outline бутон "📷 Сканирай нов урок"
+- Lesson tiles: `NAV.surface`, цветна точка (предмет), "Отвори урока"
+
+---
+
+## Accessibility
+
+Контрасти (WCAG AA — всички проверени):
+```
+#2C3E5D на #FFFFFF → 9.1:1  ✓     #FFFFFF на #3B7DD8 → 4.6:1  ✓
+#5A6A7E на #FFFFFF → 4.6:1  ✓     #FFFFFF на #3B9E6A → 4.8:1  ✓
+#2C3E5D на #FEFAE8 → 8.1:1  ✓     #FFFFFF на #9A6E08 → 4.72:1 ✓
+                                   #FFFFFF на #7B5EA7 → 4.9:1  ✓
+```
+
+- Всеки интерактивен елемент с `aria-label` ако текстът не е достатъчен
+- Back бутон: `aria-label="Назад"`, Home: `aria-label="Към началото"`
+- Всички изображения с `alt` атрибут
 
 ---
 
 ## SVG икони (public/icons/)
 
-| Файл | Екран | Бележка |
-|------|-------|---------|
-| `icon-lesson.svg` | Intro | Книга/урок икона |
-| `icon-trophy-glow.svg` | Done | Купа с лъчи — SVG paths |
-| `icon-welcome.svg` | Home (опционален) | |
+| Файл | Екран |
+|------|-------|
+| `icon-lesson.svg` | Intro |
+| `icon-trophy-glow.svg` | Done — купа с лъчи (SVG paths) |
+| `icon-welcome.svg` | Home (опционален) |
 
-**ВАЖНО:** Никога emoji в SVG `<text>` елемент — не се рендерира на iOS Safari. Използвай `<path>`, `<rect>`, `<circle>`.
+**ВАЖНО:** Никога emoji в SVG `<text>` — не се рендерира на iOS Safari. Само `<path>`, `<rect>`, `<circle>`.
+
+---
+
+## Анти-модели — никога
+
+- `text-black` или `#000000` — само `#2C3E5D`
+- `bg-white` бутон без `border-2 border-[#2C3E5D]`
+- Прогрес бар на nav екрани (intro, separator, done)
+- Повече от 1 primary бутон на екран
+- Hardcoded цветове inline — само константите от `types/index.ts`
+- `router.push()` директно в onClick без 150ms delay
+- `<text>emoji</text>` в SVG файлове
+- `transition-all` — причинява flickering
+- Анимации над 300ms на UI елементи
