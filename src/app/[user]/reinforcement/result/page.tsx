@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { startTransition } from "react";
 
 export default function ReinforcementResultPage() {
   const { user } = useParams<{ user: string }>();
@@ -11,6 +12,10 @@ export default function ReinforcementResultPage() {
   const total = parseInt(searchParams.get("total") ?? "10");
   const subject = searchParams.get("subject") ?? "";
   const lesson = searchParams.get("lesson") ?? "";
+  function navigate(url: string) {
+    setTimeout(() => startTransition(() => router.push(url)), 150);
+  }
+
   const percent = Math.round((score / total) * 100);
   const perfect = score === total;
 
@@ -36,15 +41,15 @@ export default function ReinforcementResultPage() {
       <div className="w-full space-y-3">
         {!perfect && (
           <button
-            onClick={() => router.push(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}`)}
-            className="w-full py-4 rounded-2xl font-bold text-base border-2 border-purple-300 text-purple-700"
+            onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}`)}
+            className="btn-press w-full py-4 rounded-2xl font-bold text-base border-2 border-purple-300 text-purple-700"
           >
             📖 Опитай пак
           </button>
         )}
         <button
-          onClick={() => router.push(`/${user}`)}
-          className="w-full py-4 rounded-2xl text-white font-bold text-base"
+          onClick={() => navigate(`/${user}`)}
+          className="btn-press w-full py-4 rounded-2xl text-white font-bold text-base"
           style={{ backgroundColor: "#4F8EF7" }}
         >
           Към началото

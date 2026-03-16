@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { Quiz, QuizQuestion } from "@/types";
 
 export default function QuizPage() {
@@ -14,6 +14,10 @@ export default function QuizPage() {
   const lesson = searchParams.get("lesson") ?? "";
   const title = searchParams.get("title") ?? "";
   const params = searchParams.toString();
+
+  function navigate(url: string) {
+    setTimeout(() => startTransition(() => router.push(url)), 150);
+  }
 
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [current, setCurrent] = useState(0);
@@ -70,13 +74,12 @@ export default function QuizPage() {
       sessionStorage.setItem(key, JSON.stringify({ score: scores + (selected && questions[current].options.find(o=>o.correct)?.id === selected ? 0 : 0), total: 5, errors }));
 
       if (quizNumber === 1) {
-        router.push(`/${user}/lesson/3/1?${params}`);
+        navigate(`/${user}/lesson/3/1?${params}`);
       } else {
-        // Изчисляваме финалния резултат
         const q1Raw = sessionStorage.getItem("quiz_1_result");
         const q1 = q1Raw ? JSON.parse(q1Raw) : { score: 0, total: 5 };
         const finalScore = q1.score + scores + (answered ? 1 : 0);
-        router.push(`/${user}/done?score=${finalScore}&total=10&${params}`);
+        navigate(`/${user}/done?score=${finalScore}&total=10&${params}`);
       }
     }
   }
@@ -167,7 +170,7 @@ export default function QuizPage() {
           </div>
           <button
             onClick={handleNext}
-            className="w-full py-4 rounded-2xl text-white font-bold text-base"
+            className="btn-press w-full py-4 rounded-2xl text-white font-bold text-base"
             style={{ backgroundColor: "#4F8EF7" }}
           >
             {current < questions.length - 1 ? "Следващ въпрос →" : "Готово →"}

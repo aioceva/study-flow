@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Quiz, QuizQuestion } from "@/types";
 
@@ -11,6 +11,10 @@ export default function ReinforcementQuizPage() {
 
   const subject = searchParams.get("subject") ?? "";
   const lesson = searchParams.get("lesson") ?? "";
+
+  function navigate(url: string) {
+    setTimeout(() => startTransition(() => router.push(url)), 150);
+  }
 
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [current, setCurrent] = useState(0);
@@ -79,7 +83,7 @@ export default function ReinforcementQuizPage() {
         body: JSON.stringify({ user, session }),
       }).catch(console.error);
 
-      router.push(`/${user}/reinforcement/result?score=${finalScore}&total=10&subject=${subject}&lesson=${lesson}`);
+      navigate(`/${user}/reinforcement/result?score=${finalScore}&total=10&subject=${subject}&lesson=${lesson}`);
     }
   }
 
@@ -145,7 +149,7 @@ export default function ReinforcementQuizPage() {
           </div>
           <button
             onClick={handleNext}
-            className="w-full py-4 rounded-2xl text-white font-bold"
+            className="btn-press w-full py-4 rounded-2xl text-white font-bold"
             style={{ backgroundColor: "#7C3AED" }}
           >
             {current < questions.length - 1 ? "Следващ →" : "Готово →"}

@@ -83,7 +83,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const homeIcon = (
     <div className="px-4 py-2">
       <button
-        onClick={() => router.push(`/${user}`)}
+        onClick={() => navigate(`/${user}`)}
         className="btn-press w-8 h-8 flex items-center justify-center"
         style={{ opacity: 0.5 }}
       >
@@ -189,7 +189,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       {/* Navbar с модул title */}
       <nav className="flex-none flex items-center gap-3 px-4 py-3 bg-white">
         <button
-          onClick={() => router.push(`/${user}`)}
+          onClick={() => navigate(`/${user}`)}
           className="btn-press w-8 h-8 flex-none flex items-center justify-center"
           style={{ opacity: 0.5 }}
         >

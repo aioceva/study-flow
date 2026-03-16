@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { startTransition } from "react";
 
 export default function ConfirmPage() {
   const { user } = useParams<{ user: string }>();
@@ -12,9 +13,13 @@ export default function ConfirmPage() {
   const lesson = searchParams.get("lesson") ?? "";
   const title = searchParams.get("title") ?? "";
 
+  function navigate(url: string) {
+    setTimeout(() => startTransition(() => router.push(url)), 150);
+  }
+
   function startLesson() {
     const params = new URLSearchParams({ subject, lesson, title, subject_bg: subjectBg });
-    router.push(`/${user}/lesson/intro?${params}`);
+    navigate(`/${user}/lesson/intro?${params}`);
   }
 
   return (
@@ -27,7 +32,6 @@ export default function ConfirmPage() {
       <h1 className="text-3xl font-bold mb-2">Урок {lesson}</h1>
       <p className="text-xl text-gray-600 mb-10">{title}</p>
 
-      {/* Структура на урока */}
       <div className="w-full rounded-2xl p-5 mb-8 text-left space-y-2" style={{ backgroundColor: "#F8F9FA" }}>
         <p className="font-bold text-gray-600 mb-3">Структура на урока:</p>
         {[
@@ -48,7 +52,7 @@ export default function ConfirmPage() {
 
       <button
         onClick={startLesson}
-        className="w-full py-5 rounded-2xl text-white text-xl font-bold flex items-center justify-center gap-3"
+        className="btn-press w-full py-5 rounded-2xl text-white text-xl font-bold flex items-center justify-center gap-3"
         style={{ backgroundColor: "#4F8EF7" }}
       >
         Започни →

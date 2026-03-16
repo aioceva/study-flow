@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Sessions, SUBJECT_LABELS, Subject } from "@/types";
 
@@ -19,6 +19,10 @@ export default function ReinforcementPage() {
   const subject = searchParams.get("subject") ?? "";
   const lesson = searchParams.get("lesson") ?? "";
   const params = searchParams.toString();
+
+  function navigate(url: string) {
+    setTimeout(() => startTransition(() => router.push(url)), 150);
+  }
 
   const [results, setResults] = useState<QuizResult[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +53,7 @@ export default function ReinforcementPage() {
   return (
     <main className="min-h-screen p-6 max-w-lg mx-auto">
       <div className="flex items-center gap-3 mb-6 mt-4">
-        <button onClick={() => router.back()} className="text-2xl text-gray-400">←</button>
+        <button onClick={() => navigate(`/${user}`)} className="btn-press text-2xl text-gray-400">←</button>
         <div>
           <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
             {SUBJECT_LABELS[subject as Subject] ?? subject}
@@ -98,8 +102,8 @@ export default function ReinforcementPage() {
 
       {/* Бутон */}
       <button
-        onClick={() => router.push(`/${user}/reinforcement/quiz?${params}`)}
-        className="w-full py-5 rounded-2xl text-white text-xl font-bold flex items-center justify-center gap-3"
+        onClick={() => navigate(`/${user}/reinforcement/quiz?${params}`)}
+        className="btn-press w-full py-5 rounded-2xl text-white text-xl font-bold flex items-center justify-center gap-3"
         style={{ backgroundColor: "#7C3AED" }}
       >
         <span>📖</span>
