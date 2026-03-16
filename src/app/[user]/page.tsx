@@ -2,7 +2,7 @@
 
 import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Sessions, SUBJECT_LABELS, Subject, NAV, MODULE_BTN } from "@/types";
+import { Sessions, SUBJECT_LABELS, Subject, NAV } from "@/types";
 
 interface IndexEntry {
   subject: string;
@@ -15,8 +15,33 @@ interface LessonTile {
   subject: Subject;
   lesson: number;
   title: string;
-  lastDate: string; // от сесия или savedAt
+  lastDate: string;
 }
+
+const SUBJECT_COLORS: Record<string, string> = {
+  math: "#4F8EF7",
+  bio:  "#22C55E",
+  chem: "#F59E0B",
+  phys: "#EF4444",
+  hist: "#A78BFA",
+  lit:  "#EC4899",
+  gen:  "#94A3B8",
+};
+
+function getGroup(dateStr: string): "week" | "lastweek" | "older" {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+  if (diffDays < 7) return "week";
+  if (diffDays < 14) return "lastweek";
+  return "older";
+}
+
+const GROUP_LABELS: Record<string, string> = {
+  week:     "Тази седмица",
+  lastweek: "Миналата седмица",
+  older:    "По-рано",
+};
 
 export default function UserHome() {
   const { user } = useParams<{ user: string }>();
@@ -32,7 +57,6 @@ export default function UserHome() {
       .then(([adaptData, sessData]: [{ lessons: IndexEntry[] }, Sessions]) => {
         const lessons = adaptData.lessons ?? [];
 
-        // Последна дата от сесии за всеки урок
         const lastDateMap = new Map<string, string>();
         for (const s of sessData.sessions ?? []) {
           const key = `${s.subject}-${s.lesson}`;
@@ -59,18 +83,23 @@ export default function UserHome() {
     setTimeout(() => startTransition(() => router.push(url)), 150);
   }
 
+  // Групираме по относително време
+  const groups: { key: string; label: string; tiles: LessonTile[] }[] = [];
+  for (const g of ["week", "lastweek", "older"] as const) {
+    const grouped = tiles.filter((t) => getGroup(t.lastDate) === g);
+    if (grouped.length > 0) groups.push({ key: g, label: GROUP_LABELS[g], tiles: grouped });
+  }
+
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: NAV.bg }}>
 
       {/* Хедър */}
       <div className="px-4 pt-6 pb-5" style={{ backgroundColor: NAV.headerBg }}>
-        <div className="text-2xl mb-2">👋</div>
-        <h1 className="text-white font-bold text-xl mb-1">Здравей, {displayName}!</h1>
-        <p className="text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>Какво учим днес?</p>
+        <h1 className="text-white font-bold text-xl">Здравей, {displayName}! 👋</h1>
       </div>
 
       {/* Тяло */}
-      <div className="flex-1 px-4 pt-4">
+      <div className="flex-1 px-4 pt-4 pb-6">
 
         {/* Сканирай бутон */}
         <button
@@ -78,11 +107,11 @@ export default function UserHome() {
           className="btn-press w-full rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-semibold text-sm mb-5"
           style={{ backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
         >
-          <span className="text-base">📷</span>
+          <span className="text-base">📸</span>
           Сканирай нов урок
         </button>
 
-        {/* Последни уроци */}
+        {/* Списък с уроци */}
         {loading ? (
           <p className="text-sm text-center" style={{ color: NAV.textMuted }}>Зарежда...</p>
         ) : tiles.length === 0 ? (
@@ -92,10 +121,18 @@ export default function UserHome() {
             <p className="text-sm">Сканирай първата страница!</p>
           </div>
         ) : (
-          <div className="space-y-3">
-            <h2 className="font-semibold text-xs" style={{ color: NAV.textMuted }}>Последни уроци</h2>
-            {tiles.map((tile) => (
-              <LessonCard key={`${tile.subject}-${tile.lesson}`} tile={tile} user={user} router={router} />
+          <div className="space-y-5">
+            {groups.map((group) => (
+              <div key={group.key}>
+                <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: NAV.textMuted }}>
+                  {group.label}
+                </p>
+                <div className="space-y-2">
+                  {group.tiles.map((tile) => (
+                    <LessonCard key={`${tile.subject}-${tile.lesson}`} tile={tile} user={user} router={router} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         )}
@@ -111,8 +148,7 @@ function LessonCard({
   user: string;
   router: ReturnType<typeof useRouter>;
 }) {
-  const subjects = ["math","bio","chem","phys","hist","lit","gen"];
-  const dotColor = MODULE_BTN[(subjects.indexOf(tile.subject) % 4) + 1] ?? MODULE_BTN[1];
+  const dotColor = SUBJECT_COLORS[tile.subject] ?? "#94A3B8";
   const subjectLabel = SUBJECT_LABELS[tile.subject] ?? tile.subject;
   function navigate(url: string) { setTimeout(() => router.push(url), 150); }
 
