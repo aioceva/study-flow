@@ -23,6 +23,10 @@ export default function DonePage() {
   const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
   const accentColor = MODULE_BTN[3]; // топло злато за subject label
 
+  function navigate(url: string) {
+    setTimeout(() => router.push(url), 150);
+  }
+
   useEffect(() => {
     if (saved.current || isReview) return;
     saved.current = true;
@@ -66,7 +70,7 @@ export default function DonePage() {
         </div>
         <div className="px-4 pb-6">
           <button
-            onClick={() => router.push(`/${user}`)}
+            onClick={() => navigate(`/${user}`)}
             className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
             style={{ backgroundColor: NAV.btnSolid }}
           >
@@ -109,14 +113,14 @@ export default function DonePage() {
 
       <div className="px-4 pb-6 flex flex-col gap-3">
         <button
-          onClick={() => router.push(`/${user}/reinforcement?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
+          onClick={() => navigate(`/${user}/reinforcement?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
           className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
           style={{ backgroundColor: NAV.btnSolid }}
         >
           Вземи теста за преговор →
         </button>
         <button
-          onClick={() => router.push(`/${user}`)}
+          onClick={() => navigate(`/${user}`)}
           className="btn-press w-full rounded-xl py-3 font-semibold text-sm text-center"
           style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
         >

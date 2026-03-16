@@ -44,6 +44,10 @@ export default function UserHome() {
 
   const displayName = user.charAt(0).toUpperCase() + user.slice(1);
 
+  function navigate(url: string) {
+    setTimeout(() => router.push(url), 150);
+  }
+
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: NAV.bg }}>
 
@@ -59,7 +63,7 @@ export default function UserHome() {
 
         {/* Сканирай бутон */}
         <button
-          onClick={() => router.push(`/${user}/scan`)}
+          onClick={() => navigate(`/${user}/scan`)}
           className="btn-press w-full rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-semibold text-sm mb-5"
           style={{ backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
         >
@@ -100,6 +104,7 @@ function LessonCard({
   const subjects = ["math","bio","chem","phys","hist","lit","gen"];
   const dotColor = MODULE_BTN[(subjects.indexOf(tile.subject) % 4) + 1] ?? MODULE_BTN[1];
   const subjectLabel = SUBJECT_LABELS[tile.subject] ?? tile.subject;
+  function navigate(url: string) { setTimeout(() => router.push(url), 150); }
 
   return (
     <div
@@ -114,7 +119,7 @@ function LessonCard({
       </div>
       <p className="font-bold text-sm mb-2" style={{ color: NAV.text }}>Урок {tile.lesson}</p>
       <button
-        onClick={() => router.push(`/${user}/lesson/intro?subject=${tile.subject}&lesson=${tile.lesson}&mode=review`)}
+        onClick={() => navigate(`/${user}/lesson/intro?subject=${tile.subject}&lesson=${tile.lesson}&mode=review`)}
         className="btn-press w-full rounded-lg py-2 text-xs font-semibold text-center"
         style={{ backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
       >
