@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { Adaptation } from "@/types";
+import { Adaptation, NAV } from "@/types";
 
 export default function LoadingPage() {
   const { user } = useParams<{ user: string }>();
@@ -111,6 +111,10 @@ export default function LoadingPage() {
     }
   }
 
+  function navigate(url: string) {
+    setTimeout(() => startTransition(() => router.push(url)), 150);
+  }
+
   function navigateToConfirm() {
     const params = new URLSearchParams({ subject, subject_bg: subjectBg, lesson, title });
     router.replace(`/${user}/confirm?${params}`);
@@ -126,15 +130,14 @@ export default function LoadingPage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+    <div className="flex flex-col items-center justify-center text-center px-6" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
       {status !== "error" ? (
         <>
           <div className="text-6xl mb-8 animate-bounce">📚</div>
-          <h1 className="text-2xl font-bold mb-4">{messages[status]}</h1>
+          <h1 className="text-2xl font-bold mb-4" style={{ color: NAV.text }}>{messages[status]}</h1>
           {status === "generating" && (
-            <p className="text-gray-500">Изчакай около 30 секунди.</p>
+            <p className="text-sm" style={{ color: NAV.textMuted }}>Изчакай около 30 секунди.</p>
           )}
-          {/* Прогрес индикатор */}
           <div className="mt-8 flex gap-2">
             {(["checking", "generating", "quiz", "done"] as const).map((s, i) => {
               const steps = ["checking", "generating", "quiz", "done", "cached"];
@@ -146,7 +149,7 @@ export default function LoadingPage() {
                   className="w-3 h-3 rounded-full transition-colors duration-300"
                   style={{
                     backgroundColor:
-                      status === "cached" || stepIdx <= currentIdx ? "#4F8EF7" : "#E5E7EB",
+                      status === "cached" || stepIdx <= currentIdx ? NAV.btnSolid : NAV.border,
                   }}
                 />
               );
@@ -156,17 +159,17 @@ export default function LoadingPage() {
       ) : (
         <>
           <div className="text-6xl mb-8">😔</div>
-          <h1 className="text-2xl font-bold mb-4">Нещо се обърка</h1>
-          <p className="text-gray-500 mb-8">{error}</p>
+          <h1 className="text-2xl font-bold mb-4" style={{ color: NAV.text }}>Нещо се обърка</h1>
+          <p className="text-sm mb-8" style={{ color: NAV.textMuted }}>{error}</p>
           <button
-            onClick={() => router.back()}
-            className="py-3 px-8 rounded-2xl text-white font-bold"
-            style={{ backgroundColor: "#4F8EF7" }}
+            onClick={() => navigate(`/${user}/scan`)}
+            className="btn-press py-3 px-8 rounded-2xl text-white font-bold"
+            style={{ backgroundColor: NAV.btnSolid }}
           >
             Опитай отново
           </button>
         </>
       )}
-    </main>
+    </div>
   );
 }

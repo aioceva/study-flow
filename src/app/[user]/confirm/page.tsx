@@ -1,62 +1,118 @@
 "use client";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { startTransition } from "react";
+import { startTransition, useEffect, useState } from "react";
+import { NAV, SUBJECT_LABELS, Subject, Sessions } from "@/types";
+
+interface LastResult {
+  score: number;
+  total: number;
+  date: string;
+}
+
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return "днес";
+  if (diffDays === 1) return "вчера";
+  if (diffDays < 7) return `преди ${diffDays} дни`;
+  return dateStr;
+}
 
 export default function ConfirmPage() {
   const { user } = useParams<{ user: string }>();
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const subjectBg = searchParams.get("subject_bg") ?? "";
   const subject = searchParams.get("subject") ?? "";
+  const subjectBg = searchParams.get("subject_bg") ?? "";
   const lesson = searchParams.get("lesson") ?? "";
   const title = searchParams.get("title") ?? "";
+  const params = searchParams.toString();
+
+  const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subjectBg ?? subject;
+
+  const [lastResult, setLastResult] = useState<LastResult | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/session?user=${user}`)
+      .then((r) => r.json())
+      .then((data: Sessions) => {
+        const relevant = (data.sessions ?? [])
+          .filter((s) => s.subject === subject && String(s.lesson) === lesson && s.type === "reinforcement")
+          .sort((a, b) => b.date.localeCompare(a.date));
+        if (relevant.length > 0) {
+          const last = relevant[0] as { score: number; total: number; date: string };
+          setLastResult({ score: last.score, total: last.total, date: last.date });
+        }
+      })
+      .catch(() => {});
+  }, [user, subject, lesson]);
 
   function navigate(url: string) {
     setTimeout(() => startTransition(() => router.push(url)), 150);
   }
 
-  function startLesson() {
-    const params = new URLSearchParams({ subject, lesson, title, subject_bg: subjectBg });
-    navigate(`/${user}/lesson/intro?${params}`);
-  }
+  const percent = lastResult ? Math.round((lastResult.score / lastResult.total) * 100) : null;
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-6 text-center max-w-lg mx-auto">
-      <div className="text-6xl mb-6">✅</div>
+    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
 
-      <p className="text-gray-500 text-base mb-2 uppercase tracking-wide font-bold">
-        {subjectBg}
-      </p>
-      <h1 className="text-3xl font-bold mb-2">Урок {lesson}</h1>
-      <p className="text-xl text-gray-600 mb-10">{title}</p>
+      {/* Spacer */}
+      <div className="flex-none h-10" />
 
-      <div className="w-full rounded-2xl p-5 mb-8 text-left space-y-2" style={{ backgroundColor: "#F8F9FA" }}>
-        <p className="font-bold text-gray-600 mb-3">Структура на урока:</p>
-        {[
-          { color: "#E8F4FD", label: "Модул 1" },
-          { color: "#E8F8E8", label: "Модул 2" },
-          { color: "#FDFBE8", label: "Модул 3" },
-          { color: "#F3E8FD", label: "Модул 4" },
-        ].map((m) => (
-          <div key={m.label} className="flex items-center gap-3">
-            <div className="w-4 h-4 rounded-full border border-gray-200" style={{ backgroundColor: m.color }} />
-            <span className="text-base">{m.label} — 5 карти</span>
+      {/* Съдържание */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-3">
+        <p className="text-xs font-bold uppercase tracking-wider" style={{ color: NAV.textMuted }}>
+          {subjectLabel}
+        </p>
+        <h1 className="text-2xl font-bold leading-snug" style={{ color: NAV.text }}>
+          Урок {lesson}{title ? ` · ${title}` : ""}
+        </h1>
+
+        {/* Резултат от последен преговор */}
+        {lastResult && percent !== null && (
+          <div
+            className="w-full rounded-2xl px-5 py-4 mt-2 text-left"
+            style={{ backgroundColor: percent >= 80 ? "#DCFCE7" : NAV.surface }}
+          >
+            <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: NAV.textMuted }}>
+              Последен преговор · {formatDate(lastResult.date)}
+            </p>
+            <div className="h-2 rounded-full mb-2" style={{ backgroundColor: NAV.border }}>
+              <div
+                className="h-2 rounded-full"
+                style={{
+                  width: `${percent}%`,
+                  backgroundColor: percent >= 80 ? "#22C55E" : NAV.btnSolid,
+                }}
+              />
+            </div>
+            <p className="text-2xl font-bold mt-2" style={{ color: percent >= 80 ? "#15803D" : NAV.text }}>
+              {percent}%
+            </p>
           </div>
-        ))}
-        <div className="pt-2 border-t border-gray-200 mt-2">
-          <p className="text-sm text-gray-500">2 mini quiz-а + reinforcement режим</p>
-        </div>
+        )}
       </div>
 
-      <button
-        onClick={startLesson}
-        className="btn-press w-full py-5 rounded-2xl text-white text-xl font-bold flex items-center justify-center gap-3"
-        style={{ backgroundColor: "#4F8EF7" }}
-      >
-        Започни →
-      </button>
-    </main>
+      {/* Бутони */}
+      <div className="flex-none px-4 pb-6 pt-3 space-y-2">
+        <button
+          onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
+          className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
+          style={{ backgroundColor: NAV.btnSolid }}
+        >
+          Провери знанията си →
+        </button>
+        <button
+          onClick={() => navigate(`/${user}/lesson/intro?${params}`)}
+          className="btn-press w-full rounded-xl py-3 font-semibold text-sm text-center"
+          style={{ backgroundColor: NAV.surface, color: NAV.text }}
+        >
+          Прегледай урока
+        </button>
+      </div>
+    </div>
   );
 }

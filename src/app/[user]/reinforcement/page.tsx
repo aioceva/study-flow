@@ -32,12 +32,12 @@ export default function ReinforcementPage() {
       .then((r) => r.json())
       .then((data: Sessions) => {
         const relevant = (data.sessions ?? []).filter(
-          (s) => s.subject === subject && String(s.lesson) === lesson
+          (s) => s.subject === subject && String(s.lesson) === lesson && s.type === "reinforcement"
         );
         const mapped: QuizResult[] = relevant.map((s) => ({
           date: s.date,
-          score: s.type === "learn" ? s.quiz_1.score + s.quiz_2.score : s.score,
-          total: s.type === "learn" ? 10 : s.total,
+          score: (s as { score: number }).score,
+          total: (s as { total: number }).total,
           type: s.type,
         }));
         setResults(mapped.reverse());

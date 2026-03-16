@@ -119,7 +119,7 @@ function LessonCard({
       </div>
       <p className="font-bold text-sm mb-2" style={{ color: NAV.text }}>Урок {tile.lesson}</p>
       <button
-        onClick={() => navigate(`/${user}/lesson/intro?subject=${tile.subject}&lesson=${tile.lesson}&mode=review`)}
+        onClick={() => navigate(`/${user}/confirm?subject=${tile.subject}&lesson=${tile.lesson}`)}
         className="btn-press w-full rounded-lg py-2 text-xs font-semibold text-center"
         style={{ backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
       >

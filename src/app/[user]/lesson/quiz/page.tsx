@@ -2,7 +2,7 @@
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, startTransition } from "react";
-import { Quiz, QuizQuestion } from "@/types";
+import { Quiz, QuizQuestion, NAV } from "@/types";
 
 export default function QuizPage() {
   const { user } = useParams<{ user: string }>();
@@ -86,8 +86,8 @@ export default function QuizPage() {
 
   if (questions.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-400">Зарежда quiz...</p>
+      <div className="flex items-center justify-center" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
+        <p style={{ color: NAV.textMuted }}>Зарежда...</p>
       </div>
     );
   }
@@ -96,38 +96,36 @@ export default function QuizPage() {
   const correctId = q.options.find((o) => o.correct)?.id;
 
   return (
-    <div className="min-h-screen flex flex-col p-5 max-w-lg mx-auto">
+    <div className="flex flex-col px-5 max-w-lg mx-auto" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
       {/* Header */}
-      <div className="mb-6 mt-4">
+      <div className="flex-none mb-4 mt-4">
         <div className="flex justify-between items-center mb-2">
-          <p className="text-sm font-bold text-gray-500 uppercase tracking-wide">
+          <p className="text-sm font-bold uppercase tracking-wide" style={{ color: NAV.textMuted }}>
             Quiz {quizNumber}
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm" style={{ color: NAV.textMuted }}>
             {current + 1} / {questions.length}
           </p>
         </div>
-        {/* Прогрес лента */}
-        <div className="h-2 bg-gray-200 rounded-full">
+        <div className="h-2 rounded-full" style={{ backgroundColor: NAV.border }}>
           <div
             className="h-2 rounded-full transition-all duration-300"
             style={{
               width: `${((current) / questions.length) * 100}%`,
-              backgroundColor: "#4F8EF7",
+              backgroundColor: NAV.btnSolid,
             }}
           />
         </div>
       </div>
 
       {/* Въпрос */}
-      <h2 className="text-xl font-bold mb-8 leading-relaxed">{q.question}</h2>
+      <h2 className="flex-none text-xl font-bold mb-6 leading-relaxed" style={{ color: NAV.text }}>{q.question}</h2>
 
       {/* Отговори */}
-      <div className="space-y-3 flex-1">
+      <div className="space-y-3 flex-1 overflow-y-auto">
         {q.options.map((option) => {
-          let bg = "white";
-          let border = "#E5E7EB";
-          let textColor = "#1a1a2e";
+          let bg = NAV.bg;
+          let border = NAV.border;
 
           if (answered) {
             if (option.id === correctId) {
@@ -138,7 +136,7 @@ export default function QuizPage() {
               border = "#EF4444";
             }
           } else if (option.id === selected) {
-            border = "#4F8EF7";
+            border = NAV.btnSolid;
           }
 
           return (
@@ -146,10 +144,10 @@ export default function QuizPage() {
               key={option.id}
               onClick={() => handleAnswer(option.id)}
               disabled={answered}
-              className="w-full p-4 rounded-2xl text-left font-bold text-base transition-all border-2"
-              style={{ backgroundColor: bg, borderColor: border, color: textColor }}
+              className="btn-press w-full p-4 rounded-2xl text-left font-bold text-base border-2"
+              style={{ backgroundColor: bg, borderColor: border, color: NAV.text }}
             >
-              <span className="text-gray-400 mr-3 uppercase">{option.id}.</span>
+              <span className="mr-3 uppercase" style={{ color: NAV.textMuted }}>{option.id}.</span>
               {option.text}
             </button>
           );
@@ -158,9 +156,9 @@ export default function QuizPage() {
 
       {/* Обратна връзка + следващ */}
       {answered && (
-        <div className="mt-6">
+        <div className="flex-none mt-4 pb-6">
           <div
-            className="rounded-2xl p-4 mb-4 font-bold text-center"
+            className="rounded-2xl p-4 mb-3 font-bold text-center"
             style={{
               backgroundColor: selected === correctId ? "#DCFCE7" : "#FEE2E2",
               color: selected === correctId ? "#15803D" : "#B91C1C",
@@ -171,7 +169,7 @@ export default function QuizPage() {
           <button
             onClick={handleNext}
             className="btn-press w-full py-4 rounded-2xl text-white font-bold text-base"
-            style={{ backgroundColor: "#4F8EF7" }}
+            style={{ backgroundColor: NAV.btnSolid }}
           >
             {current < questions.length - 1 ? "Следващ въпрос →" : "Готово →"}
           </button>

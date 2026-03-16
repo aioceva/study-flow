@@ -82,42 +82,25 @@ export default function DonePage() {
   }
 
   // ── Learn mode ─────────────────────────────────────────────────────────────
-  const percent = Math.round((score / total) * 100);
-
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
       <div className="h-[38px]" />
-      <div className="flex-1 flex flex-col items-center justify-center px-4 gap-2.5 text-center overflow-y-auto">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 gap-2.5 text-center">
         <Image src="/icons/icon-trophy-glow.svg" width={96} height={96} alt="trophy" />
-        <h1 className="font-bold text-xl" style={{ color: NAV.text }}>Готово!</h1>
-        <p className="text-sm" style={{ color: NAV.textMuted }}>
-          {percent >= 80 ? "Завърши целия урок отлично!" : "Завърши целия урок!"}
-        </p>
+        <h1 className="font-bold text-xl" style={{ color: NAV.text }}>Браво!</h1>
+        <p className="text-sm" style={{ color: NAV.textMuted }}>Завърши целия урок!</p>
         <p className="text-xs font-semibold" style={{ color: accentColor }}>
           {subjectLabel} · Урок {lesson}
         </p>
-
-        {/* Резултат */}
-        <div
-          className="w-full rounded-2xl px-6 py-4 mt-2"
-          style={{ backgroundColor: percent >= 80 ? "#D1FAE5" : "#FEF3C7" }}
-        >
-          <p className="text-4xl font-bold mb-0.5" style={{ color: percent >= 80 ? "#065F46" : "#78350F" }}>
-            {score}/{total}
-          </p>
-          <p className="text-sm font-bold" style={{ color: percent >= 80 ? "#065F46" : "#78350F" }}>
-            {percent}% верни отговора
-          </p>
-        </div>
       </div>
 
       <div className="px-4 pb-6 flex flex-col gap-3">
         <button
-          onClick={() => navigate(`/${user}/reinforcement?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
+          onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
           className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
           style={{ backgroundColor: NAV.btnSolid }}
         >
-          Вземи теста за преговор →
+          Провери знанията си →
         </button>
         <button
           onClick={() => navigate(`/${user}`)}

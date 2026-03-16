@@ -1,9 +1,9 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useRef, useState, startTransition } from "react";
+import { NAV } from "@/types";
 
-// Преоразмерява и компресира снимката до макс 1600px
 async function compressImage(file: File): Promise<{ blob: Blob; base64: string; type: string }> {
   const MAX_SIZE = 1600;
   const QUALITY = 0.85;
@@ -60,13 +60,16 @@ export default function ScanPage() {
   const [recognizing, setRecognizing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  function navigate(url: string) {
+    setTimeout(() => startTransition(() => router.push(url)), 150);
+  }
+
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
     if (!f) return;
     setFile(f);
     setError(null);
-    const url = URL.createObjectURL(f);
-    setPreview(url);
+    setPreview(URL.createObjectURL(f));
   }
 
   async function handleRecognize() {
@@ -75,23 +78,17 @@ export default function ScanPage() {
     setError(null);
 
     try {
-      // Компресираме снимката преди изпращане
       const { blob, base64, type } = await compressImage(file);
-
-      // Запазваме компресираната снимка в sessionStorage за loading страницата
       sessionStorage.setItem("scan_image_base64", base64);
       sessionStorage.setItem("scan_image_type", type);
 
-      // Изпращаме за разпознаване
       const formData = new FormData();
       formData.append("image", new File([blob], "lesson.jpg", { type }));
 
       const res = await fetch("/api/recognize", { method: "POST", body: formData });
       const result = await res.json();
 
-      if (!res.ok || result.error) {
-        throw new Error(result.error ?? "Грешка при разпознаване");
-      }
+      if (!res.ok || result.error) throw new Error(result.error ?? "Грешка при разпознаване");
 
       const params = new URLSearchParams({
         subject: result.subject,
@@ -100,7 +97,7 @@ export default function ScanPage() {
         title: result.title,
         confidence: result.confidence,
       });
-      router.push(`/${user}/loading?${params}`);
+      navigate(`/${user}/loading?${params}`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Неуспешно разпознаване";
       setError(`${msg}. Опитай отново с по-ясна снимка.`);
@@ -109,44 +106,57 @@ export default function ScanPage() {
   }
 
   return (
-    <main className="min-h-screen p-6 max-w-lg mx-auto">
-      <div className="flex items-center gap-3 mb-8 mt-4">
-        <button onClick={() => router.back()} className="text-2xl text-gray-400">←</button>
-        <h1 className="text-xl font-bold">Сканирай урок</h1>
+    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
+
+      {/* Хедър */}
+      <div className="flex-none flex items-center gap-3 px-4 py-3">
+        <button
+          onClick={() => navigate(`/${user}`)}
+          className="btn-press w-8 h-8 flex items-center justify-center"
+          style={{ opacity: 0.5 }}
+          aria-label="Назад"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M12 5l-7 7 7 7" />
+          </svg>
+        </button>
+        <h1 className="text-lg font-bold" style={{ color: NAV.text }}>Сканирай урок</h1>
       </div>
 
-      {!preview && (
-        <div className="rounded-2xl p-5 mb-6 text-base space-y-2" style={{ backgroundColor: "#E8F4FD" }}>
-          <p className="font-bold">Как да снимаш:</p>
-          <p>📄 Сложи учебника на равна, светла повърхност</p>
-          <p>💡 Уверете се, че има достатъчно светлина</p>
-          <p>📐 Снимай право отгоре, без наклон</p>
-          <p>🔍 Цялата страница трябва да се вижда</p>
-        </div>
-      )}
+      {/* Съдържание */}
+      <div className="flex-1 overflow-y-auto px-4 pt-2 pb-2">
+        {!preview ? (
+          <div className="rounded-xl p-4 space-y-2 text-sm" style={{ backgroundColor: NAV.surface }}>
+            <p className="font-bold text-sm" style={{ color: NAV.text }}>Как да снимаш:</p>
+            <p style={{ color: NAV.textMuted }}>📄 Сложи учебника на равна, светла повърхност</p>
+            <p style={{ color: NAV.textMuted }}>💡 Увери се, че има достатъчно светлина</p>
+            <p style={{ color: NAV.textMuted }}>📐 Снимай право отгоре, без наклон</p>
+            <p style={{ color: NAV.textMuted }}>🔍 Цялата страница трябва да се вижда</p>
+          </div>
+        ) : (
+          <div className="rounded-xl overflow-hidden" style={{ border: `2px solid ${NAV.border}` }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={preview} alt="Снимка на урок" className="w-full object-contain max-h-72" />
+          </div>
+        )}
 
-      {preview && (
-        <div className="mb-6 rounded-2xl overflow-hidden border-2 border-blue-200">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={preview} alt="Снимка на урок" className="w-full object-contain max-h-80" />
-        </div>
-      )}
+        {error && (
+          <div className="rounded-xl p-4 mt-3 text-sm font-semibold" style={{ backgroundColor: "#FEE2E2", color: "#B91C1C" }}>
+            {error}
+          </div>
+        )}
+      </div>
 
-      {error && (
-        <div className="rounded-2xl p-4 mb-4 text-red-700 font-bold" style={{ backgroundColor: "#FEE2E2" }}>
-          {error}
-        </div>
-      )}
-
-      <div className="space-y-3">
+      {/* Footer с бутони */}
+      <div className="flex-none px-4 pb-6 pt-3 space-y-2">
         {!preview ? (
           <>
             <button
               onClick={() => inputRef.current?.click()}
-              className="w-full py-5 rounded-2xl text-white text-xl font-bold flex items-center justify-center gap-3"
-              style={{ backgroundColor: "#4F8EF7" }}
+              className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2"
+              style={{ backgroundColor: NAV.btnSolid }}
             >
-              <span className="text-2xl">📷</span>
+              <span>📷</span>
               Снимай
             </button>
             <input ref={inputRef} type="file" accept="image/*" capture="environment" onChange={handleFileChange} className="hidden" />
@@ -156,19 +166,16 @@ export default function ScanPage() {
             <button
               onClick={handleRecognize}
               disabled={recognizing}
-              className="w-full py-5 rounded-2xl text-white text-xl font-bold flex items-center justify-center gap-3 disabled:opacity-60"
-              style={{ backgroundColor: "#22C55E" }}
+              className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+              style={{ backgroundColor: NAV.btnSolid }}
             >
-              {recognizing ? (
-                <><span className="animate-spin">⏳</span> Разпознавам...</>
-              ) : (
-                <><span>✓</span> Използвай тази снимка</>
-              )}
+              {recognizing ? "Разпознавам..." : "Използвай тази снимка →"}
             </button>
             <button
               onClick={() => { setPreview(null); setFile(null); inputRef.current?.click(); }}
               disabled={recognizing}
-              className="w-full py-3 rounded-2xl text-gray-600 font-bold border-2 border-gray-200 disabled:opacity-60"
+              className="btn-press w-full rounded-xl py-3 font-semibold text-sm disabled:opacity-60"
+              style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
             >
               Снимай отново
             </button>
@@ -176,6 +183,6 @@ export default function ScanPage() {
           </>
         )}
       </div>
-    </main>
+    </div>
   );
 }
