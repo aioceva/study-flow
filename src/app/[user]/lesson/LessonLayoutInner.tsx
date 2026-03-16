@@ -117,17 +117,20 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     </div>
   );
 
-  const homeBtn = (
-    <nav className="flex-none flex items-center px-4 py-3 bg-white">
+  const navBar = (moduleTitle?: string) => (
+    <nav className="flex-none flex items-center gap-3 px-4 py-3 bg-white">
       <button
         onClick={() => router.push(`/${user}`)}
-        className="w-8 h-8 flex items-center justify-center text-gray-400"
+        className="w-8 h-8 flex-none flex items-center justify-center text-gray-400"
       >
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
           <path d="M9 21V12h6v9" />
         </svg>
       </button>
+      {moduleTitle && (
+        <span className="text-sm font-semibold text-gray-400 truncate">{moduleTitle}</span>
+      )}
     </nav>
   );
 
@@ -136,7 +139,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     return (
       <div className="flex flex-col" style={{ backgroundColor: BRAVO_BG, height: "100dvh" }}>
         {progressBar(0)}
-        {homeBtn}
+        {navBar()}
         <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
           <div className="text-5xl mb-6">📖</div>
           <p className="text-sm font-bold text-gray-400 uppercase tracking-wide mb-2">
@@ -168,7 +171,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     return (
       <div className="flex flex-col" style={{ backgroundColor: BRAVO_BG, height: "100dvh" }}>
         {progressBar(sepFrom)}
-        {homeBtn}
+        {navBar()}
         <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
           <div className="text-6xl mb-4">🎉</div>
           <h2 className="text-3xl font-bold mb-2">Браво!</h2>
@@ -201,7 +204,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   return (
     <div className="flex flex-col" style={{ backgroundColor: "#ffffff", height: "100dvh" }}>
       {progressBar(moduleId, cardId / 5)}
-      {homeBtn}
+      {navBar(moduleData?.title)}
 
       <div {...swipeHandlers} className="flex-1 overflow-y-auto px-5 pt-4 pb-2" style={{ backgroundColor: bgColor }}>
         {!card ? (
@@ -210,11 +213,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           </div>
         ) : (
           <div>
-            <p className="text-lg font-semibold mb-4">
-              <span className="text-gray-400">{moduleData?.title}</span>
-              <span className="text-gray-300 mx-2">/</span>
-              <span className="text-gray-800">{card.title}</span>
-            </p>
+            <p className="text-lg font-bold text-gray-800 mb-4">{card.title}</p>
             <div className="space-y-2">
               <Section icon="📌" label="Какво е"       text={card.what}    />
               <Section icon="💡" label="Защо е важно"  text={card.why}     />
