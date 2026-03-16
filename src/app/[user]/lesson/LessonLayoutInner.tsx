@@ -16,7 +16,13 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const [adaptation, setAdaptation] = useState<Adaptation | null>(() => {
     if (typeof window === "undefined") return null;
     const raw = sessionStorage.getItem("adaptation");
-    return raw ? (JSON.parse(raw) as Adaptation) : null;
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Adaptation;
+    const sp = new URLSearchParams(window.location.search);
+    const subj = sp.get("subject");
+    const les = sp.get("lesson");
+    if (parsed.meta?.subject !== subj || String(parsed.meta?.lesson) !== les) return null;
+    return parsed;
   });
   const loadedRef = useRef(false);
 
@@ -48,11 +54,20 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     if (loadedRef.current || !isCardPage) return;
     loadedRef.current = true;
 
-    const raw = sessionStorage.getItem("adaptation");
-    if (raw) { setAdaptation(JSON.parse(raw)); return; }
-
     const subj = searchParams.get("subject");
     const les  = searchParams.get("lesson");
+
+    const raw = sessionStorage.getItem("adaptation");
+    if (raw) {
+      const cached = JSON.parse(raw) as Adaptation;
+      if (cached.meta?.subject === subj && String(cached.meta?.lesson) === les) {
+        setAdaptation(cached);
+        return;
+      }
+      sessionStorage.removeItem("adaptation");
+      sessionStorage.removeItem("quiz");
+    }
+
     if (!subj || !les) return;
 
     fetch(`/api/adaptation?user=${user}&subject=${subj}&lesson=${les}`)
