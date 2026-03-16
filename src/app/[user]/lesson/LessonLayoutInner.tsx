@@ -5,7 +5,6 @@ import { useEffect, useRef, useState, startTransition } from "react";
 import { useSwipeable } from "react-swipeable";
 import { Adaptation, MODULE_COLORS, MODULE_SURFACE, MODULE_PROGRESS, MODULE_BTN, NAV, SUBJECT_LABELS, Subject } from "@/types";
 import { nextStep, prevStep, nextButtonLabel } from "@/lib/navigation";
-import Image from "next/image";
 
 export default function LessonLayoutInner({ children }: { children: React.ReactNode }) {
   const { user } = useParams<{ user: string }>();
@@ -32,7 +31,6 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     !isNaN(parseInt(segments[2])) &&
     !isNaN(parseInt(segments[3]));
   const isSeparator = segments.length === 3 && segments[2] === "separator";
-  const isIntro     = segments.length === 3 && segments[2] === "intro";
 
   const moduleId = isCardPage ? parseInt(segments[2]) : 1;
   const cardId   = isCardPage ? parseInt(segments[3]) : 1;
@@ -92,7 +90,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     trackMouse: false,
   });
 
-  if (!isCardPage && !isSeparator && !isIntro) return <>{children}</>;
+  if (!isCardPage && !isSeparator) return <>{children}</>;
 
   // ── Home icon (shared) ─────────────────────────────────────────────────────
   const homeIcon = (
@@ -127,31 +125,6 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       ))}
     </div>
   );
-
-  // ── Intro screen ───────────────────────────────────────────────────────────
-  if (isIntro) {
-    return (
-      <div className="flex flex-col" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
-        {homeIcon}
-        <div className="flex-1 flex flex-col items-center justify-center px-4 gap-3 text-center">
-          <Image src="/icons/icon-lesson.svg" width={96} height={96} alt="урок" />
-          <h1 className="font-bold text-xl" style={{ color: NAV.text }}>
-            {lessonTitle || `Урок ${lesson}`}
-          </h1>
-          <p className="text-sm" style={{ color: NAV.textMuted }}>{subjectLabel}</p>
-        </div>
-        <div className="px-4 pb-6">
-          <button
-            onClick={() => navigate(`/${user}/lesson/1/1?${params}`)}
-            className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
-            style={{ backgroundColor: NAV.btnSolid }}
-          >
-            Започни →
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   // ── Separator / Браво screen ───────────────────────────────────────────────
   if (isSeparator) {

@@ -3,6 +3,7 @@
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { startTransition, useEffect, useState } from "react";
 import { NAV, SUBJECT_LABELS, Subject, Sessions } from "@/types";
+import Image from "next/image";
 
 interface LastResult {
   score: number;
@@ -64,6 +65,7 @@ export default function ConfirmPage() {
 
       {/* Съдържание */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-3">
+        <Image src="/icons/icon-lesson.svg" width={72} height={72} alt="урок" />
         <p className="text-xs font-bold uppercase tracking-wider" style={{ color: NAV.textMuted }}>
           {subjectLabel}
         </p>
@@ -106,7 +108,7 @@ export default function ConfirmPage() {
           Провери знанията си →
         </button>
         <button
-          onClick={() => navigate(`/${user}/lesson/intro?${params}`)}
+          onClick={() => navigate(`/${user}/lesson/1/1?${params}`)}
           className="btn-press w-full rounded-xl py-3 font-semibold text-sm text-center"
           style={{ backgroundColor: NAV.surface, color: NAV.text }}
         >
