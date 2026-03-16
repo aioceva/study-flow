@@ -60,8 +60,20 @@ export default function ConfirmPage() {
   return (
     <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
 
-      {/* Spacer */}
-      <div className="flex-none h-10" />
+      {/* Home icon */}
+      <div className="flex-none px-4 py-2">
+        <button
+          onClick={() => navigate(`/${user}`)}
+          className="btn-press w-8 h-8 flex items-center justify-center"
+          style={{ opacity: 0.5 }}
+          aria-label="Начало"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+            <path d="M9 21V12h6v9" />
+          </svg>
+        </button>
+      </div>
 
       {/* Съдържание */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-3">

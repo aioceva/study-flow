@@ -100,8 +100,19 @@ export default function ReinforcementQuizPage() {
 
   return (
     <div className="flex flex-col px-5 max-w-lg mx-auto" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
-      <div className="flex-none mb-4 mt-4">
-        <div className="flex justify-between items-center mb-2">
+      <div className="flex-none mb-4 mt-2">
+        <div className="flex justify-between items-center mb-3">
+          <button
+            onClick={() => navigate(`/${user}`)}
+            className="btn-press w-8 h-8 flex items-center justify-center"
+            style={{ opacity: 0.5 }}
+            aria-label="Начало"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+              <path d="M9 21V12h6v9" />
+            </svg>
+          </button>
           <p className="text-sm font-bold uppercase tracking-wide" style={{ color: NAV.textMuted }}>Преговор</p>
           <p className="text-sm" style={{ color: NAV.textMuted }}>{current + 1} / {questions.length}</p>
         </div>
