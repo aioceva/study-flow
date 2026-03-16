@@ -2,7 +2,7 @@
 
 import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { Sessions, SUBJECT_LABELS, Subject } from "@/types";
+import { Sessions, SUBJECT_LABELS, Subject, NAV } from "@/types";
 
 interface QuizResult {
   date: string;
