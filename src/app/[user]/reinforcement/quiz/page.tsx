@@ -63,7 +63,7 @@ export default function ReinforcementQuizPage() {
       setSelected(null);
       setAnswered(false);
     } else {
-      const finalScore = score + (answered && questions[current].options.find(o => o.correct)?.id === selected ? 0 : 0);
+      const finalScore = score;
       // Записваме сесия
       const now = new Date();
       const session = {
@@ -74,7 +74,7 @@ export default function ReinforcementQuizPage() {
         duration_min: 1,
         type: "reinforcement",
         score: finalScore,
-        total: 10,
+        total: questions.length,
         errors,
       };
       fetch("/api/session", {
@@ -83,7 +83,7 @@ export default function ReinforcementQuizPage() {
         body: JSON.stringify({ user, session }),
       }).catch(console.error);
 
-      navigate(`/${user}/reinforcement/result?score=${finalScore}&total=10&subject=${subject}&lesson=${lesson}`);
+      navigate(`/${user}/reinforcement/result?score=${finalScore}&total=${questions.length}&subject=${subject}&lesson=${lesson}`);
     }
   }
 
