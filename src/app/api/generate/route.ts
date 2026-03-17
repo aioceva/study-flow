@@ -5,21 +5,19 @@ import { readJSON, writeJSON } from "@/lib/github";
 
 const client = new Anthropic();
 const RATE_LIMIT_PATH = "rate-limit.json";
-const HOURS_24 = 24 * 60 * 60 * 1000;
+const MAX_PER_DAY = 5;
 
 export async function POST(req: NextRequest) {
   try {
-    // Проверка: max 1 генерация на 24 часа
-    const rateFile = await readJSON<{ last_generated: string }>(RATE_LIMIT_PATH);
-    if (rateFile) {
-      const elapsed = Date.now() - new Date(rateFile.data.last_generated).getTime();
-      if (elapsed < HOURS_24) {
-        const hoursLeft = Math.ceil((HOURS_24 - elapsed) / 3600000);
-        return NextResponse.json(
-          { error: `Можеш да сканираш 1 урок на 24 часа. Опитай след ${hoursLeft}ч.` },
-          { status: 429 }
-        );
-      }
+    // Проверка: max 5 генерации на ден
+    const today = new Date().toISOString().split("T")[0];
+    const rateFile = await readJSON<{ date: string; count: number }>(RATE_LIMIT_PATH);
+    const todayCount = rateFile?.data.date === today ? rateFile.data.count : 0;
+    if (todayCount >= MAX_PER_DAY) {
+      return NextResponse.json(
+        { error: `Достигна лимита от ${MAX_PER_DAY} урока за днес. Опитай утре.` },
+        { status: 429 }
+      );
     }
 
     const formData = await req.formData();
@@ -37,8 +35,6 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const base64 = Buffer.from(bytes).toString("base64");
     const mediaType = (file.type || "image/jpeg") as "image/jpeg" | "image/png" | "image/webp";
-
-    const today = new Date().toISOString().split("T")[0];
 
     const response = await client.messages.create({
       model: "claude-sonnet-4-6",
@@ -68,8 +64,8 @@ export async function POST(req: NextRequest) {
 
     const adaptation = JSON.parse(jsonMatch[0]);
 
-    // Записваме timestamp на генерацията
-    await writeJSON(RATE_LIMIT_PATH, { last_generated: new Date().toISOString() }, rateFile?.sha);
+    // Записваме брояча за деня
+    await writeJSON(RATE_LIMIT_PATH, { date: today, count: todayCount + 1 }, rateFile?.sha);
 
     return NextResponse.json(adaptation);
   } catch (err) {
