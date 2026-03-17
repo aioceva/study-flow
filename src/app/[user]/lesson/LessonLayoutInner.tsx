@@ -135,11 +135,6 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           <span className="text-7xl leading-none">🎉</span>
           <h1 className="font-bold text-xl" style={{ color: NAV.text }}>Браво!</h1>
           <p className="text-sm" style={{ color: NAV.textMuted }}>Завърши секция {sepFrom} от 4!</p>
-          {subjectLabel && lesson && (
-            <p className="text-xs font-semibold" style={{ color: accentColor }}>
-              {subjectLabel} · Урок {lesson}
-            </p>
-          )}
         </div>
         <div className="px-4 pb-6 flex gap-2">
           <button
