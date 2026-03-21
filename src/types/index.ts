@@ -102,12 +102,12 @@ export const SUBJECT_LABELS: Record<Subject, string> = {
 
 // Навигационна палитра
 export const NAV = {
-  headerBg:  "#2C3E5D",
-  btnSolid:  "#2C3E5D",
-  btnBorder: "#2C3E5D",
+  headerBg:  "#4A6FA5",
+  btnSolid:  "#4A6FA5",
+  btnBorder: "#4A6FA5",
   surface:   "#F0F2F5",
   bg:        "#FFFFFF",
-  text:      "#2C3E5D",
+  text:      "#4A6FA5",
   textMuted: "#5A6A7E",
   border:    "#E2E5EA",
 };
