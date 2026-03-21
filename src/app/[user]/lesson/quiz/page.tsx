@@ -2,7 +2,7 @@
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, startTransition } from "react";
-import { Quiz, QuizQuestion, NAV } from "@/types";
+import { Quiz, QuizQuestion, NAV, MODULE_COLORS, MODULE_SURFACE, MODULE_BTN, MODULE_PROGRESS } from "@/types";
 
 export default function QuizPage() {
   const { user } = useParams<{ user: string }>();
@@ -95,32 +95,36 @@ export default function QuizPage() {
     );
   }
 
+  // Цветова схема: quiz 1 → модул 2, quiz 2 → модул 4
+  const moduleId = quizNumber === 1 ? 2 : 4;
+  const bgColor      = MODULE_COLORS[moduleId];
+  const surfaceColor = MODULE_SURFACE[moduleId];
+  const btnColor     = MODULE_BTN[moduleId];
+  const progressColor = MODULE_PROGRESS[moduleId];
+
   const q = questions[current];
   const correctId = q.options.find((o) => o.correct)?.id;
 
   return (
-    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
+    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: "#ffffff" }}>
 
-      {/* Header: scan-стил — ← + заглавие вляво, 🏠 вдясно */}
-      <div className="flex-none flex items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => router.back()}
-            className="btn-press w-8 h-8 flex items-center justify-center"
-            style={{ opacity: 0.55 }}
-            aria-label="Назад"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 5l-7 7 7 7" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold" style={{ color: NAV.text }}>
-            Проверка {quizNumber}
-          </h1>
+      {/* Прогрес ред: N сегмента + 🏠 — като при урока */}
+      <div className="flex-none bg-white px-4 pt-3 pb-2 flex items-center gap-2">
+        <div className="flex gap-1 flex-1">
+          {questions.map((_, i) => (
+            <div
+              key={i}
+              className="flex-1 rounded-full transition-colors duration-300"
+              style={{
+                height: 5,
+                backgroundColor: i <= current ? progressColor : NAV.border,
+              }}
+            />
+          ))}
         </div>
         <button
           onClick={() => navigate(`/${user}`)}
-          className="btn-press w-8 h-8 flex items-center justify-center"
+          className="btn-press w-10 h-10 flex items-center justify-center"
           style={{ opacity: 0.4 }}
           aria-label="Начало"
         >
@@ -131,69 +135,48 @@ export default function QuizPage() {
         </button>
       </div>
 
-      {/* Прогрес точки — горе */}
-      <div className="flex-none flex justify-center items-center gap-2 pb-3 px-4">
-        {questions.map((_, i) => (
-          <div
-            key={i}
-            className="rounded-full transition-colors duration-200"
-            style={{
-              width: 8,
-              height: 8,
-              backgroundColor: i < current
-                ? NAV.btnSolid
-                : i === current
-                  ? NAV.btnSolid
-                  : NAV.border,
-              opacity: i < current ? 0.4 : 1,
-            }}
-          />
-        ))}
-      </div>
+      {/* Лейбъл — като module title в урока */}
+      <nav className="flex-none px-4 py-2 bg-white">
+        <span className="text-sm font-semibold" style={{ color: NAV.textMuted }}>
+          Проверка {quizNumber}
+        </span>
+      </nav>
 
-      {/* Въпрос */}
-      <h2 className="flex-none px-4 pb-4 text-xl font-bold leading-relaxed" style={{ color: NAV.text }}>
-        {q.question}
-      </h2>
+      {/* Съдържание с цветна подложка — като карта в урока */}
+      <div className="flex-1 overflow-y-auto px-5 pt-4 pb-2" style={{ backgroundColor: bgColor }}>
 
-      {/* Отговори */}
-      <div className="flex-1 overflow-y-auto px-4 space-y-3">
-        {q.options.map((option) => {
-          let bg = NAV.bg;
-          let border = NAV.border;
+        {/* Въпрос — като заглавие на карта */}
+        <p className="text-xl font-bold mb-4 leading-snug" style={{ color: NAV.text }}>
+          {q.question}
+        </p>
 
-          if (answered) {
-            if (option.id === correctId) {
-              bg = "#DCFCE7";
-              border = "#22C55E";
-            } else if (option.id === selected && option.id !== correctId) {
-              bg = "#FEE2E2";
-              border = "#EF4444";
+        {/* Отговори — като секции в карта */}
+        <div className="space-y-2">
+          {q.options.map((option) => {
+            let bg = surfaceColor;
+            if (answered) {
+              if (option.id === correctId) bg = "#DCFCE7";
+              else if (option.id === selected) bg = "#FEE2E2";
             }
-          } else if (option.id === selected) {
-            border = NAV.btnSolid;
-          }
+            return (
+              <button
+                key={option.id}
+                onClick={() => handleAnswer(option.id)}
+                disabled={answered}
+                className="btn-press w-full p-4 rounded-xl text-left text-base font-semibold"
+                style={{ backgroundColor: bg, color: NAV.text }}
+              >
+                <span className="mr-3 uppercase" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>{option.id}.</span>
+                {option.text}
+              </button>
+            );
+          })}
+        </div>
 
-          return (
-            <button
-              key={option.id}
-              onClick={() => handleAnswer(option.id)}
-              disabled={answered}
-              className="btn-press w-full p-4 rounded-2xl text-left font-bold text-base border-2"
-              style={{ backgroundColor: bg, borderColor: border, color: NAV.text }}
-            >
-              <span className="mr-3 uppercase" style={{ color: NAV.textMuted }}>{option.id}.</span>
-              {option.text}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Обратна връзка (показва се след отговор) */}
-      {answered && (
-        <div className="flex-none px-4 pt-3">
+        {/* Обратна връзка */}
+        {answered && (
           <div
-            className="rounded-2xl p-4 font-bold text-center"
+            className="mt-3 rounded-xl p-4 text-base font-bold text-center"
             style={{
               backgroundColor: selected === correctId ? "#DCFCE7" : "#FEE2E2",
               color: selected === correctId ? "#15803D" : "#B91C1C",
@@ -203,11 +186,11 @@ export default function QuizPage() {
               ? "✓ Браво! Правилно!"
               : `✗ Верният отговор е: ${q.options.find((o) => o.correct)?.text}`}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Навигация ← → */}
-      <div className="flex-none flex gap-3 px-4 pb-6 pt-3">
+      <div className="flex-none flex gap-3 px-4 pb-6 pt-3 bg-white">
         {current > 0 ? (
           <button
             onClick={handlePrev}
@@ -223,11 +206,7 @@ export default function QuizPage() {
           onClick={handleNext}
           disabled={!answered}
           className="btn-press flex-1 rounded-xl text-white font-bold text-xl flex items-center justify-center"
-          style={{
-            height: 56,
-            backgroundColor: NAV.btnSolid,
-            opacity: answered ? 1 : 0.3,
-          }}
+          style={{ height: 56, backgroundColor: btnColor, opacity: answered ? 1 : 0.3 }}
         >
           →
         </button>
