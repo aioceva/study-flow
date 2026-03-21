@@ -71,14 +71,14 @@ export default function QuizPage() {
     } else {
       // Запазваме резултата в sessionStorage
       const key = `quiz_${quizNumber}_result`;
-      sessionStorage.setItem(key, JSON.stringify({ score: scores + (selected && questions[current].options.find(o=>o.correct)?.id === selected ? 0 : 0), total: 5, errors }));
+      sessionStorage.setItem(key, JSON.stringify({ score: scores, total: 5, errors }));
 
       if (quizNumber === 1) {
         navigate(`/${user}/lesson/3/1?${params}`);
       } else {
         const q1Raw = sessionStorage.getItem("quiz_1_result");
         const q1 = q1Raw ? JSON.parse(q1Raw) : { score: 0, total: 5 };
-        const finalScore = q1.score + scores + (answered ? 1 : 0);
+        const finalScore = q1.score + scores;
         navigate(`/${user}/done?score=${finalScore}&total=10&${params}`);
       }
     }
