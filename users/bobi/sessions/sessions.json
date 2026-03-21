@@ -151,6 +151,25 @@
         "total": 5,
         "errors": []
       }
+    },
+    {
+      "date": "2026-03-21",
+      "subject": "chem",
+      "lesson": 11,
+      "started_at": "18:32",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "score": 3,
+      "total": 10,
+      "errors": [
+        11,
+        20,
+        6,
+        12,
+        10,
+        14,
+        4
+      ]
     }
   ]
 }
