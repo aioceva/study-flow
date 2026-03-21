@@ -29,7 +29,7 @@ export default function ReinforcementResultPage() {
         <button
           onClick={() => navigate(`/${user}/reinforcement`)}
           className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
-          style={{ backgroundColor: NAV.surface, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
+          style={{ backgroundColor: NAV.surface }}
           aria-label="Назад"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -38,8 +38,8 @@ export default function ReinforcementResultPage() {
         </button>
         <button
           onClick={() => navigate(`/${user}`)}
-          className="btn-press w-10 h-10 flex items-center justify-center"
-          style={{ opacity: 0.5 }}
+          className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
+          style={{ backgroundColor: NAV.surface }}
           aria-label="Начало"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

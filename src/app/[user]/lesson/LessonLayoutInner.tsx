@@ -93,21 +93,22 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const homeIcon = (
     <button
       onClick={() => navigate(`/${user}`)}
-      className="btn-press w-8 h-8 flex items-center justify-center"
-      style={{ opacity: 0.5 }}
+      className="btn-press w-8 h-8 flex items-center justify-center rounded-xl"
+      style={{ backgroundColor: NAV.surface }}
+      aria-label="Начало"
     >
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
         <path d="M9 21V12h6v9" />
       </svg>
     </button>
   );
 
-  // ── Progress bar: 4 module segments + 5 card dots (card pages only) ───────
+  // ── Progress bar: 4 module segments + home icon ────────────────────────────
   const progressDots = (
-    <div className="flex-none bg-white px-4 pt-3 pb-2 space-y-2">
+    <div className="flex-none bg-white px-4 pt-3 pb-2 flex items-center gap-2">
       {/* 4 module segments — показват прогреса на целия урок */}
-      <div className="flex gap-1.5">
+      <div className="flex gap-1.5 flex-1">
         {[1, 2, 3, 4].map((n) => (
           <div
             key={n}
@@ -119,20 +120,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           />
         ))}
       </div>
-      {/* 5 card dots — показват прогреса в текущия модул */}
-      <div className="flex justify-center items-center gap-2">
-        {[1, 2, 3, 4, 5].map((n) => (
-          <div
-            key={n}
-            className="rounded-full transition-colors duration-200"
-            style={{
-              width: 6,
-              height: 6,
-              backgroundColor: n <= cardId ? MODULE_BTN[moduleId] : NAV.border,
-            }}
-          />
-        ))}
-      </div>
+      {homeIcon}
     </div>
   );
 
@@ -152,21 +140,16 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           <button
             onClick={() => navigate(`/${user}/lesson/${sepFrom}/5?${params}`)}
             className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-2xl"
-            style={{
-              height: 56,
-              backgroundColor: NAV.surface,
-              border: `2px solid ${NAV.btnBorder}`,
-              color: NAV.text,
-            }}
+            style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
           >
             ←
           </button>
           <button
             onClick={() => navigate(`/${user}/lesson/${sepTo}/1?${params}`)}
-            className="btn-press flex-1 rounded-xl text-white font-semibold text-base flex items-center justify-center"
+            className="btn-press flex-1 rounded-xl text-white font-bold text-2xl flex items-center justify-center"
             style={{ backgroundColor: NAV.btnSolid, height: 56 }}
           >
-            Напред →
+            →
           </button>
         </div>
       </div>
@@ -181,16 +164,13 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     <div className="flex flex-col" style={{ backgroundColor: "#ffffff", height: "100dvh" }}>
       {progressDots}
 
-      {/* Navbar: module title left, home icon right */}
-      <nav className="flex-none flex items-center justify-between px-4 py-2 bg-white">
-        {moduleData?.title ? (
-          <span className="text-sm font-semibold truncate" style={{ color: NAV.textMuted }}>
+      {/* Navbar: module title only */}
+      <nav className="flex-none px-4 py-2 bg-white">
+        {moduleData?.title && (
+          <span className="text-sm font-semibold" style={{ color: NAV.textMuted }}>
             {moduleData.title}
           </span>
-        ) : (
-          <span />
         )}
-        {homeIcon}
       </nav>
 
       {/* Съдържание */}
@@ -219,12 +199,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
             : navigate(prevStep(user, moduleId, cardId, params))
           }
           className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-2xl"
-          style={{
-            height: 56,
-            backgroundColor: NAV.surface,
-            border: `2px solid ${NAV.btnBorder}`,
-            color: NAV.text,
-          }}
+          style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
         >
           ←
         </button>
