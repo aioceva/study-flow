@@ -24,6 +24,30 @@ export default function ReinforcementResultPage() {
 
   return (
     <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
+      {/* Хедър: ← вляво, 🏠 вдясно */}
+      <div className="flex-none flex items-center justify-between px-4 py-2">
+        <button
+          onClick={() => navigate(`/${user}/reinforcement`)}
+          className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
+          style={{ backgroundColor: NAV.surface, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
+          aria-label="Назад"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M5 12l7-7M5 12l7 7" />
+          </svg>
+        </button>
+        <button
+          onClick={() => navigate(`/${user}`)}
+          className="btn-press w-10 h-10 flex items-center justify-center"
+          style={{ opacity: 0.5 }}
+          aria-label="Начало"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+            <path d="M9 21V12h6v9" />
+          </svg>
+        </button>
+      </div>
       <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-4">
 
         <div className="text-6xl">{perfect ? "🏆" : percent >= 80 ? "🌟" : "💪"}</div>

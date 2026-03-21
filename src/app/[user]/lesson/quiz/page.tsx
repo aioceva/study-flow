@@ -69,7 +69,6 @@ export default function QuizPage() {
       setSelected(null);
       setAnswered(false);
     } else {
-      // Запазваме резултата в sessionStorage
       const key = `quiz_${quizNumber}_result`;
       sessionStorage.setItem(key, JSON.stringify({ score: scores, total: 5, errors }));
 
@@ -97,12 +96,25 @@ export default function QuizPage() {
 
   return (
     <div className="flex flex-col px-5 max-w-lg mx-auto" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
-      {/* Header */}
-      <div className="flex-none mb-4 mt-2">
+      {/* Header: ← вляво, title в средата, 🏠 вдясно */}
+      <div className="flex-none mt-2 mb-4">
         <div className="flex justify-between items-center mb-3">
           <button
+            onClick={() => router.back()}
+            className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
+            style={{ backgroundColor: NAV.surface, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
+            aria-label="Назад"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M5 12l7-7M5 12l7 7" />
+            </svg>
+          </button>
+          <p className="text-sm font-bold uppercase tracking-wide" style={{ color: NAV.textMuted }}>
+            Проверка {quizNumber}
+          </p>
+          <button
             onClick={() => navigate(`/${user}`)}
-            className="btn-press w-8 h-8 flex items-center justify-center"
+            className="btn-press w-10 h-10 flex items-center justify-center"
             style={{ opacity: 0.5 }}
             aria-label="Начало"
           >
@@ -111,21 +123,20 @@ export default function QuizPage() {
               <path d="M9 21V12h6v9" />
             </svg>
           </button>
-          <p className="text-sm font-bold uppercase tracking-wide" style={{ color: NAV.textMuted }}>
-            Проверка {quizNumber}
-          </p>
-          <p className="text-sm" style={{ color: NAV.textMuted }}>
-            {current + 1} / {questions.length}
-          </p>
         </div>
-        <div className="h-2 rounded-full" style={{ backgroundColor: NAV.border }}>
-          <div
-            className="h-2 rounded-full transition-all duration-300"
-            style={{
-              width: `${((current) / questions.length) * 100}%`,
-              backgroundColor: NAV.btnSolid,
-            }}
-          />
+        {/* Точки вместо лента */}
+        <div className="flex justify-center items-center gap-2">
+          {questions.map((_, i) => (
+            <div
+              key={i}
+              className="rounded-full transition-colors duration-200"
+              style={{
+                width: 8,
+                height: 8,
+                backgroundColor: i === current ? NAV.btnSolid : NAV.border,
+              }}
+            />
+          ))}
         </div>
       </div>
 
