@@ -2,7 +2,7 @@
 
 import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { Quiz, QuizQuestion, NAV, MODULE_COLORS, MODULE_SURFACE, MODULE_BTN, MODULE_PROGRESS } from "@/types";
+import { Quiz, QuizQuestion, NAV } from "@/types";
 
 export default function ReinforcementQuizPage() {
   const { user } = useParams<{ user: string }>();
@@ -98,21 +98,14 @@ export default function ReinforcementQuizPage() {
     );
   }
 
-  // Преговорът използва цветовете на модул 1
-  const moduleId = 1;
-  const bgColor       = MODULE_COLORS[moduleId];
-  const surfaceColor  = MODULE_SURFACE[moduleId];
-  const btnColor      = MODULE_BTN[moduleId];
-  const progressColor = MODULE_PROGRESS[moduleId];
-
   const q = questions[current];
   const correctId = q.options.find((o) => o.correct)?.id;
 
   return (
-    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: "#ffffff" }}>
+    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
 
       {/* Прогрес ред: N сегмента + 🏠 — като при урока */}
-      <div className="flex-none bg-white px-4 pt-3 pb-2 flex items-center gap-2">
+      <div className="flex-none px-4 pt-3 pb-2 flex items-center gap-2" style={{ backgroundColor: NAV.bg }}>
         <div className="flex gap-1 flex-1">
           {questions.map((_, i) => (
             <div
@@ -120,7 +113,7 @@ export default function ReinforcementQuizPage() {
               className="flex-1 rounded-full transition-colors duration-300"
               style={{
                 height: 5,
-                backgroundColor: i <= current ? progressColor : NAV.border,
+                backgroundColor: i <= current ? NAV.btnSolid : NAV.border,
               }}
             />
           ))}
@@ -143,8 +136,8 @@ export default function ReinforcementQuizPage() {
         <span className="text-sm font-medium" style={{ color: NAV.textMuted }}>Преговор</span>
       </nav>
 
-      {/* Съдържание с цветна подложка */}
-      <div className="flex-1 overflow-y-auto px-5 pt-4 pb-2" style={{ backgroundColor: bgColor }}>
+      {/* Съдържание */}
+      <div className="flex-1 overflow-y-auto px-5 pt-4 pb-2" style={{ backgroundColor: NAV.bg }}>
 
         {/* Въпрос */}
         <p className="text-xl mb-4 leading-snug" style={{ color: NAV.text }}>
@@ -154,7 +147,7 @@ export default function ReinforcementQuizPage() {
         {/* Отговори */}
         <div className="space-y-2">
           {q.options.map((option) => {
-            let bg = surfaceColor;
+            let bg = NAV.surface;
             if (answered) {
               if (option.id === correctId) bg = "#DCFCE7";
               else if (option.id === selected) bg = "#FEE2E2";
@@ -167,7 +160,7 @@ export default function ReinforcementQuizPage() {
                 className="btn-press w-full p-4 rounded-xl text-left text-base"
                 style={{ backgroundColor: bg, color: NAV.text }}
               >
-                <span className="mr-3 uppercase" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>{option.id}.</span>
+                <span className="mr-3 uppercase" style={{ color: NAV.textMuted }}>{option.id}.</span>
                 {option.text}
               </button>
             );
@@ -189,7 +182,7 @@ export default function ReinforcementQuizPage() {
       </div>
 
       {/* Навигация ← → */}
-      <div className="flex-none flex gap-3 px-4 pb-6 pt-3 bg-white">
+      <div className="flex-none flex gap-3 px-4 pb-6 pt-3" style={{ backgroundColor: NAV.bg }}>
         {current > 0 ? (
           <button
             onClick={handlePrev}
@@ -205,7 +198,7 @@ export default function ReinforcementQuizPage() {
           onClick={handleNext}
           disabled={!answered}
           className="btn-press flex-1 rounded-xl text-white text-xl flex items-center justify-center"
-          style={{ height: 56, backgroundColor: btnColor, opacity: answered ? 1 : 0.3 }}
+          style={{ height: 56, backgroundColor: NAV.btnSolid, opacity: answered ? 1 : 0.3 }}
         >
           →
         </button>
