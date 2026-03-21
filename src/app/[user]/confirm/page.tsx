@@ -37,40 +37,41 @@ export default function ConfirmPage() {
     setTimeout(() => startTransition(() => router.push(url)), 150);
   }
 
-  const homeIconBtn = (
-    <button
-      onClick={() => navigate(`/${user}`)}
-      className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
-      style={{ backgroundColor: NAV.surface }}
-      aria-label="Начало"
-    >
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
-        <path d="M9 21V12h6v9" />
-      </svg>
-    </button>
-  );
-
   return (
     <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
 
-      {/* Хедър: ← вляво, 🏠 вдясно */}
-      <div className="flex-none flex items-center justify-between px-4 py-2">
+      {/* Хедър: scan-стил — лека ← + заглавие вляво, 🏠 вдясно */}
+      <div className="flex-none flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate(`/${user}`)}
+            className="btn-press w-8 h-8 flex items-center justify-center"
+            style={{ opacity: 0.55 }}
+            aria-label="Назад"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+          </button>
+          <h1 className="text-lg font-bold" style={{ color: NAV.text }}>
+            {subjectLabel} · Урок {lesson}
+          </h1>
+        </div>
         <button
           onClick={() => navigate(`/${user}`)}
-          className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
-          style={{ backgroundColor: NAV.surface, color: NAV.text }}
-          aria-label="Назад"
+          className="btn-press w-8 h-8 flex items-center justify-center"
+          style={{ opacity: 0.4 }}
+          aria-label="Начало"
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M5 12l7-7M5 12l7 7" />
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+            <path d="M9 21V12h6v9" />
           </svg>
         </button>
-        {homeIconBtn}
       </div>
 
-      {/* Съдържание — центрирано */}
-      <div className="flex-1 flex flex-col items-stretch justify-center px-5 gap-3">
+      {/* Съдържание — горе, не центрирано */}
+      <div className="flex-1 px-5 pt-2">
 
         {/* Карта на урока — идентична с home screen */}
         <LessonCard
@@ -85,7 +86,7 @@ export default function ConfirmPage() {
         {hasSessions && (
           <button
             onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
-            className="btn-press w-full rounded-xl text-left"
+            className="btn-press w-full rounded-xl text-left mt-3"
             style={{ backgroundColor: NAV.surface, border: `1px solid ${NAV.border}` }}
             type="button"
           >

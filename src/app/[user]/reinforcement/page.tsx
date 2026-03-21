@@ -55,12 +55,12 @@ export default function ReinforcementPage() {
       <div className="flex items-center gap-3 mb-6 mt-4">
         <button
           onClick={() => navigate(`/${user}`)}
-          className="btn-press rounded-xl flex items-center justify-center flex-none"
-          style={{ width: 46, height: 46, backgroundColor: NAV.surface, color: NAV.text }}
+          className="btn-press w-8 h-8 flex items-center justify-center flex-none"
+          style={{ opacity: 0.55 }}
           aria-label="Назад"
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M5 12l7-7M5 12l7 7" />
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
         </button>
         <div>

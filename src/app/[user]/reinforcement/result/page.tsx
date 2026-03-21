@@ -25,21 +25,21 @@ export default function ReinforcementResultPage() {
   return (
     <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
       {/* Хедър: ← вляво, 🏠 вдясно */}
-      <div className="flex-none flex items-center justify-between px-4 py-2">
+      <div className="flex-none flex items-center justify-between px-4 py-3">
         <button
           onClick={() => navigate(`/${user}/reinforcement`)}
-          className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
-          style={{ backgroundColor: NAV.surface }}
+          className="btn-press w-8 h-8 flex items-center justify-center"
+          style={{ opacity: 0.55 }}
           aria-label="Назад"
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M5 12l7-7M5 12l7 7" />
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
         </button>
         <button
           onClick={() => navigate(`/${user}`)}
-          className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
-          style={{ backgroundColor: NAV.surface }}
+          className="btn-press w-8 h-8 flex items-center justify-center"
+          style={{ opacity: 0.4 }}
           aria-label="Начало"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

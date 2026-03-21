@@ -104,23 +104,25 @@ export default function ReinforcementQuizPage() {
   return (
     <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
 
-      {/* Header: ← вляво, title в средата, 🏠 вдясно */}
-      <div className="flex-none flex items-center justify-between px-4 mt-2 mb-1">
-        <button
-          onClick={() => router.back()}
-          className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
-          style={{ backgroundColor: NAV.surface }}
-          aria-label="Назад"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M5 12l7-7M5 12l7 7" />
-          </svg>
-        </button>
-        <p className="text-sm font-bold uppercase tracking-wide" style={{ color: NAV.textMuted }}>Преговор</p>
+      {/* Header: scan-стил — ← + заглавие вляво, 🏠 вдясно */}
+      <div className="flex-none flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => router.back()}
+            className="btn-press w-8 h-8 flex items-center justify-center"
+            style={{ opacity: 0.55 }}
+            aria-label="Назад"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+          </button>
+          <h1 className="text-lg font-bold" style={{ color: NAV.text }}>Преговор</h1>
+        </div>
         <button
           onClick={() => navigate(`/${user}`)}
-          className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
-          style={{ backgroundColor: NAV.surface }}
+          className="btn-press w-8 h-8 flex items-center justify-center"
+          style={{ opacity: 0.4 }}
           aria-label="Начало"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
