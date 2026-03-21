@@ -18,8 +18,10 @@ export default function ReinforcementResultPage() {
     setTimeout(() => startTransition(() => router.push(url)), 150);
   }
 
+  const missed = total - score;
+  const percent = Math.round((score / total) * 100);
   const perfect = score === total;
-  const good = score / total >= 0.8;
+  const good = percent >= 80;
   const emoji = perfect ? "🏆" : good ? "🌟" : "💪";
 
   return (
@@ -38,11 +40,33 @@ export default function ReinforcementResultPage() {
           </svg>
         </button>
       </div>
-      <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-6">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-4">
+
         <div className="text-6xl">{emoji}</div>
+
         <h1 className="text-xl font-bold" style={{ color: NAV.text }}>
           {score} от {total}
         </h1>
+
+        {/* Прогрес бар — без проценти */}
+        <div className="w-full rounded-2xl px-6 py-4" style={{ backgroundColor: good ? "#DCFCE7" : "#FEF9C3" }}>
+          <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: good ? "#BBF7D0" : "#FDE68A" }}>
+            <div
+              className="h-2 rounded-full"
+              style={{ width: `${percent}%`, backgroundColor: good ? "#22C55E" : "#F59E0B" }}
+            />
+          </div>
+        </div>
+
+        {/* Обобщение */}
+        {perfect ? (
+          <p className="text-base" style={{ color: NAV.textMuted }}>Всичко правилно</p>
+        ) : (
+          <p className="text-base" style={{ color: NAV.textMuted }}>
+            Ти научи {score} {score === 1 ? "нещо" : "неща"} днес
+          </p>
+        )}
+
       </div>
 
       <div className="flex-none px-4 pb-6 pt-3 space-y-2">
