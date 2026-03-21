@@ -104,20 +104,31 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     </button>
   );
 
-  // ── Progress bar: 4 module segments + home icon ────────────────────────────
+  // ── Progress bar: 4 модула × 5 карти + home icon ──────────────────────────
   const progressDots = (
     <div className="flex-none bg-white px-4 pt-3 pb-2 flex items-center gap-2">
-      {/* 4 module segments — показват прогреса на целия урок */}
-      <div className="flex gap-1.5 flex-1">
+      {/* 4 групи, всяка с 5 под-сегмента — едно четливо визуализация */}
+      <div className="flex gap-2 flex-1">
         {[1, 2, 3, 4].map((n) => (
-          <div
-            key={n}
-            className="flex-1 rounded-full transition-colors duration-200"
-            style={{
-              height: 6,
-              backgroundColor: n <= moduleId ? MODULE_PROGRESS[n] : NAV.border,
-            }}
-          />
+          <div key={n} className="flex gap-0.5 flex-1">
+            {[1, 2, 3, 4, 5].map((step) => {
+              const filled = n < moduleId
+                ? true
+                : n === moduleId
+                  ? step <= cardId
+                  : false;
+              return (
+                <div
+                  key={step}
+                  className="flex-1 rounded-full transition-colors duration-300"
+                  style={{
+                    height: 5,
+                    backgroundColor: filled ? MODULE_PROGRESS[n] : NAV.border,
+                  }}
+                />
+              );
+            })}
+          </div>
         ))}
       </div>
       {homeIcon}
