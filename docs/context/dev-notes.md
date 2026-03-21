@@ -1,6 +1,6 @@
 # Study Flow — Dev Notes & Капани
 
-_Последна актуализация: 16 Март 2026_
+_Последна актуализация: 17 Март 2026_
 
 Натрупани уроци от разработката. Прочети преди да пишеш код.
 
@@ -123,12 +123,16 @@ startTransition(() => router.push(url))
 - ✅ Rate limiting: 1 адаптация на 24 часа (`rate-limit.json` в GitHub)
 - ✅ 4 модула × 5 карти с swipe навигация
 - ✅ Quiz 1 (след модул 2) + Quiz 2 (след модул 4)
-- ✅ Reinforcement quiz
+- ✅ Reinforcement quiz (10 random от 20)
+- ✅ Reinforcement result: "X от 10 познати!", "Опитай пак" / "Приключих с урока"
 - ✅ Запис на сесии в `sessions.json`
-- ✅ Home с последни уроци tiles
-- ✅ Intro / Separator / Done екрани (новия дизайн)
+- ✅ Home с последни уроци tiles (групирани по дата)
+- ✅ Confirm екран: hub за learn/review, показва последен резултат от преговор
+- ✅ Separator / Done екрани (консистентен дизайн)
+- ✅ Separator показва "Завърши секция X от 4!"
 - ✅ btn-press анимация на всички бутони
-- ✅ Anti-flickering (lazy adaptation, startTransition, null page.tsx)
+- ✅ Консистентен ‹ back бутон на всички екрани
+- ✅ Anti-flickering (lazy adaptation с subject/lesson валидация, startTransition, null page.tsx)
 - ✅ SVG trophy icon (без emoji)
 
 ## Предстои

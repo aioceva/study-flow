@@ -1,6 +1,6 @@
 # Study Flow — Проект контекст
 
-_Последна актуализация: 16 Март 2026_
+_Последна актуализация: 17 Март 2026_
 
 ## Какво е
 
@@ -12,7 +12,7 @@ Study Flow е MVP за деца с дислексия. Детето сканир
 
 ## Стек
 
-- Next.js 14, TypeScript, Tailwind v4 (конфигурация в `globals.css` с `@theme` — **без** `tailwind.config.ts`)
+- Next.js 16.1.6, TypeScript, Tailwind v4 (конфигурация в `globals.css` с `@theme` — **без** `tailwind.config.ts`)
 - GitHub JSON файлове като база данни
 - Claude API — Vision за разпознаване, claude-sonnet за адаптация и quiz
 - `react-swipeable` за swipe навигация
@@ -23,26 +23,29 @@ Study Flow е MVP за деца с дислексия. Детето сканир
 
 ## Поток на сесията
 
-### Learn режим (първо отваряне)
+### Learn режим (първо сканиране)
 ```
-Главен екран → Сканирай страница от учебника
+Главен екран → "Сканирай нов урок"
 → Claude Vision: разпознава предмет + урок номер
 → Проверява GitHub кеш: съществува ли адаптацията?
   → НЕ: Claude генерира adaptation.json + quiz.json (~30 сек)
   → ДА: зарежда от кеш, без AI calls
-→ Intro екран → 4 модула × 5 карти (swipe)
+→ Confirm екран (показва предмет, заглавие, последен резултат ако има)
+→ "Прегледай урока" → 4 модула × 5 карти (swipe)
 → Quiz 1 след Модул 2 (5 въпроса от модули 1+2)
 → Quiz 2 след Модул 4 (5 въпроса от модули 3+4)
-→ Done екран → резултат → "Вземи теста за преговор"
+→ Done екран → резултат → "Провери знанията си →"
+→ Reinforcement quiz (10 въпроса) → Result екран
 ```
 
 ### Reinforcement режим (повторно отваряне)
 ```
-Home → tile на завършен урок → "Отвори урока"
-→ Intro → прегледа картите (mode=review)
-→ Done → "Вземи теста за преговор"
-→ 10 случайни въпроса от quiz.json (без нови AI calls)
-→ Резултат
+Home → tile на урок → "Отвори урока"
+→ Confirm екран (показва последния резултат от преговор)
+→ "Провери знанията си" → 10 случайни въпроса от quiz.json (без нови AI calls)
+→ Result: "X от 10 познати!" + "Опитай пак" / "Приключих с урока"
+— или —
+→ "Прегледай урока" → 4 модула × 5 карти → Done
 ```
 
 ---
@@ -53,22 +56,23 @@ Home → tile на завършен урок → "Отвори урока"
 /[user]                        — начална страница (последни уроци + сканиране)
 /[user]/scan                   — camera/upload
 /[user]/loading                — изчакване на AI генерация (обработва 429 rate limit)
-/[user]/confirm                — потвърждение на разпознатото
-/[user]/lesson/intro           — начален екран на урок        ← page.tsx връща null
+/[user]/confirm                — hub: показва урока, последен резултат, избор learn/review
 /[user]/lesson/[module]/[card] — карта (модул 1-4, карта 1-5) ← page.tsx връща null
-/[user]/lesson/separator       — Браво между модули           ← page.tsx връща null
+/[user]/lesson/separator       — "Браво! Завърши секция X от 4!" между модули ← page.tsx връща null
 /[user]/lesson/quiz            — quiz въпроси
 /[user]/done                   — краен екран с резултат
-/[user]/reinforcement          — преговорен тест
-/[user]/reinforcement/quiz
-/[user]/reinforcement/result
+/[user]/reinforcement          — история на преговори + бутон "Започни Преговор"
+/[user]/reinforcement/quiz     — 10 случайни въпроса от quiz.json
+/[user]/reinforcement/result   — "X от 10 познати!", "Опитай пак" / "Приключих с урока"
 ```
+
+**Няма `/lesson/intro` route** — `confirm/page.tsx` изпълнява тази роля.
 
 ### ВАЖНО: LessonLayoutInner
 
-`src/app/[user]/lesson/layout.tsx` зарежда `LessonLayoutInner` — persistent layout компонент, който рендерира **целия UI** за intro, card и separator екраните чрез `usePathname()` detection.
+`src/app/[user]/lesson/layout.tsx` зарежда `LessonLayoutInner` — persistent layout компонент, който рендерира **целия UI** за card и separator екраните чрез `usePathname()` detection.
 
-`intro/page.tsx`, `separator/page.tsx`, `[module]/[card]/page.tsx` **задължително връщат `null`**. Ако имат собствен UI, той се наслага и причинява flickering.
+`separator/page.tsx` и `[module]/[card]/page.tsx` **задължително връщат `null`**. Ако имат собствен UI, той се наслага и причинява flickering.
 
 ---
 
@@ -96,13 +100,17 @@ users/[user]/sessions.json
 rate-limit.json   ← 1 адаптация на 24 часа (проверява се в /api/generate)
 ```
 
-Адаптацията се кешира в `sessionStorage`. Lazy init при рендер:
+Адаптацията се кешира в `sessionStorage`. Lazy init при рендер с валидация на subject/lesson:
 
 ```tsx
 const [adaptation, setAdaptation] = useState<Adaptation | null>(() => {
   if (typeof window === "undefined") return null;
   const raw = sessionStorage.getItem("adaptation");
-  return raw ? (JSON.parse(raw) as Adaptation) : null;
+  if (!raw) return null;
+  const parsed = JSON.parse(raw) as Adaptation;
+  const sp = new URLSearchParams(window.location.search);
+  if (parsed.meta?.subject !== sp.get("subject") || String(parsed.meta?.lesson) !== sp.get("lesson")) return null;
+  return parsed;
 });
 ```
 
