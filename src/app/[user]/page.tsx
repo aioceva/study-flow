@@ -112,7 +112,7 @@ export default function UserHome() {
               style={{ color: NAV.text, backgroundColor: NAV.surface }}
               onClick={() => setMenuOpen(false)}
             >
-              История
+              Дневник
             </Link>
           </div>
           {/* Тъмен фон */}
