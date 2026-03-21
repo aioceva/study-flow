@@ -112,8 +112,8 @@ export default function ConfirmPage() {
         </button>
         <button
           onClick={() => navigate(`/${user}/lesson/1/1?${params}&mode=review`)}
-          className="btn-press w-full rounded-2xl py-4 font-bold text-base text-center border-2"
-          style={{ color: NAV.text, borderColor: NAV.btnBorder, backgroundColor: NAV.bg }}
+          className="btn-press w-full rounded-2xl py-4 font-bold text-base text-center"
+          style={{ color: NAV.text, backgroundColor: NAV.surface }}
         >
           🔄 Преговор
         </button>
