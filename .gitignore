@@ -31,10 +31,10 @@ Anthropic*
 # Claude Code settings
 .claude/
 
-# Документация — не в репото (с изключение на docs/context/ и CLAUDE.md)
+# Документация — не в репото (с изключение на docs/ и CLAUDE.md)
 *.md
 !CLAUDE.md
-!docs/context/*.md
+!docs/*.md
 06.03.2026/
 07.03.2026/
 12.03.2026/
