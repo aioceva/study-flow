@@ -117,7 +117,7 @@ export default function ReinforcementQuizPage() {
               <path d="M19 12H5M12 5l-7 7 7 7" />
             </svg>
           </button>
-          <h1 className="text-lg font-bold" style={{ color: NAV.text }}>Преговор</h1>
+          <h1 className="text-xl font-bold" style={{ color: NAV.text }}>Преговор</h1>
         </div>
         <button
           onClick={() => navigate(`/${user}`)}
@@ -197,7 +197,7 @@ export default function ReinforcementQuizPage() {
         {current > 0 ? (
           <button
             onClick={handlePrev}
-            className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-2xl"
+            className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-xl"
             style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
           >
             ←
@@ -208,7 +208,7 @@ export default function ReinforcementQuizPage() {
         <button
           onClick={handleNext}
           disabled={!answered}
-          className="btn-press flex-1 rounded-xl text-white font-bold text-2xl flex items-center justify-center"
+          className="btn-press flex-1 rounded-xl text-white font-bold text-xl flex items-center justify-center"
           style={{
             height: 56,
             backgroundColor: NAV.btnSolid,

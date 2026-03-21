@@ -53,7 +53,7 @@ export default function ReinforcementResultPage() {
         <div className="text-6xl">{perfect ? "🏆" : percent >= 80 ? "🌟" : "💪"}</div>
 
         <div>
-          <h1 className="text-3xl font-bold" style={{ color: NAV.text }}>
+          <h1 className="text-xl font-bold" style={{ color: NAV.text }}>
             {score} от {total} познати!
           </h1>
           {missed > 0 && (
@@ -76,7 +76,7 @@ export default function ReinforcementResultPage() {
               }}
             />
           </div>
-          <p className="text-2xl font-bold" style={{ color: percent >= 80 ? "#15803D" : "#92400E" }}>
+          <p className="text-xl font-bold" style={{ color: percent >= 80 ? "#15803D" : "#92400E" }}>
             {percent}%
           </p>
         </div>

@@ -114,7 +114,7 @@ export default function QuizPage() {
               <path d="M19 12H5M12 5l-7 7 7 7" />
             </svg>
           </button>
-          <h1 className="text-lg font-bold" style={{ color: NAV.text }}>
+          <h1 className="text-xl font-bold" style={{ color: NAV.text }}>
             Проверка {quizNumber}
           </h1>
         </div>
@@ -211,7 +211,7 @@ export default function QuizPage() {
         {current > 0 ? (
           <button
             onClick={handlePrev}
-            className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-2xl"
+            className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-xl"
             style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
           >
             ←
@@ -222,7 +222,7 @@ export default function QuizPage() {
         <button
           onClick={handleNext}
           disabled={!answered}
-          className="btn-press flex-1 rounded-xl text-white font-bold text-2xl flex items-center justify-center"
+          className="btn-press flex-1 rounded-xl text-white font-bold text-xl flex items-center justify-center"
           style={{
             height: 56,
             backgroundColor: NAV.btnSolid,

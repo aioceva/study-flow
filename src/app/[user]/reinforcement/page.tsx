@@ -64,7 +64,7 @@ export default function ReinforcementPage() {
           </svg>
         </button>
         <div>
-          <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+          <p className="text-sm font-bold text-gray-500 uppercase tracking-wide">
             {SUBJECT_LABELS[subject as Subject] ?? subject}
           </p>
           <h1 className="text-xl font-bold">Преговор · Урок {lesson}</h1>
@@ -77,8 +77,8 @@ export default function ReinforcementPage() {
           className="rounded-2xl p-5 mb-6 text-center"
           style={{ backgroundColor: best.score / best.total >= 0.8 ? "#DCFCE7" : "#FEF9C3" }}
         >
-          <p className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Най-добър резултат</p>
-          <p className="text-4xl font-bold" style={{ color: best.score / best.total >= 0.8 ? "#15803D" : "#92400E" }}>
+          <p className="text-sm font-bold uppercase tracking-wide text-gray-500 mb-1">Най-добър резултат</p>
+          <p className="text-xl font-bold" style={{ color: best.score / best.total >= 0.8 ? "#15803D" : "#92400E" }}>
             {best.score}/{best.total}
           </p>
         </div>
@@ -96,10 +96,10 @@ export default function ReinforcementPage() {
             <div key={i} className="flex justify-between items-center rounded-xl p-3 bg-gray-50">
               <div>
                 <p className="text-sm font-bold">{r.date}</p>
-                <p className="text-xs text-gray-400">{r.type === "learn" ? "Урок" : "Преговор"}</p>
+                <p className="text-sm text-gray-400">{r.type === "learn" ? "Урок" : "Преговор"}</p>
               </div>
               <span
-                className="text-lg font-bold"
+                className="text-base font-bold"
                 style={{ color: r.score / r.total >= 0.8 ? "#22C55E" : "#F59E0B" }}
               >
                 {r.score}/{r.total}

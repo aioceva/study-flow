@@ -48,12 +48,12 @@ export function LessonCard({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
           <div className="w-2 h-2 rounded-full flex-none" style={{ backgroundColor: dotColor }} />
-          <span className="text-[10px] font-semibold tracking-wider uppercase" style={{ color: NAV.textMuted }}>
+          <span className="text-sm font-semibold tracking-wider uppercase" style={{ color: NAV.textMuted }}>
             {label} · Урок {lesson}
           </span>
         </div>
         {title && (
-          <p className="text-sm font-semibold leading-snug" style={{ color: NAV.text }}>{title}</p>
+          <p className="text-base font-semibold leading-snug" style={{ color: NAV.text }}>{title}</p>
         )}
       </div>
       {showPlayButton && (
