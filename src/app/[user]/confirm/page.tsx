@@ -92,10 +92,10 @@ export default function ConfirmPage() {
           >
             <div className="flex items-center gap-3 p-3">
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold tracking-wider uppercase mb-0.5" style={{ color: NAV.textMuted }}>
+                <p className="text-sm font-medium tracking-wider uppercase mb-0.5" style={{ color: NAV.textMuted }}>
                   Проверка на знанията
                 </p>
-                <p className="text-base font-semibold" style={{ color: NAV.text }}>
+                <p className="text-base" style={{ color: NAV.text }}>
                   Спомни си урока
                 </p>
               </div>

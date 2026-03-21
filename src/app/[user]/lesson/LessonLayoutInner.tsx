@@ -150,14 +150,14 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
         <div className="px-4 pb-6 flex gap-3">
           <button
             onClick={() => navigate(`/${user}/lesson/${sepFrom}/5?${params}`)}
-            className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-xl"
+            className="btn-press flex-1 rounded-xl flex items-center justify-center text-xl"
             style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
           >
             ←
           </button>
           <button
             onClick={() => navigate(`/${user}/lesson/${sepTo}/1?${params}`)}
-            className="btn-press flex-1 rounded-xl text-white font-bold text-xl flex items-center justify-center"
+            className="btn-press flex-1 rounded-xl text-white text-xl flex items-center justify-center"
             style={{ backgroundColor: NAV.btnSolid, height: 56 }}
           >
             →
@@ -178,7 +178,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       {/* Navbar: module title only */}
       <nav className="flex-none px-4 py-2 bg-white">
         {moduleData?.title && (
-          <span className="text-sm font-semibold" style={{ color: NAV.textMuted }}>
+          <span className="text-sm font-medium" style={{ color: NAV.textMuted }}>
             {moduleData.title}
           </span>
         )}
@@ -209,14 +209,14 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
             ? navigate(`/${user}/confirm?${params}`)
             : navigate(prevStep(user, moduleId, cardId, params))
           }
-          className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-xl"
+          className="btn-press flex-1 rounded-xl flex items-center justify-center text-xl"
           style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
         >
           ←
         </button>
         <button
           onClick={() => navigate(nextStep(user, moduleId, cardId, params))}
-          className="btn-press flex-1 rounded-xl text-white font-bold text-xl flex items-center justify-center"
+          className="btn-press flex-1 rounded-xl text-white text-xl flex items-center justify-center"
           style={{ backgroundColor: MODULE_BTN[moduleId], height: 56 }}
         >
           →
@@ -229,7 +229,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 function Section({ icon, label, text, moduleId }: { icon: string; label: string; text: string; moduleId: number }) {
   return (
     <div className="rounded-xl p-4" style={{ backgroundColor: MODULE_SURFACE[moduleId] ?? "#F0F0F0" }}>
-      <p className="text-sm font-bold uppercase tracking-wide mb-1" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>
+      <p className="text-sm font-medium uppercase tracking-wide mb-1" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>
         {icon} {label}
       </p>
       <p className="text-base leading-relaxed">{text}</p>

@@ -108,7 +108,7 @@ export default function UserHome() {
             </button>
             <Link
               href={`/${user}/parent`}
-              className="btn-press text-base font-semibold py-3 px-4 rounded-xl"
+              className="btn-press text-base font-medium py-3 px-4 rounded-xl"
               style={{ color: NAV.text, backgroundColor: NAV.surface }}
               onClick={() => setMenuOpen(false)}
             >
@@ -140,7 +140,7 @@ export default function UserHome() {
         {/* Сканирай бутон */}
         <button
           onClick={() => navigate(`/${user}/scan`)}
-          className="btn-press w-full rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-semibold text-base mb-5"
+          className="btn-press w-full rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-medium text-base mb-5"
           style={{ backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
         >
           <span className="text-base">📸</span>
@@ -160,7 +160,7 @@ export default function UserHome() {
           <div className="space-y-5">
             {groups.map((group) => (
               <div key={group.key}>
-                <p className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: NAV.textMuted }}>
+                <p className="text-sm font-medium uppercase tracking-wider mb-2" style={{ color: NAV.textMuted }}>
                   {group.label}
                 </p>
                 <div className="space-y-2">

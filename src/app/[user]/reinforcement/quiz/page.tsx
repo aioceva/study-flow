@@ -140,14 +140,14 @@ export default function ReinforcementQuizPage() {
 
       {/* Лейбъл — като module title в урока */}
       <nav className="flex-none px-4 py-2 bg-white">
-        <span className="text-sm font-semibold" style={{ color: NAV.textMuted }}>Преговор</span>
+        <span className="text-sm font-medium" style={{ color: NAV.textMuted }}>Преговор</span>
       </nav>
 
       {/* Съдържание с цветна подложка */}
       <div className="flex-1 overflow-y-auto px-5 pt-4 pb-2" style={{ backgroundColor: bgColor }}>
 
         {/* Въпрос */}
-        <p className="text-xl font-bold mb-4 leading-snug" style={{ color: NAV.text }}>
+        <p className="text-xl mb-4 leading-snug" style={{ color: NAV.text }}>
           {q.question}
         </p>
 
@@ -164,7 +164,7 @@ export default function ReinforcementQuizPage() {
                 key={option.id}
                 onClick={() => handleAnswer(option.id)}
                 disabled={answered}
-                className="btn-press w-full p-4 rounded-xl text-left text-base font-semibold"
+                className="btn-press w-full p-4 rounded-xl text-left text-base"
                 style={{ backgroundColor: bg, color: NAV.text }}
               >
                 <span className="mr-3 uppercase" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>{option.id}.</span>
@@ -177,7 +177,7 @@ export default function ReinforcementQuizPage() {
         {/* Обратна връзка */}
         {answered && (
           <div
-            className="mt-3 rounded-xl p-4 text-base font-bold text-center"
+            className="mt-3 rounded-xl p-4 text-base text-center"
             style={{
               backgroundColor: selected === correctId ? "#DCFCE7" : "#FEE2E2",
               color: selected === correctId ? "#15803D" : "#B91C1C",
@@ -193,7 +193,7 @@ export default function ReinforcementQuizPage() {
         {current > 0 ? (
           <button
             onClick={handlePrev}
-            className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-xl"
+            className="btn-press flex-1 rounded-xl flex items-center justify-center text-xl"
             style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
           >
             ←
@@ -204,7 +204,7 @@ export default function ReinforcementQuizPage() {
         <button
           onClick={handleNext}
           disabled={!answered}
-          className="btn-press flex-1 rounded-xl text-white font-bold text-xl flex items-center justify-center"
+          className="btn-press flex-1 rounded-xl text-white text-xl flex items-center justify-center"
           style={{ height: 56, backgroundColor: btnColor, opacity: answered ? 1 : 0.3 }}
         >
           →

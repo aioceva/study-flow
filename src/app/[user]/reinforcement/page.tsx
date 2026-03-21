@@ -77,8 +77,8 @@ export default function ReinforcementPage() {
           className="rounded-2xl p-5 mb-6 text-center"
           style={{ backgroundColor: best.score / best.total >= 0.8 ? "#DCFCE7" : "#FEF9C3" }}
         >
-          <p className="text-sm font-bold uppercase tracking-wide text-gray-500 mb-1">Най-добър резултат</p>
-          <p className="text-xl font-bold" style={{ color: best.score / best.total >= 0.8 ? "#15803D" : "#92400E" }}>
+          <p className="text-sm font-medium uppercase tracking-wide text-gray-500 mb-1">Най-добър резултат</p>
+          <p className="text-xl" style={{ color: best.score / best.total >= 0.8 ? "#15803D" : "#92400E" }}>
             {best.score}/{best.total}
           </p>
         </div>
@@ -91,15 +91,15 @@ export default function ReinforcementPage() {
         <p className="text-gray-400 text-center mb-6">Все още няма резултати за този урок.</p>
       ) : (
         <div className="space-y-2 mb-6">
-          <p className="text-sm font-bold text-gray-500 mb-2">История</p>
+          <p className="text-sm font-medium text-gray-500 mb-2">История</p>
           {results.map((r, i) => (
             <div key={i} className="flex justify-between items-center rounded-xl p-3 bg-gray-50">
               <div>
-                <p className="text-sm font-bold">{r.date}</p>
+                <p className="text-sm">{r.date}</p>
                 <p className="text-sm text-gray-400">{r.type === "learn" ? "Урок" : "Преговор"}</p>
               </div>
               <span
-                className="text-base font-bold"
+                className="text-base"
                 style={{ color: r.score / r.total >= 0.8 ? "#22C55E" : "#F59E0B" }}
               >
                 {r.score}/{r.total}

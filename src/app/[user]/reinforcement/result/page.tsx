@@ -53,7 +53,7 @@ export default function ReinforcementResultPage() {
         <div className="text-6xl">{perfect ? "🏆" : percent >= 80 ? "🌟" : "💪"}</div>
 
         <div>
-          <h1 className="text-xl font-bold" style={{ color: NAV.text }}>
+          <h1 className="text-xl" style={{ color: NAV.text }}>
             {score} от {total} познати!
           </h1>
           {missed > 0 && (
@@ -76,13 +76,13 @@ export default function ReinforcementResultPage() {
               }}
             />
           </div>
-          <p className="text-xl font-bold" style={{ color: percent >= 80 ? "#15803D" : "#92400E" }}>
+          <p className="text-xl" style={{ color: percent >= 80 ? "#15803D" : "#92400E" }}>
             {percent}%
           </p>
         </div>
 
         {!perfect && (
-          <p className="text-base font-semibold" style={{ color: NAV.textMuted }}>
+          <p className="text-base" style={{ color: NAV.textMuted }}>
             Искаш ли да пробваш пак?
           </p>
         )}
@@ -92,7 +92,7 @@ export default function ReinforcementResultPage() {
         {!perfect && (
           <button
             onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}`)}
-            className="btn-press w-full rounded-xl py-4 text-white font-bold text-base"
+            className="btn-press w-full rounded-xl py-4 text-white font-medium text-base"
             style={{ backgroundColor: NAV.btnSolid }}
           >
             Опитай пак →
@@ -100,7 +100,7 @@ export default function ReinforcementResultPage() {
         )}
         <button
           onClick={() => navigate(`/${user}`)}
-          className="btn-press w-full rounded-xl py-4 font-bold text-base"
+          className="btn-press w-full rounded-xl py-4 font-medium text-base"
           style={{
             backgroundColor: perfect ? NAV.btnSolid : NAV.surface,
             color: perfect ? "#FFFFFF" : NAV.text,
