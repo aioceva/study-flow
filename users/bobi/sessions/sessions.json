@@ -126,6 +126,31 @@
         6,
         16
       ]
+    },
+    {
+      "date": "2026-03-21",
+      "subject": "lit",
+      "lesson": 13,
+      "started_at": "18:31",
+      "duration_min": 1,
+      "type": "learn",
+      "completed": true,
+      "quiz_1": {
+        "score": 0,
+        "total": 5,
+        "errors": [
+          2,
+          4,
+          6,
+          5,
+          3
+        ]
+      },
+      "quiz_2": {
+        "score": 1,
+        "total": 5,
+        "errors": []
+      }
     }
   ]
 }
