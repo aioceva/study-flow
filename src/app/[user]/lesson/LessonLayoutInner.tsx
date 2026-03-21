@@ -93,11 +93,11 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const homeIcon = (
     <button
       onClick={() => navigate(`/${user}`)}
-      className="btn-press w-8 h-8 flex items-center justify-center rounded-xl"
-      style={{ backgroundColor: NAV.surface }}
+      className="btn-press w-10 h-10 flex items-center justify-center"
+      style={{ opacity: 0.4 }}
       aria-label="Начало"
     >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
         <path d="M9 21V12h6v9" />
       </svg>

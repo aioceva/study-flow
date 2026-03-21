@@ -58,8 +58,8 @@ export default function DonePage() {
   const homeIconBtn = (
     <button
       onClick={() => navigate(`/${user}`)}
-      className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
-      style={{ backgroundColor: NAV.surface }}
+      className="btn-press w-8 h-8 flex items-center justify-center"
+      style={{ opacity: 0.4 }}
       aria-label="Начало"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
