@@ -18,10 +18,13 @@ export default function ReinforcementQuizPage() {
 
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [current, setCurrent] = useState(0);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [answered, setAnswered] = useState(false);
+  // answers: question index → selected optionId (read-only once set)
+  const [answers, setAnswers] = useState<Record<number, string>>({});
   const [score, setScore] = useState(0);
   const [errors, setErrors] = useState<number[]>([]);
+
+  const answered = current in answers;
+  const selected = answers[current] ?? null;
 
   useEffect(() => {
     async function load() {
@@ -46,8 +49,7 @@ export default function ReinforcementQuizPage() {
 
   function handleAnswer(optionId: string) {
     if (answered) return;
-    setSelected(optionId);
-    setAnswered(true);
+    setAnswers((prev) => ({ ...prev, [current]: optionId }));
     const q = questions[current];
     if (q.options.find((o) => o.correct)?.id === optionId) {
       setScore((s) => s + 1);
@@ -56,11 +58,14 @@ export default function ReinforcementQuizPage() {
     }
   }
 
+  function handlePrev() {
+    if (current > 0) setCurrent((c) => c - 1);
+  }
+
   function handleNext() {
+    if (!answered) return;
     if (current < questions.length - 1) {
       setCurrent((c) => c + 1);
-      setSelected(null);
-      setAnswered(false);
     } else {
       const finalScore = score;
       const now = new Date();
@@ -97,52 +102,57 @@ export default function ReinforcementQuizPage() {
   const correctId = q.options.find((o) => o.correct)?.id;
 
   return (
-    <div className="flex flex-col px-5 max-w-lg mx-auto" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
+    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
+
       {/* Header: ← вляво, title в средата, 🏠 вдясно */}
-      <div className="flex-none mt-2 mb-4">
-        <div className="flex justify-between items-center mb-3">
-          <button
-            onClick={() => router.back()}
-            className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
-            style={{ backgroundColor: NAV.surface, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
-            aria-label="Назад"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M5 12l7-7M5 12l7 7" />
-            </svg>
-          </button>
-          <p className="text-sm font-bold uppercase tracking-wide" style={{ color: NAV.textMuted }}>Преговор</p>
-          <button
-            onClick={() => navigate(`/${user}`)}
-            className="btn-press w-10 h-10 flex items-center justify-center"
-            style={{ opacity: 0.5 }}
-            aria-label="Начало"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
-              <path d="M9 21V12h6v9" />
-            </svg>
-          </button>
-        </div>
-        {/* Точки вместо лента */}
-        <div className="flex justify-center items-center gap-2">
-          {questions.map((_, i) => (
-            <div
-              key={i}
-              className="rounded-full transition-colors duration-200"
-              style={{
-                width: 8,
-                height: 8,
-                backgroundColor: i === current ? NAV.btnSolid : NAV.border,
-              }}
-            />
-          ))}
-        </div>
+      <div className="flex-none flex items-center justify-between px-4 mt-2 mb-1">
+        <button
+          onClick={() => router.back()}
+          className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
+          style={{ backgroundColor: NAV.surface }}
+          aria-label="Назад"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M5 12l7-7M5 12l7 7" />
+          </svg>
+        </button>
+        <p className="text-sm font-bold uppercase tracking-wide" style={{ color: NAV.textMuted }}>Преговор</p>
+        <button
+          onClick={() => navigate(`/${user}`)}
+          className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
+          style={{ backgroundColor: NAV.surface }}
+          aria-label="Начало"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+            <path d="M9 21V12h6v9" />
+          </svg>
+        </button>
       </div>
 
-      <h2 className="flex-none text-xl font-bold mb-6 leading-relaxed" style={{ color: NAV.text }}>{q.question}</h2>
+      {/* Прогрес точки — горе */}
+      <div className="flex-none flex justify-center items-center gap-1.5 pb-3 px-4">
+        {questions.map((_, i) => (
+          <div
+            key={i}
+            className="rounded-full transition-colors duration-200"
+            style={{
+              width: 7,
+              height: 7,
+              backgroundColor: NAV.btnSolid,
+              opacity: i < current ? 0.4 : i === current ? 1 : 0.2,
+            }}
+          />
+        ))}
+      </div>
 
-      <div className="space-y-3 flex-1 overflow-y-auto">
+      {/* Въпрос */}
+      <h2 className="flex-none px-4 pb-4 text-xl font-bold leading-relaxed" style={{ color: NAV.text }}>
+        {q.question}
+      </h2>
+
+      {/* Отговори */}
+      <div className="flex-1 overflow-y-auto px-4 space-y-3">
         {q.options.map((option) => {
           let bg = NAV.bg;
           let border = NAV.border;
@@ -165,26 +175,47 @@ export default function ReinforcementQuizPage() {
         })}
       </div>
 
+      {/* Обратна връзка (показва се след отговор) */}
       {answered && (
-        <div className="flex-none mt-4 pb-6">
+        <div className="flex-none px-4 pt-3">
           <div
-            className="rounded-2xl p-4 mb-3 font-bold text-center"
+            className="rounded-2xl p-4 font-bold text-center"
             style={{
               backgroundColor: selected === correctId ? "#DCFCE7" : "#FEE2E2",
               color: selected === correctId ? "#15803D" : "#B91C1C",
             }}
           >
-            {selected === correctId ? "✓ Браво!" : `✗ Верен: ${q.options.find(o => o.correct)?.text}`}
+            {selected === correctId ? "✓ Браво!" : `✗ Верен: ${q.options.find((o) => o.correct)?.text}`}
           </div>
-          <button
-            onClick={handleNext}
-            className="btn-press w-full py-4 rounded-2xl text-white font-bold"
-            style={{ backgroundColor: NAV.btnSolid }}
-          >
-            {current < questions.length - 1 ? "Следващ →" : "Готово →"}
-          </button>
         </div>
       )}
+
+      {/* Навигация ← → */}
+      <div className="flex-none flex gap-3 px-4 pb-6 pt-3">
+        {current > 0 ? (
+          <button
+            onClick={handlePrev}
+            className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-2xl"
+            style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
+          >
+            ←
+          </button>
+        ) : (
+          <div className="flex-1" />
+        )}
+        <button
+          onClick={handleNext}
+          disabled={!answered}
+          className="btn-press flex-1 rounded-xl text-white font-bold text-2xl flex items-center justify-center"
+          style={{
+            height: 56,
+            backgroundColor: NAV.btnSolid,
+            opacity: answered ? 1 : 0.3,
+          }}
+        >
+          →
+        </button>
+      </div>
     </div>
   );
 }

@@ -2,8 +2,9 @@
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, startTransition } from "react";
-import { SUBJECT_LABELS, Subject, NAV, MODULE_BTN } from "@/types";
+import { SUBJECT_LABELS, Subject, NAV } from "@/types";
 import Image from "next/image";
+import { LessonCard } from "@/components/LessonCard";
 
 export default function DonePage() {
   const { user } = useParams<{ user: string }>();
@@ -14,14 +15,12 @@ export default function DonePage() {
   const mode = searchParams.get("mode");
   const isReview = mode === "review";
   const score = parseInt(searchParams.get("score") ?? "0");
-  const total = parseInt(searchParams.get("total") ?? "10");
   const subject = searchParams.get("subject") ?? "";
   const lesson = searchParams.get("lesson") ?? "";
   const title = searchParams.get("title") ?? "";
-  const startTime = useRef(Date.now());
 
   const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
-  const accentColor = MODULE_BTN[3];
+  const startTime = useRef(Date.now());
 
   function navigate(url: string) {
     setTimeout(() => startTransition(() => router.push(url)), 150);
@@ -55,47 +54,45 @@ export default function DonePage() {
     }).catch(console.error);
   }, [user, subject, lesson, score, isReview]);
 
-  // ── Shared header ───────────────────────────────────────────────────────────
-  const header = (
-    <div className="flex-none flex items-center justify-between px-4 py-2">
-      <button
-        onClick={() => navigate(`/${user}`)}
-        className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
-        style={{ backgroundColor: NAV.surface, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
-        aria-label="Назад"
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M19 12H5M5 12l7-7M5 12l7 7" />
-        </svg>
-      </button>
-      <button
-        onClick={() => navigate(`/${user}`)}
-        className="btn-press w-10 h-10 flex items-center justify-center"
-        style={{ opacity: 0.5 }}
-        aria-label="Начало"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
-          <path d="M9 21V12h6v9" />
-        </svg>
-      </button>
-    </div>
+  // ── Shared home icon ────────────────────────────────────────────────────────
+  const homeIconBtn = (
+    <button
+      onClick={() => navigate(`/${user}`)}
+      className="btn-press w-10 h-10 flex items-center justify-center rounded-xl"
+      style={{ backgroundColor: NAV.surface }}
+      aria-label="Начало"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+        <path d="M9 21V12h6v9" />
+      </svg>
+    </button>
   );
 
-  // ── Review mode ────────────────────────────────────────────────────────────
+  // ── Review mode ─────────────────────────────────────────────────────────────
   if (isReview) {
     return (
       <div className="flex flex-col" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
-        {header}
-        <div className="flex-1 flex flex-col items-center justify-center px-4 gap-2.5 text-center">
-          <Image src="/icons/icon-trophy-glow.svg" width={96} height={96} alt="trophy" />
-          <h1 className="font-bold text-xl" style={{ color: NAV.text }}>Готово!</h1>
-          <p className="text-sm" style={{ color: NAV.textMuted }}>Прегледа целия урок.</p>
-          <p className="text-xs font-semibold" style={{ color: accentColor }}>
-            {subjectLabel} · Урок {lesson}
-          </p>
+        <div className="flex-none flex justify-end px-4 py-2">
+          {homeIconBtn}
         </div>
-        <div className="px-4 pb-6">
+        <div className="flex-1 flex flex-col items-center justify-center px-5 gap-4 text-center">
+          <Image src="/icons/icon-trophy-glow.svg" width={80} height={80} alt="trophy" />
+          <div>
+            <h1 className="font-bold text-xl mb-1" style={{ color: NAV.text }}>Готово!</h1>
+            <p className="text-sm" style={{ color: NAV.textMuted }}>Прегледа целия урок.</p>
+          </div>
+          <div className="w-full">
+            <LessonCard
+              subject={subject}
+              lesson={lesson}
+              title={title}
+              subjectLabel={subjectLabel}
+              showPlayButton={false}
+            />
+          </div>
+        </div>
+        <div className="flex-none px-5 pb-8">
           <button
             onClick={() => navigate(`/${user}`)}
             className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
@@ -108,25 +105,42 @@ export default function DonePage() {
     );
   }
 
-  // ── Learn mode ─────────────────────────────────────────────────────────────
+  // ── Learn mode ──────────────────────────────────────────────────────────────
   return (
     <div className="flex flex-col" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
-      {header}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 gap-2.5 text-center">
-        <Image src="/icons/icon-trophy-glow.svg" width={96} height={96} alt="trophy" />
-        <h1 className="font-bold text-xl" style={{ color: NAV.text }}>Браво!</h1>
-        <p className="text-sm" style={{ color: NAV.textMuted }}>Завърши целия урок!</p>
-        <p className="text-xs font-semibold" style={{ color: accentColor }}>
-          {subjectLabel} · Урок {lesson}
-        </p>
+      <div className="flex-none flex justify-end px-4 py-2">
+        {homeIconBtn}
       </div>
-      <div className="px-4 pb-6">
+      <div className="flex-1 flex flex-col items-center justify-center px-5 gap-4 text-center">
+        <Image src="/icons/icon-trophy-glow.svg" width={80} height={80} alt="trophy" />
+        <div>
+          <h1 className="font-bold text-xl mb-1" style={{ color: NAV.text }}>Браво!</h1>
+          <p className="text-sm" style={{ color: NAV.textMuted }}>Завърши целия урок!</p>
+        </div>
+        <div className="w-full">
+          <LessonCard
+            subject={subject}
+            lesson={lesson}
+            title={title}
+            subjectLabel={subjectLabel}
+            showPlayButton={false}
+          />
+        </div>
+      </div>
+      <div className="flex-none px-5 pb-8 space-y-2">
         <button
           onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
           className="btn-press w-full rounded-xl text-white font-semibold text-sm text-center"
-          style={{ backgroundColor: NAV.btnSolid, height: 46 }}
+          style={{ backgroundColor: NAV.btnSolid, height: 52 }}
         >
           Провери знанията си →
+        </button>
+        <button
+          onClick={() => navigate(`/${user}`)}
+          className="btn-press w-full rounded-xl font-semibold text-sm text-center"
+          style={{ backgroundColor: NAV.surface, color: NAV.text, height: 52 }}
+        >
+          За днес толкова
         </button>
       </div>
     </div>

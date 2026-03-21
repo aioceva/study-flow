@@ -2,8 +2,9 @@
 
 import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Sessions, SUBJECT_LABELS, Subject, NAV } from "@/types";
+import { Sessions, Subject, NAV } from "@/types";
 import Link from "next/link";
+import { LessonCard } from "@/components/LessonCard";
 
 interface IndexEntry {
   subject: string;
@@ -18,16 +19,6 @@ interface LessonTile {
   title: string;
   lastDate: string;
 }
-
-const SUBJECT_COLORS: Record<string, string> = {
-  math: "#4F8EF7",
-  bio:  "#22C55E",
-  chem: "#F59E0B",
-  phys: "#EF4444",
-  hist: "#A78BFA",
-  lit:  "#EC4899",
-  gen:  "#94A3B8",
-};
 
 function getGroup(dateStr: string): "week" | "lastweek" | "older" {
   const date = new Date(dateStr);
@@ -174,7 +165,13 @@ export default function UserHome() {
                 </p>
                 <div className="space-y-2">
                   {group.tiles.map((tile) => (
-                    <LessonCard key={`${tile.subject}-${tile.lesson}`} tile={tile} user={user} router={router} />
+                    <LessonCard
+                      key={`${tile.subject}-${tile.lesson}`}
+                      subject={tile.subject}
+                      lesson={tile.lesson}
+                      title={tile.title}
+                      onClick={() => navigate(`/${user}/confirm?subject=${tile.subject}&lesson=${tile.lesson}&title=${encodeURIComponent(tile.title)}`)}
+                    />
                   ))}
                 </div>
               </div>
@@ -186,46 +183,3 @@ export default function UserHome() {
   );
 }
 
-function LessonCard({
-  tile, user, router,
-}: {
-  tile: LessonTile;
-  user: string;
-  router: ReturnType<typeof useRouter>;
-}) {
-  const dotColor = SUBJECT_COLORS[tile.subject] ?? "#94A3B8";
-  const subjectLabel = SUBJECT_LABELS[tile.subject] ?? tile.subject;
-  function navigate(url: string) { setTimeout(() => router.push(url), 150); }
-
-  return (
-    <button
-      className="btn-press w-full rounded-xl p-3 flex items-center gap-3 text-left"
-      style={{ backgroundColor: NAV.surface, border: `1px solid ${NAV.border}` }}
-      onClick={() => navigate(`/${user}/confirm?subject=${tile.subject}&lesson=${tile.lesson}&title=${encodeURIComponent(tile.title)}`)}
-      aria-label={`Отвори ${subjectLabel} урок ${tile.lesson}`}
-    >
-      {/* Текстово съдържание */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-0.5">
-          <div className="w-2 h-2 rounded-full flex-none" style={{ backgroundColor: dotColor }} />
-          <span className="text-[10px] font-semibold tracking-wider uppercase" style={{ color: NAV.textMuted }}>
-            {subjectLabel} · Урок {tile.lesson}
-          </span>
-        </div>
-        {tile.title && (
-          <p className="text-sm font-semibold leading-snug" style={{ color: NAV.text }}>{tile.title}</p>
-        )}
-      </div>
-      {/* Play бутон */}
-      <div
-        className="flex-none w-11 h-11 rounded-full flex items-center justify-center"
-        style={{ backgroundColor: NAV.btnSolid }}
-        aria-hidden="true"
-      >
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="5,3 15,9 5,15" fill="white" />
-        </svg>
-      </div>
-    </button>
-  );
-}
