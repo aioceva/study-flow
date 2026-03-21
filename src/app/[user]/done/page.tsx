@@ -95,7 +95,7 @@ export default function DonePage() {
         <div className="flex-none px-5 pb-8">
           <button
             onClick={() => navigate(`/${user}`)}
-            className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm text-center"
+            className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-base text-center"
             style={{ backgroundColor: NAV.btnSolid }}
           >
             Към началото
@@ -130,14 +130,14 @@ export default function DonePage() {
       <div className="flex-none px-5 pb-8 space-y-2">
         <button
           onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
-          className="btn-press w-full rounded-xl text-white font-semibold text-sm text-center"
+          className="btn-press w-full rounded-xl text-white font-semibold text-base text-center"
           style={{ backgroundColor: NAV.btnSolid, height: 52 }}
         >
           Провери знанията си →
         </button>
         <button
           onClick={() => navigate(`/${user}`)}
-          className="btn-press w-full rounded-xl font-semibold text-sm text-center"
+          className="btn-press w-full rounded-xl font-semibold text-base text-center"
           style={{ backgroundColor: NAV.surface, color: NAV.text, height: 52 }}
         >
           За днес толкова

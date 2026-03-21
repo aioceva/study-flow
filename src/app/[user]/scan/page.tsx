@@ -120,7 +120,7 @@ export default function ScanPage() {
             <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
         </button>
-        <h1 className="text-lg font-bold" style={{ color: NAV.text }}>Сканирай урок</h1>
+        <h1 className="text-xl font-bold" style={{ color: NAV.text }}>Сканирай урок</h1>
       </div>
 
       {/* Съдържание */}
@@ -153,7 +153,7 @@ export default function ScanPage() {
           <>
             <button
               onClick={() => inputRef.current?.click()}
-              className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2"
+              className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-base flex items-center justify-center gap-2"
               style={{ backgroundColor: NAV.btnSolid }}
             >
               <span>📷</span>
@@ -174,7 +174,7 @@ export default function ScanPage() {
             <button
               onClick={() => { setPreview(null); setFile(null); inputRef.current?.click(); }}
               disabled={recognizing}
-              className="btn-press w-full rounded-xl py-3 font-semibold text-sm disabled:opacity-60"
+              className="btn-press w-full rounded-xl py-3 font-semibold text-base disabled:opacity-60"
               style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
             >
               Снимай отново

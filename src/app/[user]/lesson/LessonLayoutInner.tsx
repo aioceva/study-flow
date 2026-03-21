@@ -150,14 +150,14 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
         <div className="px-4 pb-6 flex gap-3">
           <button
             onClick={() => navigate(`/${user}/lesson/${sepFrom}/5?${params}`)}
-            className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-2xl"
+            className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-xl"
             style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
           >
             ←
           </button>
           <button
             onClick={() => navigate(`/${user}/lesson/${sepTo}/1?${params}`)}
-            className="btn-press flex-1 rounded-xl text-white font-bold text-2xl flex items-center justify-center"
+            className="btn-press flex-1 rounded-xl text-white font-bold text-xl flex items-center justify-center"
             style={{ backgroundColor: NAV.btnSolid, height: 56 }}
           >
             →
@@ -209,14 +209,14 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
             ? navigate(`/${user}/confirm?${params}`)
             : navigate(prevStep(user, moduleId, cardId, params))
           }
-          className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-2xl"
+          className="btn-press flex-1 rounded-xl flex items-center justify-center font-bold text-xl"
           style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
         >
           ←
         </button>
         <button
           onClick={() => navigate(nextStep(user, moduleId, cardId, params))}
-          className="btn-press flex-1 rounded-xl text-white font-bold text-2xl flex items-center justify-center"
+          className="btn-press flex-1 rounded-xl text-white font-bold text-xl flex items-center justify-center"
           style={{ backgroundColor: MODULE_BTN[moduleId], height: 56 }}
         >
           →

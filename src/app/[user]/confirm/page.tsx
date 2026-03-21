@@ -53,7 +53,7 @@ export default function ConfirmPage() {
               <path d="M19 12H5M12 5l-7 7 7 7" />
             </svg>
           </button>
-          <h1 className="text-lg font-bold" style={{ color: NAV.text }}>
+          <h1 className="text-xl font-bold" style={{ color: NAV.text }}>
             {subjectLabel} · Урок {lesson}
           </h1>
         </div>
@@ -92,10 +92,10 @@ export default function ConfirmPage() {
           >
             <div className="flex items-center gap-3 p-3">
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-semibold tracking-wider uppercase mb-0.5" style={{ color: NAV.textMuted }}>
+                <p className="text-sm font-semibold tracking-wider uppercase mb-0.5" style={{ color: NAV.textMuted }}>
                   Проверка на знанията
                 </p>
-                <p className="text-sm font-semibold" style={{ color: NAV.text }}>
+                <p className="text-base font-semibold" style={{ color: NAV.text }}>
                   Спомни си урока
                 </p>
               </div>
