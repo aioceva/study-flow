@@ -3,6 +3,7 @@
 import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Sessions, SUBJECT_LABELS, Subject, NAV } from "@/types";
+import Link from "next/link";
 
 interface IndexEntry {
   subject: string;
@@ -48,6 +49,7 @@ export default function UserHome() {
   const router = useRouter();
   const [tiles, setTiles] = useState<LessonTile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -93,8 +95,51 @@ export default function UserHome() {
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: NAV.bg }}>
 
+      {/* Хамбургер overlay */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 z-50 flex"
+          onClick={() => setMenuOpen(false)}
+        >
+          {/* Drawer */}
+          <div
+            className="w-64 h-full flex flex-col py-8 px-6"
+            style={{ backgroundColor: NAV.bg, borderRight: `1px solid ${NAV.border}` }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="btn-press self-end mb-6 p-2"
+              aria-label="Затвори менюто"
+              onClick={() => setMenuOpen(false)}
+              style={{ color: NAV.text }}
+            >
+              ✕
+            </button>
+            <Link
+              href={`/${user}/parent`}
+              className="btn-press text-base font-semibold py-3 px-4 rounded-xl"
+              style={{ color: NAV.text, backgroundColor: NAV.surface }}
+              onClick={() => setMenuOpen(false)}
+            >
+              История
+            </Link>
+          </div>
+          {/* Тъмен фон */}
+          <div className="flex-1" style={{ backgroundColor: "rgba(0,0,0,0.4)" }} />
+        </div>
+      )}
+
       {/* Хедър */}
-      <div className="px-4 pt-6 pb-5" style={{ backgroundColor: NAV.headerBg }}>
+      <div className="px-4 pt-6 pb-5 flex items-center gap-3" style={{ backgroundColor: NAV.headerBg }}>
+        <button
+          className="btn-press flex flex-col gap-1 p-1"
+          aria-label="Меню"
+          onClick={() => setMenuOpen(true)}
+        >
+          <span className="block w-5 h-0.5 bg-white rounded" />
+          <span className="block w-5 h-0.5 bg-white rounded" />
+          <span className="block w-5 h-0.5 bg-white rounded" />
+        </button>
         <h1 className="text-white font-bold text-xl">Здравей, {displayName}! 👋</h1>
       </div>
 
@@ -153,26 +198,34 @@ function LessonCard({
   function navigate(url: string) { setTimeout(() => router.push(url), 150); }
 
   return (
-    <div
-      className="rounded-xl p-3"
+    <button
+      className="btn-press w-full rounded-xl p-3 flex items-center gap-3 text-left"
       style={{ backgroundColor: NAV.surface, border: `1px solid ${NAV.border}` }}
+      onClick={() => navigate(`/${user}/confirm?subject=${tile.subject}&lesson=${tile.lesson}&title=${encodeURIComponent(tile.title)}`)}
+      aria-label={`Отвори ${subjectLabel} урок ${tile.lesson}`}
     >
-      <div className="flex items-center gap-2 mb-1">
-        <div className="w-2 h-2 rounded-full flex-none" style={{ backgroundColor: dotColor }} />
-        <span className="text-[10px] font-semibold tracking-wider uppercase" style={{ color: NAV.textMuted }}>
-          {subjectLabel} · Урок {tile.lesson}
-        </span>
+      {/* Текстово съдържание */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-0.5">
+          <div className="w-2 h-2 rounded-full flex-none" style={{ backgroundColor: dotColor }} />
+          <span className="text-[10px] font-semibold tracking-wider uppercase" style={{ color: NAV.textMuted }}>
+            {subjectLabel} · Урок {tile.lesson}
+          </span>
+        </div>
+        {tile.title && (
+          <p className="text-sm font-semibold leading-snug" style={{ color: NAV.text }}>{tile.title}</p>
+        )}
       </div>
-      {tile.title && (
-        <p className="text-sm font-semibold mb-2 leading-snug" style={{ color: NAV.text }}>{tile.title}</p>
-      )}
-      <button
-        onClick={() => navigate(`/${user}/confirm?subject=${tile.subject}&lesson=${tile.lesson}&title=${encodeURIComponent(tile.title)}`)}
-        className="btn-press w-full rounded-lg py-2 text-xs font-semibold text-center"
-        style={{ backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
+      {/* Play бутон */}
+      <div
+        className="flex-none w-11 h-11 rounded-full flex items-center justify-center"
+        style={{ backgroundColor: NAV.btnSolid }}
+        aria-hidden="true"
       >
-        Отвори урока
-      </button>
-    </div>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="5,3 15,9 5,15" fill="white" />
+        </svg>
+      </div>
+    </button>
   );
 }
