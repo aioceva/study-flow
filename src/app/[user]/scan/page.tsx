@@ -153,7 +153,7 @@ export default function ScanPage() {
           <>
             <button
               onClick={() => inputRef.current?.click()}
-              className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-base flex items-center justify-center gap-2"
+              className="btn-press w-full rounded-xl py-3.5 text-white font-medium text-base flex items-center justify-center gap-2"
               style={{ backgroundColor: NAV.btnSolid }}
             >
               <span>📷</span>
@@ -174,7 +174,7 @@ export default function ScanPage() {
             <button
               onClick={() => { setPreview(null); setFile(null); inputRef.current?.click(); }}
               disabled={recognizing}
-              className="btn-press w-full rounded-xl py-3 font-semibold text-base disabled:opacity-60"
+              className="btn-press w-full rounded-xl py-3 font-medium text-base disabled:opacity-60"
               style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
             >
               Снимай отново
