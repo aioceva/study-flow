@@ -105,28 +105,23 @@ export function SessionList({
                       </span>
                     </div>
 
-                    {/* Процент — кликаем ако има грешки */}
+                    {/* Процент */}
                     {errors.length > 0 ? (
                       <button
                         onClick={() => setExpanded(isOpen ? null : key)}
-                        className="btn-press flex flex-col items-end"
-                        style={{ gap: 2 }}
+                        className="btn-press"
+                        style={{
+                          cursor: "pointer",
+                          backgroundColor: isOpen ? "#FEF2F2" : "transparent",
+                          borderRadius: 8,
+                          padding: "4px 10px",
+                          transition: "background-color 0.15s",
+                        }}
                         aria-expanded={isOpen}
                         aria-label="Виж грешките"
                       >
-                        <span
-                          className="text-base"
-                          style={{
-                            color: scoreColor(score, total),
-                            textDecoration: "underline",
-                            textDecorationStyle: "dotted",
-                            textUnderlineOffset: 3,
-                          }}
-                        >
+                        <span className="text-base" style={{ color: scoreColor(score, total) }}>
                           {toPercent(score, total)}
-                        </span>
-                        <span className="text-sm" style={{ color: NAV.textMuted }}>
-                          {isOpen ? "▲" : "▼"}
                         </span>
                       </button>
                     ) : (
@@ -140,14 +135,14 @@ export function SessionList({
                   {isOpen && wrongQs.length > 0 && (
                     <div
                       style={{
-                        borderTop: `1px solid ${NAV.border}`,
+                        backgroundColor: "#FEF2F2",
                         padding: "12px 16px",
                         display: "flex",
                         flexDirection: "column",
                         gap: 10,
                       }}
                     >
-                      <p className="text-sm" style={{ color: NAV.textMuted }}>
+                      <p className="text-sm" style={{ color: "#EF4444" }}>
                         Грешни въпроси
                       </p>
                       {wrongQs.map((q) => {
