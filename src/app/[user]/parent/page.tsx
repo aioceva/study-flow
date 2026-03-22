@@ -1,16 +1,17 @@
 import Link from "next/link";
 import { readJSON } from "@/lib/github";
-import { Sessions, Session, SUBJECT_LABELS, Subject, NAV } from "@/types";
+import { Sessions, Session, Quiz, NAV } from "@/types";
+import { SessionList, QuizMap } from "./SessionList";
 
 export const dynamic = "force-dynamic";
 
 // ─── helpers ───────────────────────────────────────────────────────────────
 
-const BG_DAYS   = ["Нд", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 const BG_MONTHS = [
   "януари","февруари","март","април","май","юни",
   "юли","август","септември","октомври","ноември","декември",
 ];
+
 function fmtDate(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   return `${d} ${BG_MONTHS[m - 1]} ${y}`;
@@ -37,11 +38,10 @@ function getWeekDays(weekOffset: number): { dateStr: string; label: string; dayN
 function weekMonthLabel(days: { dateStr: string }[]): string {
   const first = new Date(days[0].dateStr);
   const last  = new Date(days[6].dateStr);
-  const mFirst = BG_MONTHS[first.getMonth()];
-  const mLast  = BG_MONTHS[last.getMonth()];
-  const year   = last.getFullYear();
-  if (first.getMonth() === last.getMonth()) return `${mFirst} ${year}`;
-  return `${mFirst} – ${mLast} ${year}`;
+  const year  = last.getFullYear();
+  if (first.getMonth() === last.getMonth())
+    return `${BG_MONTHS[first.getMonth()]} ${year}`;
+  return `${BG_MONTHS[first.getMonth()]} – ${BG_MONTHS[last.getMonth()]} ${year}`;
 }
 
 function sessionScore(s: Session): { score: number; total: number } {
@@ -54,14 +54,7 @@ function sessionScore(s: Session): { score: number; total: number } {
   return { score: s.score, total: s.total };
 }
 
-function scoreColor(score: number, total: number): string {
-  const pct = total > 0 ? score / total : 0;
-  if (pct >= 0.8) return "#22C55E";
-  if (pct >= 0.6) return "#F59E0B";
-  return "#EF4444";
-}
-
-// ─── компонент ─────────────────────────────────────────────────────────────
+// ─── страница ──────────────────────────────────────────────────────────────
 
 export default async function ParentPage({
   params,
@@ -75,19 +68,33 @@ export default async function ParentPage({
   const weekOffset = Math.min(0, parseInt(sp.week ?? "0", 10) || 0);
   const displayName = user.charAt(0).toUpperCase() + user.slice(1);
 
+  // Зареди сесии
   const result = await readJSON<Sessions>(`users/${user}/sessions/sessions.json`);
   const sessions: Session[] = result?.data?.sessions ?? [];
 
-  // ── Горен блок: обобщение ───────────────────────────────────────────────
+  // Зареди quiz данни за всеки уникален урок (за грешните въпроси)
+  const lessonKeys = [...new Set(sessions.map((s) => `${s.subject}-${s.lesson}`))];
+  const quizEntries = await Promise.all(
+    lessonKeys.map(async (key) => {
+      const [subject, lesson] = key.split("-");
+      const r = await readJSON<Quiz>(
+        `users/${user}/adaptations/${subject}/lesson-${lesson}/quiz.json`
+      );
+      return [key, r?.data?.questions ?? []] as const;
+    })
+  );
+  const quizMap: QuizMap = Object.fromEntries(quizEntries);
 
-  const weekDays = getWeekDays(weekOffset);
-  const monthLabel = weekMonthLabel(weekDays);
+  // ── Горен блок ──────────────────────────────────────────────────────────
+
+  const weekDays     = getWeekDays(weekOffset);
+  const monthLabel   = weekMonthLabel(weekDays);
   const isCurrentWeek = weekOffset >= 0;
-  const sessionDays = new Set(sessions.map((s) => s.date));
+  const sessionDays  = new Set(sessions.map((s) => s.date));
+  const todayStr     = new Date().toISOString().slice(0, 10);
 
-  const totalSessions = sessions.length;
-
-  const uniqueLessons = new Set(sessions.map((s) => `${s.subject}-${s.lesson}`)).size;
+  const totalSessions  = sessions.length;
+  const uniqueLessons  = new Set(sessions.map((s) => `${s.subject}-${s.lesson}`)).size;
 
   const scores = sessions.map((s) => {
     const { score, total } = sessionScore(s);
@@ -97,14 +104,11 @@ export default async function ParentPage({
     ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 100)
     : null;
 
-  const lastSession = sessions.length > 0 ? sessions[sessions.length - 1] : null;
-  const lastDateLabel = lastSession
-    ? fmtDate(lastSession.date)
-    : "—";
+  const lastSession    = sessions.at(-1);
+  const lastDateLabel  = lastSession ? fmtDate(lastSession.date) : "—";
 
-  // ── Среден блок: хронология ─────────────────────────────────────────────
+  // ── Среден блок ─────────────────────────────────────────────────────────
 
-  // Групирай по дата, новото отгоре
   const grouped: Record<string, Session[]> = {};
   for (const s of [...sessions].reverse()) {
     if (!grouped[s.date]) grouped[s.date] = [];
@@ -117,7 +121,7 @@ export default async function ParentPage({
   return (
     <div className="flex flex-col" style={{ minHeight: "100dvh", backgroundColor: NAV.bg }}>
 
-      {/* Хедър — scan-style */}
+      {/* Хедър */}
       <div className="flex-none flex items-center px-4 py-3" style={{ gap: 8 }}>
         <Link
           href={`/${user}`}
@@ -137,12 +141,12 @@ export default async function ParentPage({
 
       <div className="flex-1 px-4 pb-8 space-y-5">
 
-        {/* ═══ ГОРЕН БЛОК ════════════════════════════════════════════════ */}
+        {/* ═══ ГОРЕН БЛОК ═══════════════════════════════════════════════ */}
 
-        {/* Седмичен стрип с навигация */}
+        {/* Седмичен стрип */}
         <div className="rounded-xl p-4" style={{ backgroundColor: NAV.surface }}>
 
-          {/* Навигационен ред: ← месец → */}
+          {/* Навигация: ← месец → */}
           <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
             <Link
               href={`/${user}/parent?week=${weekOffset - 1}`}
@@ -178,8 +182,8 @@ export default async function ParentPage({
           {/* Дни */}
           <div className="flex justify-between">
             {weekDays.map(({ dateStr, label, dayNum }) => {
-              const active = sessionDays.has(dateStr);
-              const isToday = dateStr === new Date().toISOString().slice(0, 10);
+              const active  = sessionDays.has(dateStr);
+              const isToday = dateStr === todayStr;
               return (
                 <div key={dateStr} className="flex flex-col items-center" style={{ gap: 4, flex: 1 }}>
                   <span className="text-sm" style={{ color: NAV.textMuted }}>{label}</span>
@@ -218,75 +222,23 @@ export default async function ParentPage({
           <StatCard label="Последно учи" value={lastDateLabel} small />
         </div>
 
-        {/* ═══ СРЕДЕН БЛОК ════════════════════════════════════════════════ */}
+        {/* ═══ СРЕДЕН БЛОК ══════════════════════════════════════════════ */}
 
         <div>
           <p className="text-sm" style={{ color: NAV.textMuted, marginBottom: 10 }}>
             Всички сесии
           </p>
-
           {sessions.length === 0 ? (
             <p className="text-base" style={{ color: NAV.textMuted }}>
               Все още няма записани сесии.
             </p>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              {sortedDates.map((date) => (
-                <div key={date}>
-                  {/* Дата — group header */}
-                  <p className="text-sm" style={{ color: NAV.textMuted, marginBottom: 6 }}>
-                    {fmtDate(date)}
-                  </p>
-
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                    {grouped[date].map((s, i) => {
-                      const { score, total } = sessionScore(s);
-                      const subjectLabel = SUBJECT_LABELS[s.subject as Subject] ?? s.subject;
-                      const typeLabel = s.type === "learn" ? "Учене" : "Преговор";
-                      const typeBg   = s.type === "learn" ? "#EBF4FF" : "#F3EEFF";
-                      const typeColor = s.type === "learn" ? "#3B7DD8" : "#7B5EA7";
-
-                      return (
-                        <div
-                          key={i}
-                          className="rounded-xl px-4 py-3 flex items-center justify-between"
-                          style={{ backgroundColor: NAV.surface }}
-                        >
-                          {/* Ляво: час + предмет + урок */}
-                          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            <p className="text-sm" style={{ color: NAV.textMuted }}>
-                              {s.started_at ?? ""}
-                            </p>
-                            <p className="text-base" style={{ color: NAV.text }}>
-                              {subjectLabel} · Урок {s.lesson}
-                            </p>
-                            {/* Тип badge */}
-                            <span
-                              className="text-sm"
-                              style={{
-                                display: "inline-block",
-                                backgroundColor: typeBg,
-                                color: typeColor,
-                                borderRadius: 6,
-                                padding: "1px 8px",
-                                width: "fit-content",
-                              }}
-                            >
-                              {typeLabel}
-                            </span>
-                          </div>
-
-                          {/* Дясно: резултат */}
-                          <div className="text-base" style={{ color: scoreColor(score, total), minWidth: 40, textAlign: "right" }}>
-                            {score}/{total}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <SessionList
+              grouped={grouped}
+              sortedDates={sortedDates}
+              quizMap={quizMap}
+              fmtDate={fmtDate}
+            />
           )}
         </div>
 
@@ -295,29 +247,19 @@ export default async function ParentPage({
   );
 }
 
-// ─── Stat card ──────────────────────────────────────────────────────────────
+// ─── StatCard ──────────────────────────────────────────────────────────────
 
 function StatCard({
-  label,
-  value,
-  valueColor,
-  small = false,
+  label, value, valueColor, small = false,
 }: {
-  label: string;
-  value: string;
-  valueColor?: string;
-  small?: boolean;
+  label: string; value: string; valueColor?: string; small?: boolean;
 }) {
   return (
-    <div
-      className="rounded-xl p-4 flex flex-col justify-between"
-      style={{ backgroundColor: NAV.surface, minHeight: 72 }}
-    >
+    <div className="rounded-xl p-4 flex flex-col justify-between"
+      style={{ backgroundColor: NAV.surface, minHeight: 72 }}>
       <p className="text-sm" style={{ color: NAV.textMuted }}>{label}</p>
-      <p
-        className={small ? "text-base font-bold" : "text-xl font-bold"}
-        style={{ color: valueColor ?? NAV.text }}
-      >
+      <p className={small ? "text-base font-bold" : "text-xl font-bold"}
+        style={{ color: valueColor ?? NAV.text }}>
         {value}
       </p>
     </div>
