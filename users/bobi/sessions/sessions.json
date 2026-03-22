@@ -206,6 +206,22 @@
         18,
         2
       ]
+    },
+    {
+      "date": "2026-03-22",
+      "subject": "chem",
+      "lesson": 11,
+      "started_at": "10:05",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "score": 6,
+      "total": 10,
+      "errors": [
+        4,
+        11,
+        10,
+        5
+      ]
     }
   ]
 }
