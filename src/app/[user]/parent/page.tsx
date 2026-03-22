@@ -11,22 +11,17 @@ const BG_MONTHS = [
   "януари","февруари","март","април","май","юни",
   "юли","август","септември","октомври","ноември","декември",
 ];
-const BG_MONTHS_SHORT = [
-  "яну","фев","мар","апр","май","юни",
-  "юли","авг","сеп","окт","ное","дек",
-];
-
 function fmtDate(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   return `${d} ${BG_MONTHS[m - 1]} ${y}`;
 }
 
-function getThisWeekDays(): { dateStr: string; label: string; dayNum: number }[] {
+function getWeekDays(weekOffset: number): { dateStr: string; label: string; dayNum: number }[] {
   const now = new Date();
-  const dow = now.getDay(); // 0=Sun
+  const dow = now.getDay();
   const toMonday = dow === 0 ? -6 : 1 - dow;
   const monday = new Date(now);
-  monday.setDate(now.getDate() + toMonday);
+  monday.setDate(now.getDate() + toMonday + weekOffset * 7);
   monday.setHours(0, 0, 0, 0);
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(monday);
@@ -37,6 +32,16 @@ function getThisWeekDays(): { dateStr: string; label: string; dayNum: number }[]
       dayNum: d.getDate(),
     };
   });
+}
+
+function weekMonthLabel(days: { dateStr: string }[]): string {
+  const first = new Date(days[0].dateStr);
+  const last  = new Date(days[6].dateStr);
+  const mFirst = BG_MONTHS[first.getMonth()];
+  const mLast  = BG_MONTHS[last.getMonth()];
+  const year   = last.getFullYear();
+  if (first.getMonth() === last.getMonth()) return `${mFirst} ${year}`;
+  return `${mFirst} – ${mLast} ${year}`;
 }
 
 function sessionScore(s: Session): { score: number; total: number } {
@@ -60,10 +65,14 @@ function scoreColor(score: number, total: number): string {
 
 export default async function ParentPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ user: string }>;
+  searchParams: Promise<{ week?: string }>;
 }) {
   const { user } = await params;
+  const sp = await searchParams;
+  const weekOffset = Math.min(0, parseInt(sp.week ?? "0", 10) || 0);
   const displayName = user.charAt(0).toUpperCase() + user.slice(1);
 
   const result = await readJSON<Sessions>(`users/${user}/sessions/sessions.json`);
@@ -71,7 +80,9 @@ export default async function ParentPage({
 
   // ── Горен блок: обобщение ───────────────────────────────────────────────
 
-  const weekDays = getThisWeekDays();
+  const weekDays = getWeekDays(weekOffset);
+  const monthLabel = weekMonthLabel(weekDays);
+  const isCurrentWeek = weekOffset >= 0;
   const sessionDays = new Set(sessions.map((s) => s.date));
 
   const totalSessions = sessions.length;
@@ -128,11 +139,43 @@ export default async function ParentPage({
 
         {/* ═══ ГОРЕН БЛОК ════════════════════════════════════════════════ */}
 
-        {/* Седмичен стрип */}
+        {/* Седмичен стрип с навигация */}
         <div className="rounded-xl p-4" style={{ backgroundColor: NAV.surface }}>
-          <p className="text-sm" style={{ color: NAV.textMuted, marginBottom: 12 }}>
-            Тази седмица
-          </p>
+
+          {/* Навигационен ред: ← месец → */}
+          <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+            <Link
+              href={`/${user}/parent?week=${weekOffset - 1}`}
+              className="btn-press w-8 h-8 flex items-center justify-center"
+              style={{ opacity: 0.55 }}
+              aria-label="Предишна седмица"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 12H5M12 5l-7 7 7 7" />
+              </svg>
+            </Link>
+
+            <span className="text-sm" style={{ color: NAV.text }}>{monthLabel}</span>
+
+            {isCurrentWeek ? (
+              <div className="w-8 h-8" style={{ opacity: 0 }} aria-hidden />
+            ) : (
+              <Link
+                href={`/${user}/parent?week=${weekOffset + 1}`}
+                className="btn-press w-8 h-8 flex items-center justify-center"
+                style={{ opacity: 0.55 }}
+                aria-label="Следваща седмица"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                  stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+            )}
+          </div>
+
+          {/* Дни */}
           <div className="flex justify-between">
             {weekDays.map(({ dateStr, label, dayNum }) => {
               const active = sessionDays.has(dateStr);
