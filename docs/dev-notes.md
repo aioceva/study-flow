@@ -1,6 +1,6 @@
 # Study Flow — Dev Notes & Капани
 
-_Последна актуализация: 17 Март 2026_
+_Последна актуализация: 22 Март 2026_
 
 Натрупани уроци от разработката. Прочети преди да пишеш код.
 
@@ -18,8 +18,6 @@ _Последна актуализация: 17 Март 2026_
 export default function SeparatorPage() {
   return null;
 }
-
-// ❌ ГРЕШНО — старата версия имаше собствен UI тук
 ```
 
 ### Динамичният [user] route поглъща всичко
@@ -34,7 +32,6 @@ export default function SeparatorPage() {
 ### CSS :active без navigate delay не работи
 
 `:active` е видим само докато пръстът е на екрана. `onClick` fires на `pointerup`.
-Ако `router.push()` се извика директно в `onClick` — страницата се сменя преди анимацията да се види.
 
 ```tsx
 // ❌ ГРЕШНО
@@ -44,7 +41,6 @@ export default function SeparatorPage() {
 function navigate(url: string) {
   setTimeout(() => startTransition(() => router.push(url)), 150);
 }
-<button onClick={() => navigate(url)}>
 ```
 
 ### SVG emoji в `<text>` не работи на iOS Safari
@@ -68,14 +64,10 @@ function navigate(url: string) {
 ### Hooks преди conditional returns (React Rules of Hooks)
 
 `useSwipeable` и всички hooks трябва да са преди `if (!isCardPage) return`.
-React error #300 ако не е спазено.
 
 ### Lazy useState за sessionStorage (избягва "Зарежда...")
 
 ```tsx
-// ❌ БАВНО — зарежда се в useEffect, показва loading state
-const [adaptation, setAdaptation] = useState<Adaptation | null>(null);
-
 // ✅ БЪРЗО — синхронно от sessionStorage при първи render
 const [adaptation, setAdaptation] = useState<Adaptation | null>(() => {
   if (typeof window === "undefined") return null;
@@ -87,7 +79,6 @@ const [adaptation, setAdaptation] = useState<Adaptation | null>(() => {
 ### startTransition около router.push
 
 ```tsx
-// По-плавна навигация — текущият екран остава докато новият се зарежда
 startTransition(() => router.push(url))
 ```
 
@@ -109,7 +100,6 @@ startTransition(() => router.push(url))
 ### vercel.json ignoreCommand
 
 `/users/` папката съдържа данни на потребителите. Промените там не трябва да trigger-ват нов deploy.
-Проверено е в `vercel.json`.
 
 ### git push rejected
 
@@ -117,25 +107,38 @@ startTransition(() => router.push(url))
 
 ---
 
-## Имплементирани функционалности (Март 2026)
+## Имплементирани функционалности
 
+### Core (Март 2026)
 - ✅ Сканиране и AI генерация (Claude Vision + Claude)
 - ✅ Rate limiting: 1 адаптация на 24 часа (`rate-limit.json` в GitHub)
 - ✅ 4 модула × 5 карти с swipe навигация
 - ✅ Quiz 1 (след модул 2) + Quiz 2 (след модул 4)
 - ✅ Reinforcement quiz (10 random от 20)
-- ✅ Reinforcement result: "X от 10 познати!", "Опитай пак" / "Приключих с урока"
+- ✅ Reinforcement result: "X от 10", прогрес бар, "Ти научи X неща днес"
 - ✅ Запис на сесии в `sessions.json`
 - ✅ Home с последни уроци tiles (групирани по дата)
-- ✅ Confirm екран: hub за learn/review, показва последен резултат от преговор
-- ✅ Separator / Done екрани (консистентен дизайн)
-- ✅ Separator показва "Завърши секция X от 4!"
+- ✅ Confirm екран: hub за learn/review, показва последен резултат
+- ✅ Separator / Done екрани
 - ✅ btn-press анимация на всички бутони
-- ✅ Консистентен ‹ back бутон на всички екрани
-- ✅ Anti-flickering (lazy adaptation с subject/lesson валидация, startTransition, null page.tsx)
+- ✅ Anti-flickering (lazy adaptation, startTransition, null page.tsx)
 - ✅ SVG trophy icon (без emoji)
+
+### UX overhaul (22 Март 2026)
+- ✅ Глобален хедър паттерн: scan-style (← icon opacity 0.55 + title inline, 🏠 opacity 0.4, без box backgrounds)
+- ✅ Типография: само 3 размера (text-xl / text-base / text-sm)
+- ✅ Bold: само в h1 заглавия и card titles — премахнат от бутони, въпроси, отговори, labels
+- ✅ Secondary бутони: без border — само NAV.surface фон
+- ✅ Навигационни стрелки: само ← → символи (без текст)
+- ✅ Основен цвят: #2C3E5D → #4A6FA5 (по-мек, по-малко контрастен)
+- ✅ Confirm: карти горе (не центрирани), заглавие в хедъра
+- ✅ Quiz екрани: само NAV палитра (без модулни цветове)
+- ✅ Drawer меню: "История" → "Дневник"
+- ✅ Прогрес бар: сегменти (4 модула) в реда с 🏠 — не отделна лента
+
+---
 
 ## Предстои
 
-- [ ] Родителски изглед (`/[user]/parent`)
+- 🔄 Дневник (`/[user]/parent`): Горен блок (обобщение) + Среден блок (timeline сесии)
 - [ ] Prefetch на следващия route за по-бърза навигация
