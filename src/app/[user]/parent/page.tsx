@@ -237,7 +237,6 @@ export default async function ParentPage({
               grouped={grouped}
               sortedDates={sortedDates}
               quizMap={quizMap}
-              fmtDate={fmtDate}
             />
           )}
         </div>
