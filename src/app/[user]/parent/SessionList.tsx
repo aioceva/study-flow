@@ -3,6 +3,16 @@
 import { useState } from "react";
 import { Session, SUBJECT_LABELS, Subject, NAV, QuizQuestion } from "@/types";
 
+const BG_MONTHS = [
+  "януари","февруари","март","април","май","юни",
+  "юли","август","септември","октомври","ноември","декември",
+];
+
+function fmtDate(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${d} ${BG_MONTHS[m - 1]} ${y}`;
+}
+
 export type QuizMap = Record<string, QuizQuestion[]>; // "subject-lesson" → въпроси
 
 function sessionScore(s: Session): { score: number; total: number } {
@@ -37,12 +47,10 @@ export function SessionList({
   grouped,
   sortedDates,
   quizMap,
-  fmtDate,
 }: {
   grouped: Record<string, Session[]>;
   sortedDates: string[];
   quizMap: QuizMap;
-  fmtDate: (iso: string) => string;
 }) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
