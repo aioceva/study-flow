@@ -4,22 +4,11 @@ import { generatePrompt } from "@/prompts/generate";
 import { readJSON, writeJSON } from "@/lib/github";
 
 const client = new Anthropic();
-const RATE_LIMIT_PATH = "rate-limit.json";
 const MAX_PER_DAY = 5;
+const MAX_TOTAL = 10;
 
 export async function POST(req: NextRequest) {
   try {
-    // Проверка: max 5 генерации на ден
-    const today = new Date().toISOString().split("T")[0];
-    const rateFile = await readJSON<{ date: string; count: number }>(RATE_LIMIT_PATH);
-    const todayCount = rateFile?.data.date === today ? rateFile.data.count : 0;
-    if (todayCount >= MAX_PER_DAY) {
-      return NextResponse.json(
-        { error: `Достигна лимита от ${MAX_PER_DAY} урока за днес. Опитай утре.` },
-        { status: 429 }
-      );
-    }
-
     const formData = await req.formData();
     const file = formData.get("image") as File;
     const subject = formData.get("subject") as string;
@@ -28,8 +17,35 @@ export async function POST(req: NextRequest) {
     const title = formData.get("title") as string;
     const user = formData.get("user") as string;
 
-    if (!file || !subject || !lesson) {
+    if (!file || !subject || !lesson || !user) {
       return NextResponse.json({ error: "Липсват данни" }, { status: 400 });
+    }
+
+    // Проверка: общ лимит от 10 адаптации за пилота
+    const indexResult = await readJSON<{ subject: string; lesson: number }[]>(
+      `users/${user}/adaptations/_index.json`
+    );
+    const adaptationCount = (indexResult?.data ?? []).length;
+    if (adaptationCount >= MAX_TOTAL) {
+      return NextResponse.json(
+        {
+          error:
+            "Достигна лимита от 10 урока за пилота. Свържете се с Анни Йоцева за следващите стъпки.",
+        },
+        { status: 429 }
+      );
+    }
+
+    // Проверка: max 5 генерации на ден (per-user)
+    const today = new Date().toISOString().split("T")[0];
+    const ratePath = `users/${user}/rate-limit.json`;
+    const rateFile = await readJSON<{ date: string; count: number }>(ratePath);
+    const todayCount = rateFile?.data.date === today ? rateFile.data.count : 0;
+    if (todayCount >= MAX_PER_DAY) {
+      return NextResponse.json(
+        { error: `Достигна лимита от ${MAX_PER_DAY} урока за днес. Опитай утре.` },
+        { status: 429 }
+      );
     }
 
     const bytes = await file.arrayBuffer();
@@ -64,8 +80,8 @@ export async function POST(req: NextRequest) {
 
     const adaptation = JSON.parse(jsonMatch[0]);
 
-    // Записваме брояча за деня
-    await writeJSON(RATE_LIMIT_PATH, { date: today, count: todayCount + 1 }, rateFile?.sha);
+    // Записваме per-user брояча за деня
+    await writeJSON(ratePath, { date: today, count: todayCount + 1 }, rateFile?.sha);
 
     return NextResponse.json(adaptation);
   } catch (err) {

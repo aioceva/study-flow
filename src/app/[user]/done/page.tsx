@@ -5,6 +5,7 @@ import { useEffect, useRef, startTransition } from "react";
 import { SUBJECT_LABELS, Subject, NAV } from "@/types";
 import Image from "next/image";
 import { LessonCard } from "@/components/LessonCard";
+import { FeedbackButton } from "@/components/FeedbackButton";
 
 export default function DonePage() {
   const { user } = useParams<{ user: string }>();
@@ -56,17 +57,20 @@ export default function DonePage() {
 
   // ── Shared home icon ────────────────────────────────────────────────────────
   const homeIconBtn = (
-    <button
-      onClick={() => navigate(`/${user}`)}
-      className="btn-press w-8 h-8 flex items-center justify-center"
-      style={{ opacity: 0.4 }}
-      aria-label="Начало"
-    >
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
-        <path d="M9 21V12h6v9" />
-      </svg>
-    </button>
+    <div className="flex items-center gap-1">
+      <FeedbackButton user={user} />
+      <button
+        onClick={() => navigate(`/${user}`)}
+        className="btn-press w-8 h-8 flex items-center justify-center"
+        style={{ opacity: 0.4 }}
+        aria-label="Начало"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+          <path d="M9 21V12h6v9" />
+        </svg>
+      </button>
+    </div>
   );
 
   // ── Review mode ─────────────────────────────────────────────────────────────

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { readJSON } from "@/lib/github";
 import { Sessions, Session, Quiz, NAV } from "@/types";
 import { SessionList, QuizMap } from "./SessionList";
+import { FeedbackButton } from "@/components/FeedbackButton";
 
 export const dynamic = "force-dynamic";
 
@@ -122,21 +123,24 @@ export default async function ParentPage({
     <div className="flex flex-col" style={{ minHeight: "100dvh", backgroundColor: NAV.bg }}>
 
       {/* Хедър */}
-      <div className="flex-none flex items-center px-4 py-3" style={{ gap: 8 }}>
-        <Link
-          href={`/${user}`}
-          className="btn-press w-8 h-8 flex items-center justify-center"
-          style={{ opacity: 0.55 }}
-          aria-label="Назад"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M12 5l-7 7 7 7" />
-          </svg>
-        </Link>
-        <h1 className="text-xl font-bold" style={{ color: NAV.text }}>
-          Дневник · {displayName}
-        </h1>
+      <div className="flex-none flex items-center justify-between px-4 py-3">
+        <div className="flex items-center" style={{ gap: 8 }}>
+          <Link
+            href={`/${user}`}
+            className="btn-press w-8 h-8 flex items-center justify-center"
+            style={{ opacity: 0.55 }}
+            aria-label="Назад"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+          </Link>
+          <h1 className="text-xl font-bold" style={{ color: NAV.text }}>
+            Дневник · {displayName}
+          </h1>
+        </div>
+        <FeedbackButton user={user} />
       </div>
 
       <div className="flex-1 px-4 pb-8 space-y-5">

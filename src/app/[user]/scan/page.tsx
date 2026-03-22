@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useRef, useState, startTransition } from "react";
 import { NAV } from "@/types";
+import { FeedbackButton } from "@/components/FeedbackButton";
 
 async function compressImage(file: File): Promise<{ blob: Blob; base64: string; type: string }> {
   const MAX_SIZE = 1600;
@@ -109,18 +110,21 @@ export default function ScanPage() {
     <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
 
       {/* Хедър */}
-      <div className="flex-none flex items-center gap-3 px-4 py-3">
-        <button
-          onClick={() => navigate(`/${user}`)}
-          className="btn-press w-8 h-8 flex items-center justify-center"
-          style={{ opacity: 0.5 }}
-          aria-label="Назад"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M12 5l-7 7 7 7" />
-          </svg>
-        </button>
-        <h1 className="text-xl font-bold" style={{ color: NAV.text }}>Сканирай урок</h1>
+      <div className="flex-none flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate(`/${user}`)}
+            className="btn-press w-8 h-8 flex items-center justify-center"
+            style={{ opacity: 0.5 }}
+            aria-label="Назад"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+          </button>
+          <h1 className="text-xl font-bold" style={{ color: NAV.text }}>Сканирай урок</h1>
+        </div>
+        <FeedbackButton user={user} />
       </div>
 
       {/* Съдържание */}

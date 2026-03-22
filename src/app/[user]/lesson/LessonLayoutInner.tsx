@@ -4,6 +4,7 @@ import { useParams, usePathname, useRouter, useSearchParams } from "next/navigat
 import { useEffect, useRef, useState, startTransition } from "react";
 import { useSwipeable } from "react-swipeable";
 import { Adaptation, MODULE_COLORS, MODULE_SURFACE, MODULE_PROGRESS, MODULE_BTN, NAV, SUBJECT_LABELS, Subject } from "@/types";
+import { FeedbackButton } from "@/components/FeedbackButton";
 import { nextStep, prevStep, nextButtonLabel } from "@/lib/navigation";
 
 export default function LessonLayoutInner({ children }: { children: React.ReactNode }) {
@@ -131,6 +132,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           </div>
         ))}
       </div>
+      <FeedbackButton user={user} />
       {homeIcon}
     </div>
   );
@@ -139,7 +141,8 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   if (isSeparator) {
     return (
       <div className="flex flex-col" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
-        <div className="flex-none flex items-center justify-end px-4 py-2">
+        <div className="flex-none flex items-center justify-end gap-1 px-4 py-2">
+          <FeedbackButton user={user} />
           {homeIcon}
         </div>
         <div className="flex-1 flex flex-col items-center justify-center px-4 gap-2.5 text-center">
