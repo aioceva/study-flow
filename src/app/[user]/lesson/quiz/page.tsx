@@ -3,6 +3,7 @@
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, startTransition } from "react";
 import { Quiz, QuizQuestion, NAV } from "@/types";
+import { FeedbackButton } from "@/components/FeedbackButton";
 
 export default function QuizPage() {
   const { user } = useParams<{ user: string }>();
@@ -115,6 +116,7 @@ export default function QuizPage() {
             />
           ))}
         </div>
+        <FeedbackButton user={user} />
         <button
           onClick={() => navigate(`/${user}`)}
           className="btn-press w-10 h-10 flex items-center justify-center"

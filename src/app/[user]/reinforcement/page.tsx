@@ -3,6 +3,7 @@
 import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Sessions, SUBJECT_LABELS, Subject, NAV } from "@/types";
+import { FeedbackButton } from "@/components/FeedbackButton";
 
 interface QuizResult {
   date: string;
@@ -63,12 +64,13 @@ export default function ReinforcementPage() {
             <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
         </button>
-        <div>
+        <div className="flex-1">
           <p className="text-sm font-bold text-gray-500 uppercase tracking-wide">
             {SUBJECT_LABELS[subject as Subject] ?? subject}
           </p>
           <h1 className="text-xl font-bold">Преговор · Урок {lesson}</h1>
         </div>
+        <FeedbackButton user={user} />
       </div>
 
       {/* Най-добър резултат */}

@@ -87,6 +87,28 @@ export interface Sessions {
   sessions: Session[];
 }
 
+// Пилот — потребителски профил
+export interface UserProfile {
+  name: string;
+  grade: string;
+  readingColor: string;
+  joinedAt: string;
+}
+
+// Пилот — регистрация
+export interface EnrollmentParticipant {
+  user: string;
+  name: string;
+  grade: string;
+  joinedAt: string;
+}
+
+export interface Enrollment {
+  limit: number;
+  enrolled: number;
+  participants: EnrollmentParticipant[];
+}
+
 // Предмети
 export type Subject = "math" | "bio" | "chem" | "phys" | "hist" | "lit" | "gen";
 

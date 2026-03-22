@@ -3,6 +3,7 @@
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { startTransition } from "react";
 import { NAV } from "@/types";
+import { FeedbackButton } from "@/components/FeedbackButton";
 
 export default function ReinforcementResultPage() {
   const { user } = useParams<{ user: string }>();
@@ -26,8 +27,9 @@ export default function ReinforcementResultPage() {
 
   return (
     <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
-      {/* Хедър: 🏠 вдясно */}
-      <div className="flex-none flex items-center justify-end px-4 py-3">
+      {/* Хедър: [📣] [🏠] вдясно */}
+      <div className="flex-none flex items-center justify-end gap-1 px-4 py-3">
+        <FeedbackButton user={user} />
         <button
           onClick={() => navigate(`/${user}`)}
           className="btn-press w-8 h-8 flex items-center justify-center"
