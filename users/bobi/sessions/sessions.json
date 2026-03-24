@@ -222,6 +222,29 @@
         10,
         5
       ]
+    },
+    {
+      "date": "2026-03-24",
+      "subject": "chem",
+      "lesson": 11,
+      "started_at": "16:13",
+      "duration_min": 1,
+      "type": "learn",
+      "completed": true,
+      "quiz_1": {
+        "score": 2,
+        "total": 5,
+        "errors": [
+          6,
+          5,
+          2
+        ]
+      },
+      "quiz_2": {
+        "score": 0,
+        "total": 5,
+        "errors": []
+      }
     }
   ]
 }
