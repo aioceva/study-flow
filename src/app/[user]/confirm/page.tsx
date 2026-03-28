@@ -39,7 +39,7 @@ export default function ConfirmPage() {
   }
 
   return (
-    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
+    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.surface }}>
 
       {/* Хедър: scan-стил — лека ← + заглавие вляво, 🏠 вдясно */}
       <div className="flex-none flex items-center justify-between px-4 py-3">
@@ -83,7 +83,7 @@ export default function ConfirmPage() {
           lesson={lesson}
           title={title}
           subjectLabel={subjectLabel}
-          onPlay={() => navigate(`/${user}/lesson/1/1?${params}`)}
+          onClick={() => navigate(`/${user}/lesson/1/1?${params}`)}
         />
 
         {/* Quiz карта — само за завърнали се потребители */}

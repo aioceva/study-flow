@@ -120,7 +120,7 @@ export default async function ParentPage({
   // ── UI ──────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col" style={{ minHeight: "100dvh", backgroundColor: NAV.bg }}>
+    <div className="flex flex-col" style={{ minHeight: "100dvh", backgroundColor: NAV.surface }}>
 
       {/* Хедър */}
       <div className="flex-none flex items-center justify-between px-4 py-3">
