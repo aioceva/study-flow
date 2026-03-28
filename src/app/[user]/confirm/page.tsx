@@ -2,9 +2,7 @@
 
 import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { NAV, SUBJECT_LABELS, Subject, Sessions } from "@/types";
-import { LessonCard } from "@/components/LessonCard";
-import { FeedbackButton } from "@/components/FeedbackButton";
+import { NAV, SUBJECT_LABELS, Subject, Sessions, Adaptation, MODULE_PROGRESS } from "@/types";
 
 export default function ConfirmPage() {
   const { user } = useParams<{ user: string }>();
@@ -12,15 +10,14 @@ export default function ConfirmPage() {
   const searchParams = useSearchParams();
 
   const subject = searchParams.get("subject") ?? "";
-  const subjectBg = searchParams.get("subject_bg") ?? "";
   const lesson = searchParams.get("lesson") ?? "";
   const title = searchParams.get("title") ?? "";
   const params = searchParams.toString();
 
-  const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subjectBg ?? subject;
+  const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
 
-  // null = loading, false = first time, true = returning
   const [hasSessions, setHasSessions] = useState<boolean | null>(null);
+  const [adaptation, setAdaptation] = useState<Adaptation | null>(null);
 
   useEffect(() => {
     fetch(`/api/session?user=${user}`)
@@ -34,74 +31,125 @@ export default function ConfirmPage() {
       .catch(() => setHasSessions(false));
   }, [user, subject, lesson]);
 
+  useEffect(() => {
+    fetch(`/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`)
+      .then((r) => r.json())
+      .then((data) => { if (data.exists) setAdaptation(data.adaptation); })
+      .catch(() => {});
+  }, [user, subject, lesson]);
+
   function navigate(url: string) {
     setTimeout(() => startTransition(() => router.push(url)), 150);
   }
 
+  const modules = adaptation?.modules ?? [];
+  const totalCards = modules.reduce((sum, m) => sum + m.cards.length, 0);
+  const estMin = totalCards > 0 ? Math.round(totalCards * 0.6) : null;
+
+  const cardStyle = {
+    backgroundColor: "#FFFFFF",
+    boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)",
+    borderRadius: 16,
+  };
+
   return (
     <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.surface }}>
 
-      {/* Хедър: scan-стил — лека ← + заглавие вляво, 🏠 вдясно */}
+      {/* Хедър */}
       <div className="flex-none flex items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => navigate(`/${user}`)}
-            className="btn-press w-8 h-8 flex items-center justify-center"
-            style={{ opacity: 0.55 }}
-            aria-label="Назад"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 5l-7 7 7 7" />
-            </svg>
-          </button>
+        <button
+          onClick={() => navigate(`/${user}`)}
+          className="btn-press flex items-center gap-2"
+          aria-label="Назад"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.55 }}>
+            <path d="M19 12H5M12 5l-7 7 7 7" />
+          </svg>
           <h1 className="text-xl font-bold" style={{ color: NAV.text }}>
             {subjectLabel} · Урок {lesson}
           </h1>
-        </div>
-        <div className="flex items-center gap-1">
-          <FeedbackButton user={user} />
-          <button
-            onClick={() => navigate(`/${user}`)}
-            className="btn-press w-8 h-8 flex items-center justify-center"
-            style={{ opacity: 0.4 }}
-            aria-label="Начало"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
-              <path d="M9 21V12h6v9" />
-            </svg>
-          </button>
-        </div>
+        </button>
+        <button
+          onClick={() => navigate(`/${user}`)}
+          className="btn-press w-8 h-8 flex items-center justify-center"
+          style={{ opacity: 0.4 }}
+          aria-label="Начало"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+            <path d="M9 21V12h6v9" />
+          </svg>
+        </button>
       </div>
 
-      {/* Съдържание — горе, не центрирано */}
-      <div className="flex-1 px-5 pt-2">
+      {/* Карти */}
+      <div className="flex-1 overflow-y-auto px-4 pt-1 pb-6 space-y-3">
 
-        {/* Карта на урока — идентична с home screen */}
-        <LessonCard
-          subject={subject}
-          lesson={lesson}
-          title={title}
-          subjectLabel={subjectLabel}
+        {/* Карта 1: Урок — тапване навсякъде */}
+        <button
           onClick={() => navigate(`/${user}/lesson/1/1?${params}`)}
-        />
+          className="btn-press w-full text-left"
+          style={cardStyle}
+          type="button"
+        >
+          <div className="flex items-center gap-3 p-4">
+            <div className="flex-1 min-w-0">
+              <p className="text-base font-bold mb-0.5" style={{ color: NAV.text }}>{title}</p>
+              {estMin !== null && (
+                <p className="text-sm" style={{ color: NAV.textMuted }}>
+                  {modules.length} модула · {totalCards} карти · ~{estMin} мин
+                </p>
+              )}
+            </div>
+            <div
+              className="flex-none w-12 h-12 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: NAV.btnSolid }}
+              aria-hidden="true"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                <polygon points="6,3 20,12 6,21" />
+              </svg>
+            </div>
+          </div>
+        </button>
 
-        {/* Quiz карта — само за завърнали се потребители */}
-        {hasSessions && (
+        {/* Карта 2: Модули — само ако са заредени */}
+        {modules.length > 0 && (
+          <div style={cardStyle}>
+            <div className="px-4 pt-3 pb-2">
+              <p className="text-xs font-medium tracking-wider uppercase" style={{ color: NAV.textMuted }}>
+                Модули
+              </p>
+            </div>
+            <div style={{ borderTop: `0.5px solid ${NAV.border}` }}>
+              {modules.map((m) => (
+                <div key={m.id} className="flex items-center gap-3 px-4 py-2.5">
+                  <div
+                    className="flex-none rounded-full"
+                    style={{ width: 10, height: 10, backgroundColor: MODULE_PROGRESS[m.id] ?? NAV.btnSolid }}
+                  />
+                  <p className="text-sm" style={{ color: NAV.text }}>{m.title}</p>
+                </div>
+              ))}
+              <div style={{ height: 8 }} />
+            </div>
+          </div>
+        )}
+
+        {/* Карта 3: Проверка на знанията */}
+        {hasSessions ? (
           <button
             onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
-            className="btn-press w-full rounded-xl text-left mt-3"
-            style={{ backgroundColor: "#FFFFFF", boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)" }}
+            className="btn-press w-full text-left"
+            style={cardStyle}
             type="button"
           >
-            <div className="flex items-center gap-3 p-3">
+            <div className="flex items-center gap-3 p-4">
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium tracking-wider uppercase mb-0.5" style={{ color: NAV.textMuted }}>
+                <p className="text-xs font-medium tracking-wider uppercase mb-0.5" style={{ color: NAV.textMuted }}>
                   Проверка на знанията
                 </p>
-                <p className="text-base" style={{ color: NAV.text }}>
-                  Спомни си урока
-                </p>
+                <p className="text-sm" style={{ color: NAV.textMuted }}>10 въпроса · ~3 мин</p>
               </div>
               <div
                 className="flex-none w-11 h-11 rounded-full flex items-center justify-center text-lg"
@@ -112,6 +160,24 @@ export default function ConfirmPage() {
               </div>
             </div>
           </button>
+        ) : (
+          <div style={{ ...cardStyle, opacity: 0.7 }}>
+            <div className="flex items-center gap-3 p-4">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium tracking-wider uppercase mb-0.5" style={{ color: NAV.textMuted }}>
+                  Проверка на знанията
+                </p>
+                <p className="text-sm" style={{ color: NAV.textMuted }}>10 въпроса · ~3 мин · отключва се след урока</p>
+              </div>
+              <div
+                className="flex-none w-11 h-11 rounded-full flex items-center justify-center text-lg"
+                style={{ backgroundColor: NAV.border }}
+                aria-hidden="true"
+              >
+                🏆
+              </div>
+            </div>
+          </div>
         )}
 
       </div>
