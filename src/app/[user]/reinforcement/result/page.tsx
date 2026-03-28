@@ -65,7 +65,7 @@ export default function ReinforcementResultPage() {
           <p className="text-base" style={{ color: NAV.textMuted }}>Всичко правилно</p>
         ) : (
           <p className="text-base" style={{ color: NAV.textMuted }}>
-            Ти научи {score} {score === 1 ? "нещо" : "неща"} днес
+            Ти научи {missed} {missed === 1 ? "нещо" : "неща"} днес
           </p>
         )}
 
@@ -89,7 +89,7 @@ export default function ReinforcementResultPage() {
             color: perfect ? "#FFFFFF" : NAV.text,
           }}
         >
-          {perfect ? "Към началото" : "Приключих с урока"}
+          Към началото
         </button>
       </div>
     </div>
