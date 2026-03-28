@@ -40,6 +40,7 @@ export interface QuizQuestion {
   card_id: number;
   question: string;
   options: QuizOption[];
+  explanation?: string;
 }
 
 // Quiz файл
