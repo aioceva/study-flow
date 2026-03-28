@@ -15,7 +15,6 @@ export default function DonePage() {
 
   const mode = searchParams.get("mode");
   const isReview = mode === "review";
-  const score = parseInt(searchParams.get("score") ?? "0");
   const subject = searchParams.get("subject") ?? "";
   const lesson = searchParams.get("lesson") ?? "";
   const title = searchParams.get("title") ?? "";
@@ -36,10 +35,6 @@ export default function DonePage() {
     const date = now.toISOString().split("T")[0];
     const time = now.toTimeString().slice(0, 5);
 
-    const q1Raw = sessionStorage.getItem("quiz_1_result");
-    const q1 = q1Raw ? JSON.parse(q1Raw) : { score: 0, total: 5, errors: [] };
-    const q2Score = score - q1.score;
-
     fetch("/api/session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -49,11 +44,10 @@ export default function DonePage() {
           date, subject, lesson: parseInt(lesson),
           started_at: time, duration_min: Math.max(duration, 1),
           type: "learn", completed: true,
-          quiz_1: q1, quiz_2: { score: q2Score, total: 5, errors: [] },
         },
       }),
     }).catch(console.error);
-  }, [user, subject, lesson, score, isReview]);
+  }, [user, subject, lesson, isReview]);
 
   // ── Shared home icon ────────────────────────────────────────────────────────
   const homeIconBtn = (

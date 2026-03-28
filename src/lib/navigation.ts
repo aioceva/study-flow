@@ -11,13 +11,11 @@ export function nextStep(
     return `/${user}/lesson/${moduleId}/${cardId + 1}?${params}`;
   }
   if (moduleId === 1) return `/${user}/lesson/separator?from=1&to=2&${params}`;
-  if (moduleId === 2) return isReview
-    ? `/${user}/lesson/3/1?${params}`
-    : `/${user}/lesson/quiz?number=1&${params}`;
+  if (moduleId === 2) return `/${user}/lesson/3/1?${params}`;
   if (moduleId === 3) return `/${user}/lesson/separator?from=3&to=4&${params}`;
   if (moduleId === 4) return isReview
     ? `/${user}/done?mode=review&${params}`
-    : `/${user}/lesson/quiz?number=2&${params}`;
+    : `/${user}/done?${params}`;
   return `/${user}`;
 }
 
@@ -35,9 +33,7 @@ export function prevStep(
   }
   if (moduleId === 1) return `/${user}`;
   if (moduleId === 2) return `/${user}/lesson/separator?from=1&to=2&${params}`;
-  if (moduleId === 3) return isReview
-    ? `/${user}/lesson/2/5?${params}`
-    : `/${user}/lesson/quiz?number=1&${params}`;
+  if (moduleId === 3) return `/${user}/lesson/2/5?${params}`;
   if (moduleId === 4) return `/${user}/lesson/separator?from=3&to=4&${params}`;
   return `/${user}`;
 }
