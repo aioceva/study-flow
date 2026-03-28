@@ -334,6 +334,15 @@
         7,
         15
       ]
+    },
+    {
+      "date": "2026-03-28",
+      "subject": "chem",
+      "lesson": 11,
+      "started_at": "19:08",
+      "duration_min": 1,
+      "type": "learn",
+      "completed": true
     }
   ]
 }
