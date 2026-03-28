@@ -298,6 +298,15 @@
       "duration_min": 1,
       "type": "learn",
       "completed": true
+    },
+    {
+      "date": "2026-03-28",
+      "subject": "chem",
+      "lesson": 11,
+      "started_at": "17:38",
+      "duration_min": 1,
+      "type": "learn",
+      "completed": true
     }
   ]
 }
