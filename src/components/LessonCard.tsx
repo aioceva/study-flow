@@ -39,8 +39,8 @@ export function LessonCard({
   const label = subjectLabel ?? SUBJECT_LABELS[subject as Subject] ?? subject;
 
   const cardStyle: React.CSSProperties = {
-    backgroundColor: NAV.surface,
-    border: `1px solid ${NAV.border}`,
+    backgroundColor: "#FFFFFF",
+    boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)",
   };
 
   const inner = (
@@ -61,7 +61,7 @@ export function LessonCard({
           <button
             onClick={(e) => { e.stopPropagation(); onPlay(); }}
             className="btn-press flex-none w-11 h-11 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: NAV.btnSolid }}
+            style={{ backgroundColor: "#50B8DC" }}
             aria-label="Започни"
             type="button"
           >
@@ -72,7 +72,7 @@ export function LessonCard({
         ) : (
           <div
             className="flex-none w-11 h-11 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: NAV.btnSolid }}
+            style={{ backgroundColor: "#50B8DC" }}
             aria-hidden="true"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">

@@ -136,32 +136,32 @@ export const NAV = {
 
 // Фон на модул (content area)
 export const MODULE_COLORS: Record<number, string> = {
-  1: "#EBF4FF",
-  2: "#E8F9F1",
-  3: "#FEFAE8",
-  4: "#F3EEFF",
+  1: "#D6EEFA",
+  2: "#D4F2E5",
+  3: "#FDE8CC",
+  4: "#EAE5FA",
 };
 
 // Surface (секции вътре в карта)
 export const MODULE_SURFACE: Record<number, string> = {
-  1: "#BDD8F7",
-  2: "#B4E5CC",
-  3: "#F7E49E",
-  4: "#D4C4EE",
+  1: "#A5D8F0",
+  2: "#A5E0C8",
+  3: "#F5C890",
+  4: "#C8BEF0",
 };
 
 // Прогрес бар
 export const MODULE_PROGRESS: Record<number, string> = {
-  1: "#6FA3E8",
-  2: "#6DC297",
-  3: "#C49020",
-  4: "#A384CC",
+  1: "#50B8DC",
+  2: "#58C090",
+  3: "#E89030",
+  4: "#8B7FCC",
 };
 
 // Бутон Напред
 export const MODULE_BTN: Record<number, string> = {
-  1: "#3B7DD8",
+  1: "#2898C0",
   2: "#3B9E6A",
-  3: "#9A6E08",
-  4: "#7B5EA7",
+  3: "#C06020",
+  4: "#7068B8",
 };

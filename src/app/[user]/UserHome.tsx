@@ -122,18 +122,18 @@ export default function UserHome() {
       )}
 
       {/* Хедър */}
-      <div className="px-4 pt-6 pb-5 flex items-center gap-3" style={{ backgroundColor: NAV.headerBg }}>
+      <div className="px-4 pt-6 pb-5 flex items-center gap-3" style={{ backgroundColor: NAV.bg, borderBottom: `1px solid ${NAV.border}` }}>
         <button
           className="btn-press flex flex-col gap-1 p-1"
           aria-label="Меню"
           onClick={() => setMenuOpen(true)}
         >
-          <span className="block w-5 h-0.5 bg-white rounded" />
-          <span className="block w-5 h-0.5 bg-white rounded" />
-          <span className="block w-5 h-0.5 bg-white rounded" />
+          <span className="block w-5 h-0.5 rounded" style={{ backgroundColor: NAV.text }} />
+          <span className="block w-5 h-0.5 rounded" style={{ backgroundColor: NAV.text }} />
+          <span className="block w-5 h-0.5 rounded" style={{ backgroundColor: NAV.text }} />
         </button>
-        <h1 className="text-white font-bold text-xl flex-1">Здравей, {displayName}! 👋</h1>
-        <FeedbackButton user={user} white />
+        <h1 className="font-bold text-xl flex-1" style={{ color: NAV.text }}>Здравей, {displayName}! 👋</h1>
+        <FeedbackButton user={user} />
       </div>
 
       {/* Тяло */}

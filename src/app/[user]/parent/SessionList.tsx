@@ -79,7 +79,7 @@ export function SessionList({
                 <div
                   key={key}
                   className="rounded-xl"
-                  style={{ backgroundColor: NAV.surface, overflow: "hidden" }}
+                  style={{ backgroundColor: "#FFFFFF", boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)", overflow: "hidden" }}
                 >
                   {/* Основен ред */}
                   <div className="px-4 py-3 flex items-center justify-between">

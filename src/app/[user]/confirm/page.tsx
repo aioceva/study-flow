@@ -91,7 +91,7 @@ export default function ConfirmPage() {
           <button
             onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
             className="btn-press w-full rounded-xl text-left mt-3"
-            style={{ backgroundColor: NAV.surface, border: `1px solid ${NAV.border}` }}
+            style={{ backgroundColor: "#FFFFFF", boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)" }}
             type="button"
           >
             <div className="flex items-center gap-3 p-3">
@@ -105,7 +105,7 @@ export default function ConfirmPage() {
               </div>
               <div
                 className="flex-none w-11 h-11 rounded-full flex items-center justify-center text-lg"
-                style={{ backgroundColor: NAV.btnSolid }}
+                style={{ backgroundColor: "#50B8DC" }}
                 aria-hidden="true"
               >
                 🏆

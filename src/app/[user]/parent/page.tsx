@@ -148,7 +148,7 @@ export default async function ParentPage({
         {/* ═══ ГОРЕН БЛОК ═══════════════════════════════════════════════ */}
 
         {/* Седмичен стрип */}
-        <div className="rounded-xl p-4" style={{ backgroundColor: NAV.surface }}>
+        <div className="rounded-xl p-4" style={{ backgroundColor: "#FFFFFF", boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)" }}>
 
           {/* Навигация: ← месец → */}
           <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
@@ -198,7 +198,7 @@ export default async function ParentPage({
                         ? { backgroundColor: "#3B9E6A", color: "white" }
                         : isToday
                           ? { backgroundColor: NAV.border, color: NAV.text }
-                          : { backgroundColor: NAV.bg, color: NAV.border }
+                          : { backgroundColor: NAV.surface, color: NAV.border }
                     }
                   >
                     {active ? "✓" : dayNum}
@@ -259,7 +259,7 @@ function StatCard({
 }) {
   return (
     <div className="rounded-xl p-4 flex flex-col justify-between"
-      style={{ backgroundColor: NAV.surface, minHeight: 72 }}>
+      style={{ backgroundColor: "#FFFFFF", boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)", minHeight: 72 }}>
       <p className="text-sm" style={{ color: NAV.textMuted }}>{label}</p>
       <p className={small ? "text-base font-bold" : "text-xl font-bold"}
         style={{ color: valueColor ?? NAV.text }}>
