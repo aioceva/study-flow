@@ -158,7 +158,7 @@ export default function ReinforcementQuizPage() {
 
   // ── Факт екран ────────────────────────────────────────────────────────────
   if (phase === "fact") {
-    const factText = q.explanation ?? q.options.find((o) => o.correct)?.text ?? "";
+    const correctText = q.options.find((o) => o.correct)?.text ?? "";
     return (
       <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: "#EBF4FF" }}>
         {/* Прогрес бар */}
@@ -182,7 +182,14 @@ export default function ReinforcementQuizPage() {
 
         <div className="flex-1 flex flex-col items-center justify-center px-6 gap-5 text-center">
           <span style={{ fontSize: 52, lineHeight: 1 }}>💡</span>
-          <p className="text-base" style={{ color: NAV.text }}>{factText}</p>
+          {q.explanation ? (
+            <p className="text-base" style={{ color: NAV.text }}>{q.explanation}</p>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <p className="text-base" style={{ color: NAV.textMuted }}>{q.question}</p>
+              <p className="text-base font-bold" style={{ color: NAV.text }}>✓ {correctText}</p>
+            </div>
+          )}
         </div>
 
         <div className="flex-none px-4 pb-6">
