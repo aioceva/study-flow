@@ -381,6 +381,22 @@
       "duration_min": 1,
       "type": "learn",
       "completed": true
+    },
+    {
+      "date": "2026-03-28",
+      "subject": "bio",
+      "lesson": 45,
+      "started_at": "21:21",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "score": 5,
+      "total": 10,
+      "errors": [
+        1,
+        15,
+        8,
+        13
+      ]
     }
   ]
 }
