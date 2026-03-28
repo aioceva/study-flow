@@ -332,7 +332,7 @@ export default function ReinforcementQuizPage() {
           <div style={{ width: "100%" }}>
             {/* Ракета + звезди */}
             <div style={{ position: "relative", height: 20, marginBottom: 4 }}>
-              {!showStars && (
+              {!showStars && phase === "correct" && (
                 <div style={{
                   position: "absolute",
                   top: 0,
