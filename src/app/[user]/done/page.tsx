@@ -4,8 +4,6 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, startTransition } from "react";
 import { SUBJECT_LABELS, Subject, NAV } from "@/types";
 import Image from "next/image";
-import { LessonCard } from "@/components/LessonCard";
-import { FeedbackButton } from "@/components/FeedbackButton";
 
 export default function DonePage() {
   const { user } = useParams<{ user: string }>();
@@ -55,21 +53,34 @@ export default function DonePage() {
     }).catch(console.error);
   }, [user, subject, lesson, score, isReview]);
 
-  // ── Shared home icon ────────────────────────────────────────────────────────
-  const homeIconBtn = (
-    <div className="flex items-center gap-1">
-      <FeedbackButton user={user} />
-      <button
-        onClick={() => navigate(`/${user}`)}
-        className="btn-press w-8 h-8 flex items-center justify-center"
-        style={{ opacity: 0.4 }}
-        aria-label="Начало"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
-          <path d="M9 21V12h6v9" />
-        </svg>
-      </button>
+  // ── Shared header ────────────────────────────────────────────────────────────
+  const lessonHeader = (
+    <div className="flex-none bg-white">
+      <div className="flex items-center justify-between px-4 py-3">
+        <button
+          onClick={() => navigate(`/${user}`)}
+          className="btn-press flex items-center gap-2"
+          aria-label="Начало"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.55 }}>
+            <path d="M19 12H5M12 5l-7 7 7 7" />
+          </svg>
+          <span className="text-xl font-bold" style={{ color: NAV.text }}>
+            {subjectLabel} · Урок {lesson}
+          </span>
+        </button>
+        <button
+          onClick={() => navigate(`/${user}`)}
+          className="btn-press w-10 h-10 flex items-center justify-center"
+          style={{ opacity: 0.4 }}
+          aria-label="Начало"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+            <path d="M9 21V12h6v9" />
+          </svg>
+        </button>
+      </div>
     </div>
   );
 
@@ -77,23 +88,13 @@ export default function DonePage() {
   if (isReview) {
     return (
       <div className="flex flex-col" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
-        <div className="flex-none flex justify-end px-4 py-2">
-          {homeIconBtn}
-        </div>
+        {lessonHeader}
         <div className="flex-1 flex flex-col items-center justify-center px-5 gap-4 text-center">
           <Image src="/icons/icon-trophy-glow.svg" width={80} height={80} alt="trophy" />
           <div>
             <h1 className="font-bold text-xl mb-1" style={{ color: NAV.text }}>Готово!</h1>
             <p className="text-sm" style={{ color: NAV.textMuted }}>Прегледа целия урок.</p>
-          </div>
-          <div className="w-full">
-            <LessonCard
-              subject={subject}
-              lesson={lesson}
-              title={title}
-              subjectLabel={subjectLabel}
-              showPlayButton={false}
-            />
+            {title && <p className="text-sm mt-0.5" style={{ color: NAV.textMuted }}>{title}</p>}
           </div>
         </div>
         <div className="flex-none px-5 pb-8">
@@ -112,23 +113,13 @@ export default function DonePage() {
   // ── Learn mode ──────────────────────────────────────────────────────────────
   return (
     <div className="flex flex-col" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
-      <div className="flex-none flex justify-end px-4 py-2">
-        {homeIconBtn}
-      </div>
+      {lessonHeader}
       <div className="flex-1 flex flex-col items-center justify-center px-5 gap-4 text-center">
         <Image src="/icons/icon-trophy-glow.svg" width={80} height={80} alt="trophy" />
         <div>
           <h1 className="font-bold text-xl mb-1" style={{ color: NAV.text }}>Браво!</h1>
           <p className="text-sm" style={{ color: NAV.textMuted }}>Завърши целия урок!</p>
-        </div>
-        <div className="w-full">
-          <LessonCard
-            subject={subject}
-            lesson={lesson}
-            title={title}
-            subjectLabel={subjectLabel}
-            showPlayButton={false}
-          />
+          {title && <p className="text-sm mt-0.5" style={{ color: NAV.textMuted }}>{title}</p>}
         </div>
       </div>
       <div className="flex-none px-5 pb-8 space-y-2">

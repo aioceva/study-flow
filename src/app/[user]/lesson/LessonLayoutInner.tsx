@@ -42,6 +42,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const sepTo    = isSeparator ? parseInt(searchParams.get("to")   ?? "2") : 2;
   const subject  = searchParams.get("subject") ?? "";
   const lesson   = searchParams.get("lesson") ?? "";
+  const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
 
   const bgColor = MODULE_COLORS[moduleId] ?? "#F8F9FA";
   const isFirst = moduleId === 1 && cardId === 1;
@@ -109,9 +110,22 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   if (isSeparator) {
     return (
       <div className="flex flex-col" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
-        <div className="flex-none flex items-center justify-end gap-1 px-4 py-2">
-          <FeedbackButton user={user} />
-          {homeIcon}
+        <div className="flex-none bg-white">
+          <div className="flex items-center justify-between px-4 py-3">
+            <button
+              onClick={() => navigate(`/${user}/confirm?${params}`)}
+              className="btn-press flex items-center gap-2"
+              aria-label="Назад"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.55 }}>
+                <path d="M19 12H5M12 5l-7 7 7 7" />
+              </svg>
+              <span className="text-xl font-bold" style={{ color: NAV.text }}>
+                {subjectLabel} · Урок {lesson}
+              </span>
+            </button>
+            {homeIcon}
+          </div>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center px-4 gap-2.5 text-center">
           <span className="text-7xl leading-none">🎉</span>
@@ -141,7 +155,6 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   // ── Card UI ────────────────────────────────────────────────────────────────
   const moduleData = adaptation?.modules.find((m) => m.id === moduleId);
   const card       = moduleData?.cards.find((c) => c.id === cardId);
-  const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
 
   return (
     <div className="flex flex-col" style={{ backgroundColor: "#ffffff", height: "100dvh" }}>
@@ -200,7 +213,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
               style={{
                 width: step === cardId ? 24 : 8,
                 height: 8,
-                backgroundColor: step === cardId ? MODULE_PROGRESS[moduleId] : NAV.border,
+                backgroundColor: step === cardId ? MODULE_SURFACE[moduleId] : NAV.border,
               }}
             />
           ))}
