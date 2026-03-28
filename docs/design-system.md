@@ -170,8 +170,8 @@ p, li, span { max-width: 65ch; line-height: 1.8; word-spacing: 0.1em; }
 ```tsx
 // ← (secondary, ляво)
 <button style={{ backgroundColor: NAV.surface }}>←</button>
-// → (primary, дясно)
-<button style={{ backgroundColor: MODULE_BTN[m] }}>→</button>
+// → (primary, дясно) — винаги NAV.btnSolid, независимо от активния модул
+<button style={{ backgroundColor: NAV.btnSolid }}>→</button>
 ```
 
 ---
@@ -221,7 +221,7 @@ Lesson екрани използват `MODULE_COLORS[m]` вместо `NAV.bg` 
 
 ### Прогресът е видим и конкретен
 Детето трябва да знае: какво прави сега, колко е останало, какво е направило.
-- В урок: сегментиран прогрес бар (4 модула × 5 карти) в реда с 🏠 иконата
+- В урок: 5 точки в footer зоната (текущата = pill в цвета на модула, останалите = NAV.border)
 - В quiz: 5 сегмента в реда с 🏠 иконата (не dots, не отделна лента)
 - Никога процентни стойности пред детето
 
@@ -300,11 +300,11 @@ Lesson екрани използват `MODULE_COLORS[m]` вместо `NAV.bg` 
 - Без "Преговор" бутон — действията са директно в картите
 
 ### Card (`/lesson/[m]/[c]`)
-- Progress row: `[4×5 сегментиран бар][🏠]` — в един ред
-- Navbar: module title (`text-sm NAV.textMuted`)
-- Content: `MODULE_COLORS[m]` фон, card title `text-xl font-bold`
-- 3 секции (📌 / 💡 / ✏️): bg `MODULE_SURFACE[m]`, label `text-sm font-medium` uppercase, body `text-base`
-- Footer: `←` (`NAV.surface`) + `→` (`MODULE_BTN[m]`)
+- Header: `← {Subject} · Урок {N}` (`text-xl font-bold NAV.text`) + 🏠
+- Sub-header: `Модул {M} от 4 · {moduleTitle}` (`text-sm NAV.textMuted`)
+- Content: `MODULE_COLORS[m]` фон, card title `text-xl font-bold NAV.text`
+- 3 секции (📌 / 💡 / ✏️): bg `MODULE_SURFACE[m]` + shadow, label `MODULE_BTN[m]` uppercase, body `NAV.text`
+- Footer: 5 точки прогрес (текущата = pill `MODULE_PROGRESS[m]`, останалите = `NAV.border`) + `←` (`NAV.surface`) + `→` (`NAV.btnSolid`)
 
 ### Quiz (`/lesson/quiz`)
 - Progress row: `[5 сегмента][🏠]` — идентична структура с lesson (не dots)

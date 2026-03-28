@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, startTransition } from "react";
 import { useSwipeable } from "react-swipeable";
 import { Adaptation, MODULE_COLORS, MODULE_SURFACE, MODULE_PROGRESS, MODULE_BTN, NAV, SUBJECT_LABELS, Subject } from "@/types";
 import { FeedbackButton } from "@/components/FeedbackButton";
-import { nextStep, prevStep, nextButtonLabel } from "@/lib/navigation";
+import { nextStep, prevStep } from "@/lib/navigation";
 
 export default function LessonLayoutInner({ children }: { children: React.ReactNode }) {
   const { user } = useParams<{ user: string }>();
@@ -38,10 +38,10 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const params   = searchParams.toString();
   const isReview = searchParams.get("mode") === "review";
 
-  const sepFrom     = isSeparator ? parseInt(searchParams.get("from") ?? "1") : 1;
-  const sepTo       = isSeparator ? parseInt(searchParams.get("to")   ?? "2") : 2;
-  const subject     = searchParams.get("subject") ?? "";
-  const lesson      = searchParams.get("lesson") ?? "";
+  const sepFrom  = isSeparator ? parseInt(searchParams.get("from") ?? "1") : 1;
+  const sepTo    = isSeparator ? parseInt(searchParams.get("to")   ?? "2") : 2;
+  const subject  = searchParams.get("subject") ?? "";
+  const lesson   = searchParams.get("lesson") ?? "";
 
   const bgColor = MODULE_COLORS[moduleId] ?? "#F8F9FA";
   const isFirst = moduleId === 1 && cardId === 1;
@@ -105,38 +105,6 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     </button>
   );
 
-  // ── Progress bar: 4 модула × 5 карти + home icon ──────────────────────────
-  const progressDots = (
-    <div className="flex-none bg-white px-4 pt-3 pb-2 flex items-center gap-2">
-      {/* 4 групи, всяка с 5 под-сегмента — едно четливо визуализация */}
-      <div className="flex gap-2 flex-1">
-        {[1, 2, 3, 4].map((n) => (
-          <div key={n} className="flex gap-0.5 flex-1">
-            {[1, 2, 3, 4, 5].map((step) => {
-              const filled = n < moduleId
-                ? true
-                : n === moduleId
-                  ? step <= cardId
-                  : false;
-              return (
-                <div
-                  key={step}
-                  className="flex-1 rounded-full transition-colors duration-300"
-                  style={{
-                    height: 5,
-                    backgroundColor: filled ? MODULE_PROGRESS[n] : NAV.border,
-                  }}
-                />
-              );
-            })}
-          </div>
-        ))}
-      </div>
-      <FeedbackButton user={user} />
-      {homeIcon}
-    </div>
-  );
-
   // ── Separator / Браво screen ───────────────────────────────────────────────
   if (isSeparator) {
     return (
@@ -173,19 +141,35 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   // ── Card UI ────────────────────────────────────────────────────────────────
   const moduleData = adaptation?.modules.find((m) => m.id === moduleId);
   const card       = moduleData?.cards.find((c) => c.id === cardId);
+  const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
 
   return (
     <div className="flex flex-col" style={{ backgroundColor: "#ffffff", height: "100dvh" }}>
-      {progressDots}
 
-      {/* Navbar: module title only */}
-      <nav className="flex-none px-4 py-2 bg-white">
-        {moduleData?.title && (
-          <span className="text-sm font-medium" style={{ color: NAV.textMuted }}>
-            {moduleData.title}
+      {/* Хедър: ← Предмет · Урок N + 🏠 */}
+      <div className="flex-none bg-white">
+        <div className="flex items-center justify-between px-4 py-3">
+          <button
+            onClick={() => navigate(`/${user}/confirm?${params}`)}
+            className="btn-press flex items-center gap-2"
+            aria-label="Назад"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.55 }}>
+              <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+            <span className="text-xl font-bold" style={{ color: NAV.text }}>
+              {subjectLabel} · Урок {lesson}
+            </span>
+          </button>
+          {homeIcon}
+        </div>
+        {/* Модул N от 4 · Заглавие на модула */}
+        <div className="px-4 pb-2">
+          <span className="text-sm" style={{ color: NAV.textMuted }}>
+            Модул {moduleId} от 4{moduleData?.title ? ` · ${moduleData.title}` : ""}
           </span>
-        )}
-      </nav>
+        </div>
+      </div>
 
       {/* Съдържание */}
       <div {...swipeHandlers} className="flex-1 overflow-y-auto px-5 pt-4 pb-2" style={{ backgroundColor: bgColor }}>
@@ -205,26 +189,44 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
         )}
       </div>
 
-      {/* Бутони: равни ← и → */}
-      <div className="flex-none flex gap-3 px-4 pb-6 pt-3 bg-white">
-        <button
-          onClick={() => isFirst
-            ? navigate(`/${user}/confirm?${params}`)
-            : navigate(prevStep(user, moduleId, cardId, params))
-          }
-          className="btn-press flex-1 rounded-xl flex items-center justify-center text-xl"
-          style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
-        >
-          ←
-        </button>
-        <button
-          onClick={() => navigate(nextStep(user, moduleId, cardId, params))}
-          className="btn-press flex-1 rounded-xl text-white text-xl flex items-center justify-center"
-          style={{ backgroundColor: MODULE_BTN[moduleId], height: 56 }}
-        >
-          →
-        </button>
+      {/* Footer: 5 точки прогрес + бутони */}
+      <div className="flex-none bg-white px-4 pb-6 pt-3">
+        {/* 5 точки — текущата е pill, останалите кръгче */}
+        <div className="flex justify-center items-center gap-2 mb-3">
+          {[1, 2, 3, 4, 5].map((step) => (
+            <div
+              key={step}
+              className="rounded-full transition-colors duration-300"
+              style={{
+                width: step === cardId ? 24 : 8,
+                height: 8,
+                backgroundColor: step === cardId ? MODULE_PROGRESS[moduleId] : NAV.border,
+              }}
+            />
+          ))}
+        </div>
+        {/* Бутони */}
+        <div className="flex gap-3">
+          <button
+            onClick={() => isFirst
+              ? navigate(`/${user}/confirm?${params}`)
+              : navigate(prevStep(user, moduleId, cardId, params))
+            }
+            className="btn-press flex-1 rounded-xl flex items-center justify-center text-xl"
+            style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
+          >
+            ←
+          </button>
+          <button
+            onClick={() => navigate(nextStep(user, moduleId, cardId, params))}
+            className="btn-press flex-1 rounded-xl text-white text-xl flex items-center justify-center"
+            style={{ backgroundColor: NAV.btnSolid, height: 56 }}
+          >
+            →
+          </button>
+        </div>
       </div>
+
     </div>
   );
 }
@@ -235,7 +237,7 @@ function Section({ icon, label, text, moduleId }: { icon: string; label: string;
       <p className="text-sm font-medium uppercase tracking-wide mb-1" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>
         {icon} {label}
       </p>
-      <p className="text-base leading-relaxed">{text}</p>
+      <p className="text-base leading-relaxed" style={{ color: NAV.text }}>{text}</p>
     </div>
   );
 }
