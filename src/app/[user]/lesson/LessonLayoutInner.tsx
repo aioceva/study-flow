@@ -231,7 +231,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 
 function Section({ icon, label, text, moduleId }: { icon: string; label: string; text: string; moduleId: number }) {
   return (
-    <div className="rounded-xl p-4" style={{ backgroundColor: MODULE_SURFACE[moduleId] ?? "#F0F0F0" }}>
+    <div className="rounded-xl p-4" style={{ backgroundColor: MODULE_SURFACE[moduleId] ?? "#F0F0F0", boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
       <p className="text-sm font-medium uppercase tracking-wide mb-1" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>
         {icon} {label}
       </p>
