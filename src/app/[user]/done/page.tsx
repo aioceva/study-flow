@@ -81,6 +81,11 @@ export default function DonePage() {
           </svg>
         </button>
       </div>
+      {title && (
+        <div className="px-4 pb-2">
+          <span className="text-sm" style={{ color: NAV.textMuted }}>{title}</span>
+        </div>
+      )}
     </div>
   );
 
@@ -94,7 +99,6 @@ export default function DonePage() {
           <div>
             <h1 className="font-bold text-xl mb-1" style={{ color: NAV.text }}>Готово!</h1>
             <p className="text-sm" style={{ color: NAV.textMuted }}>Прегледа целия урок.</p>
-            {title && <p className="text-sm mt-0.5" style={{ color: NAV.textMuted }}>{title}</p>}
           </div>
         </div>
         <div className="flex-none px-5 pb-8">
@@ -119,23 +123,36 @@ export default function DonePage() {
         <div>
           <h1 className="font-bold text-xl mb-1" style={{ color: NAV.text }}>Браво!</h1>
           <p className="text-sm" style={{ color: NAV.textMuted }}>Завърши целия урок!</p>
-          {title && <p className="text-sm mt-0.5" style={{ color: NAV.textMuted }}>{title}</p>}
         </div>
       </div>
       <div className="flex-none px-5 pb-8 space-y-2">
         <button
           onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
-          className="btn-press w-full rounded-xl text-white font-medium text-base text-center"
-          style={{ backgroundColor: NAV.btnSolid, height: 52 }}
+          className="btn-press w-full rounded-xl text-left"
+          style={{ backgroundColor: "#FFFFFF", boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)" }}
+          type="button"
         >
-          Провери знанията си →
+          <div className="flex items-center gap-3 p-3">
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium tracking-wider uppercase mb-0.5" style={{ color: NAV.textMuted }}>
+                Проверка на знанията
+              </p>
+            </div>
+            <div
+              className="flex-none w-11 h-11 rounded-full flex items-center justify-center text-lg"
+              style={{ backgroundColor: "#50B8DC" }}
+              aria-hidden="true"
+            >
+              🏆
+            </div>
+          </div>
         </button>
         <button
           onClick={() => navigate(`/${user}`)}
           className="btn-press w-full rounded-xl font-medium text-base text-center"
           style={{ backgroundColor: NAV.surface, color: NAV.text, height: 52 }}
         >
-          За днес толкова
+          Към началото
         </button>
       </div>
     </div>
