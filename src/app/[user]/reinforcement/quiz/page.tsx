@@ -136,9 +136,9 @@ export default function ReinforcementQuizPage() {
     } else {
       setErrors((e) => [...e, q.id]);
       setPhase("wrong");
-      // After 700ms show correct answer highlighted, then after 2800ms → fact
+      // After 700ms show correct answer highlighted, then after 1200ms → fact
       timerRef.current = setTimeout(() => {
-        startTimer(2800, () => setPhase("fact"));
+        startTimer(1200, () => setPhase("fact"));
       }, 700);
     }
   }
@@ -154,7 +154,7 @@ export default function ReinforcementQuizPage() {
   const q        = questions[current];
   const correctId = q.options.find((o) => o.correct)?.id;
   const showTimer = phase === "correct" || phase === "wrong";
-  const timerMs  = phase === "correct" ? 950 : 2800;
+  const timerMs  = phase === "correct" ? 950 : 1200;
 
   // ── Факт екран ────────────────────────────────────────────────────────────
   if (phase === "fact") {
