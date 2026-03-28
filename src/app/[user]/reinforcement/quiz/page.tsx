@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { Quiz, QuizQuestion, NAV } from "@/types";
+import { Quiz, QuizQuestion, NAV, SUBJECT_LABELS, Subject } from "@/types";
 
 type Phase = "answering" | "correct" | "wrong" | "fact";
 
@@ -15,6 +15,7 @@ export default function ReinforcementQuizPage() {
 
   const subject = searchParams.get("subject") ?? "";
   const lesson  = searchParams.get("lesson")  ?? "";
+  const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
 
   function navigate(url: string) {
     setTimeout(() => startTransition(() => router.push(url)), 150);
@@ -75,7 +76,7 @@ export default function ReinforcementQuizPage() {
       const eased = 1 - Math.pow(1 - p, 2.5);
       setTimerPct(p);
       setRktPct(eased);
-      if (p >= 0.93 && durationMs < 1200) setShowStars(true);
+      if (p >= 0.93) setShowStars(true);
       if (p < 1) {
         rafRef.current = requestAnimationFrame(tick);
       } else {
@@ -161,23 +162,28 @@ export default function ReinforcementQuizPage() {
     const correctText = q.options.find((o) => o.correct)?.text ?? "";
     return (
       <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: "#EBF4FF" }}>
-        {/* Прогрес бар */}
-        <div className="flex-none px-4 pt-3 pb-2 flex items-center gap-2">
-          <div className="flex gap-1 flex-1">
+        {/* Topbar */}
+        <div className="flex-none bg-white" style={{ borderBottom: `0.5px solid ${NAV.border}` }}>
+          <div className="flex items-center px-4 pt-3 pb-2">
+            <span className="flex-1 text-sm font-medium" style={{ color: NAV.text }}>
+              {subjectLabel} · Урок {lesson}
+            </span>
+            <button onClick={() => navigate(`/${user}`)} className="btn-press w-8 h-8 flex items-center justify-center" style={{ opacity: 0.4 }} aria-label="Начало">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+                <path d="M9 21V12h6v9" />
+              </svg>
+            </button>
+          </div>
+          <div className="flex gap-1 px-4 pb-3">
             {questions.map((_, i) => (
               <div key={i} className="flex-1 rounded-full" style={{
-                height: 5,
-                backgroundColor: i < current ? NAV.btnSolid : i === current ? NAV.btnSolid : NAV.border,
+                height: 3,
+                backgroundColor: i <= current ? NAV.btnSolid : NAV.border,
                 opacity: i === current ? 0.35 : 1,
               }} />
             ))}
           </div>
-          <button onClick={() => navigate(`/${user}`)} className="btn-press w-10 h-10 flex items-center justify-center" style={{ opacity: 0.4 }} aria-label="Начало">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
-              <path d="M9 21V12h6v9" />
-            </svg>
-          </button>
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-center px-6 gap-5 text-center">
@@ -209,33 +215,33 @@ export default function ReinforcementQuizPage() {
   return (
     <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
 
-      {/* Прогрес бар */}
-      <div className="flex-none px-4 pt-3 pb-2 flex items-center gap-2" style={{ backgroundColor: NAV.bg }}>
-        <div className="flex gap-1 flex-1">
+      {/* Topbar: заглавие + 🏠 + прогрес */}
+      <div className="flex-none bg-white" style={{ borderBottom: `0.5px solid ${NAV.border}` }}>
+        <div className="flex items-center px-4 pt-3 pb-2">
+          <span className="flex-1 text-sm font-medium" style={{ color: NAV.text }}>
+            {subjectLabel} · Урок {lesson}
+          </span>
+          <button onClick={() => navigate(`/${user}`)} className="btn-press w-8 h-8 flex items-center justify-center" style={{ opacity: 0.4 }} aria-label="Начало">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+              <path d="M9 21V12h6v9" />
+            </svg>
+          </button>
+        </div>
+        <div className="flex gap-1 px-4 pb-3">
           {questions.map((_, i) => (
             <div key={i} className="flex-1 rounded-full" style={{
-              height: 5,
-              backgroundColor: NAV.btnSolid,
-              opacity: i < current ? 1 : i === current ? 0.35 : 0.15,
+              height: 3,
+              backgroundColor: i <= current ? NAV.btnSolid : NAV.border,
+              opacity: i === current ? 0.35 : 1,
             }} />
           ))}
         </div>
-        <button onClick={() => navigate(`/${user}`)} className="btn-press w-10 h-10 flex items-center justify-center" style={{ opacity: 0.4 }} aria-label="Начало">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
-            <path d="M9 21V12h6v9" />
-          </svg>
-        </button>
       </div>
-
-      {/* Label */}
-      <nav className="flex-none px-4 py-2 bg-white">
-        <span className="text-sm font-medium" style={{ color: NAV.textMuted }}>Преговор</span>
-      </nav>
 
       {/* Съдържание */}
       <div className="flex-1 overflow-y-auto px-5 pt-4 pb-2" style={{ backgroundColor: NAV.bg }}>
-        <p className="text-xl mb-4 leading-snug" style={{ color: NAV.text }}>{q.question}</p>
+        <p className="text-xl font-bold mb-4 leading-snug" style={{ color: NAV.text }}>{q.question}</p>
 
         <div className="space-y-2">
           {q.options.map((option) => {
@@ -306,65 +312,61 @@ export default function ReinforcementQuizPage() {
         </div>
       </div>
 
-      {/* Timer row + Ракета */}
-      {showTimer && (
-        <div className="flex-none px-4 pt-2 pb-1" style={{ backgroundColor: NAV.bg }}>
-          <div ref={trackRef} style={{ position: "relative", height: 20 }}>
-            {/* Синя линия */}
-            <div style={{
-              position: "absolute", left: 0, bottom: 0,
-              height: 4, borderRadius: 2,
-              backgroundColor: NAV.btnSolid,
-              width: `${timerPct * 100}%`,
-              transition: "width 0.05s linear",
-            }} />
-            {/* Фон линия */}
-            <div style={{
-              position: "absolute", left: 0, bottom: 0,
-              height: 4, borderRadius: 2, width: "100%",
-              backgroundColor: NAV.border,
-              zIndex: -1,
-            }} />
-
-            {/* Ракета */}
-            {!showStars && (
+      {/* Footer */}
+      <div
+        className="flex-none px-4 pb-5 pt-3 flex items-center justify-center"
+        style={{ borderTop: `0.5px solid ${NAV.border}`, minHeight: 56, backgroundColor: NAV.bg }}
+      >
+        {!showTimer ? (
+          <span className="text-sm" style={{ color: NAV.textMuted }}>Докосни отговор</span>
+        ) : (
+          <div style={{ width: "100%" }}>
+            {/* Ракета + звезди */}
+            <div style={{ position: "relative", height: 20, marginBottom: 4 }}>
+              {!showStars && (
+                <div style={{
+                  position: "absolute",
+                  top: 0,
+                  left: `calc(${Math.min(rktPct, 0.93) * 100}% - 11px)`,
+                  animation: "rocket-hover 0.5s ease-in-out infinite",
+                  pointerEvents: "none",
+                }}>
+                  <svg width="22" height="18" viewBox="0 0 28 18" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 9 Q14 1 24 9 Q14 17 4 9Z" fill={NAV.btnSolid} />
+                    <circle cx="18" cy="9" r="3" fill="#fff" opacity="0.9" />
+                    <path d="M4 7 L0 4 L2 9 L0 14 L4 11Z" fill="#E05555" />
+                    <path d="M4 7 Q2 9 4 11" fill="none" stroke="#FF9500" strokeWidth="1.5" opacity="0.8" />
+                    <ellipse cx="2" cy="9" rx="3" ry="2" fill="#FF9500" opacity="0.5" />
+                  </svg>
+                </div>
+              )}
+              {showStars && phase === "correct" && (
+                <div style={{ position: "absolute", right: 0, top: 0, pointerEvents: "none" }}>
+                  {[
+                    { top: -10, right: 10 }, { top: -14, right: -2 }, { top: -4, right: -12 },
+                    { top: -18, right: 4 },  { top: -8,  right: -8 },
+                  ].map((pos, i) => (
+                    <span key={i} style={{
+                      position: "absolute", top: pos.top, right: pos.right,
+                      fontSize: 11, opacity: 0,
+                      animation: `star-pop 0.55s ease ${i * 0.05}s forwards`,
+                    }}>{i % 2 === 0 ? "⭐" : "✨"}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* Timer линия */}
+            <div style={{ width: "100%", height: 4, borderRadius: 2, backgroundColor: NAV.border }}>
               <div style={{
-                position: "absolute",
-                left: `calc(${rktPct * 100}% - 36px)`,
-                bottom: 6,
-                animation: "rocket-hover 0.8s ease-in-out infinite",
-              }}>
-                <svg width="36" height="20" viewBox="0 0 36 20" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M10 10 L32 5 L34 10 L32 15 L10 10Z" fill={NAV.btnSolid} />
-                  <path d="M32 5 L36 10 L32 15Z" fill="#C0392B" />
-                  <circle cx="26" cy="9" r="2.5" fill="#AED6F1" stroke="#fff" strokeWidth="0.5" />
-                  <path d="M10 8 L6 4 L8 10 L6 16 L10 12Z" fill="#E74C3C" />
-                  <path d="M10 10 L2 8 L0 10 L2 12Z" fill="#FF9500" style={{ animation: "flame-flicker 0.15s ease-in-out infinite", transformOrigin: "10px 10px" }} />
-                  <path d="M10 10 L4 9 L3 10 L4 11Z" fill="#FFD700" style={{ animation: "flame-flicker 0.12s ease-in-out infinite 0.05s", transformOrigin: "10px 10px" }} />
-                </svg>
-              </div>
-            )}
-
-            {/* Звездички (само correct при финал) */}
-            {showStars && phase === "correct" && (
-              <div style={{ position: "absolute", right: 0, bottom: 4 }}>
-                {["⭐", "✨", "⭐", "✨", "⭐"].map((s, i) => (
-                  <span key={i} style={{
-                    position: "absolute",
-                    right: i * 14,
-                    bottom: i % 2 === 0 ? 0 : 6,
-                    fontSize: 12,
-                    animation: `star-pop 0.5s ease ${i * 0.06}s forwards`,
-                  }}>{s}</span>
-                ))}
-              </div>
-            )}
+                height: "100%", borderRadius: 2,
+                backgroundColor: NAV.btnSolid,
+                width: `${timerPct * 100}%`,
+                transition: "width 0.05s linear",
+              }} />
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* Footer spacer */}
-      <div className="flex-none" style={{ height: 24, backgroundColor: NAV.bg }} />
+        )}
+      </div>
     </div>
   );
 }
