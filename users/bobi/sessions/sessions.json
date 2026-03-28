@@ -343,6 +343,26 @@
       "duration_min": 1,
       "type": "learn",
       "completed": true
+    },
+    {
+      "date": "2026-03-28",
+      "subject": "chem",
+      "lesson": 11,
+      "started_at": "19:48",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "score": 1,
+      "total": 10,
+      "errors": [
+        4,
+        20,
+        2,
+        12,
+        7,
+        10,
+        18,
+        14
+      ]
     }
   ]
 }
