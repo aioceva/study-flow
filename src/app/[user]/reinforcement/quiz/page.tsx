@@ -165,9 +165,18 @@ export default function ReinforcementQuizPage() {
         {/* Topbar */}
         <div className="flex-none bg-white" style={{ borderBottom: `0.5px solid ${NAV.border}` }}>
           <div className="flex items-center px-4 pt-3 pb-2">
-            <span className="flex-1 text-sm font-medium" style={{ color: NAV.text }}>
-              {subjectLabel} · Урок {lesson}
-            </span>
+            <button
+              onClick={() => navigate(`/${user}`)}
+              className="btn-press flex items-center gap-2 flex-1 min-w-0"
+              aria-label="Назад"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.55, flexShrink: 0 }}>
+                <path d="M19 12H5M12 5l-7 7 7 7" />
+              </svg>
+              <span className="text-base font-bold" style={{ color: NAV.text }}>
+                {subjectLabel} · Урок {lesson}
+              </span>
+            </button>
             <button onClick={() => navigate(`/${user}`)} className="btn-press w-8 h-8 flex items-center justify-center" style={{ opacity: 0.4 }} aria-label="Начало">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
