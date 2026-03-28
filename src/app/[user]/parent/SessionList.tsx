@@ -26,7 +26,7 @@ function sessionScore(s: Session): { score: number; total: number } {
 
 function sessionErrors(s: Session): number[] {
   if (s.type === "learn") {
-    return [...(s.quiz_1.errors ?? []), ...(s.quiz_2.errors ?? [])];
+    return [...(s.quiz_1?.errors ?? []), ...(s.quiz_2?.errors ?? [])];
   }
   return s.errors ?? [];
 }
