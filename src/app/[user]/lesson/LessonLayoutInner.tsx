@@ -161,7 +161,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 
       {/* Хедър: ← Предмет · Урок N + 🏠 */}
       <div className="flex-none bg-white">
-        <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center justify-between px-4 pt-3 pb-2">
           <button
             onClick={() => navigate(`/${user}/confirm?${params}`)}
             className="btn-press flex items-center gap-2"
@@ -177,7 +177,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           {homeIcon}
         </div>
         {/* Модул N от 4 · Заглавие на модула */}
-        <div className="px-4 py-2">
+        <div className="px-4 pb-2">
           <span className="text-sm" style={{ color: NAV.textMuted }}>
             Модул {moduleId} от 4{moduleData?.title ? ` · ${moduleData.title}` : ""}
           </span>
