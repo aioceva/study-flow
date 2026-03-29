@@ -154,7 +154,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 
   // ── Card UI ────────────────────────────────────────────────────────────────
   const moduleData = adaptation?.modules.find((m) => m.id === moduleId);
-  const card       = moduleData?.cards.find((c) => c.id === cardId);
+  const card       = moduleData?.cards[cardId - 1];
 
   return (
     <div className="flex flex-col" style={{ backgroundColor: "#ffffff", height: "100dvh" }}>
