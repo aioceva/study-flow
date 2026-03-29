@@ -1,12 +1,12 @@
 # Study Flow — Проект контекст
 
-_Последна актуализация: 17 Март 2026_
+_Последна актуализация: 29 Март 2026_
 
 ## Какво е
 
-Study Flow е MVP за деца с дислексия. Детето сканира страница от учебник, Claude генерира адаптирано съдържание (4 модула × 5 карти + 20 quiz въпроса). Без логин — всяко дете има отделен URL: `app.vercel.app/bobi`.
+Study Flow е MVP за деца с дислексия. Детето сканира страница от учебник, Claude генерира адаптирано съдържание (4 модула × 5 карти + 20 quiz въпроса). Без логин — всяко дете има отделен URL: `poc-study-flow.vercel.app/bobi`.
 
-**Пилот:** Боби (дъщеря на Annie) + 2-3 деца. Цел: 8+ сесии за 4 седмици, 80%+ quiz резултат.
+**Пилот:** Боби + ~20 деца. Период: Април–Май 2026. Цел: 8+ сесии за 4 седмици, 80%+ quiz резултат.
 
 ---
 
@@ -30,22 +30,23 @@ Study Flow е MVP за деца с дислексия. Детето сканир
 → Проверява GitHub кеш: съществува ли адаптацията?
   → НЕ: Claude генерира adaptation.json + quiz.json (~30 сек)
   → ДА: зарежда от кеш, без AI calls
-→ Confirm екран (показва предмет, заглавие, последен резултат ако има)
-→ "Прегледай урока" → 4 модула × 5 карти (swipe)
-→ Quiz 1 след Модул 2 (5 въпроса от модули 1+2)
-→ Quiz 2 след Модул 4 (5 въпроса от модули 3+4)
-→ Done екран → резултат → "Провери знанията си →"
-→ Reinforcement quiz (10 въпроса) → Result екран
+→ Confirm екран (показва предмет, заглавие, subtitle на урока)
+→ "Отвори урока" → 4 модула × 5 карти (swipe)
+→ Done екран → "Провери знанията си →"
+→ Reinforcement quiz (10 въпроса с анимации) → Result екран
 ```
+
+**Забележка:** Quiz × 2 по средата на урока са ПРЕМАХНАТИ (29 Март 2026).
+`navigation.ts`: модул 2 → модул 3 директно, модул 4 → done директно.
 
 ### Reinforcement режим (повторно отваряне)
 ```
 Home → tile на урок → "Отвори урока"
-→ Confirm екран (показва последния резултат от преговор)
+→ Confirm екран
 → "Провери знанията си" → 10 случайни въпроса от quiz.json (без нови AI calls)
-→ Result: "X от 10 познати!" + "Опитай пак" / "Приключих с урока"
+→ Result: "Ти научи X неща днес" + "Опитай пак" / "Към началото"
 — или —
-→ "Прегледай урока" → 4 модула × 5 карти → Done
+→ "Отвори урока" → 4 модула × 5 карти → Done
 ```
 
 ---
@@ -53,19 +54,21 @@ Home → tile на урок → "Отвори урока"
 ## Routing
 
 ```
+/                              — landing page / join redirect
+/join                          — onboarding за нови деца (JoinWizard)
 /[user]                        — начална страница (последни уроци + сканиране)
 /[user]/scan                   — camera/upload
 /[user]/loading                — изчакване на AI генерация (обработва 429 rate limit)
-/[user]/confirm                — hub: показва урока, последен резултат, избор learn/review
+/[user]/confirm                — hub: показва урока, избор learn/review
 /[user]/lesson/[module]/[card] — карта (модул 1-4, карта 1-5) ← page.tsx връща null
 /[user]/lesson/separator       — "Браво! Завърши секция X от 4!" между модули ← page.tsx връща null
-/[user]/lesson/quiz            — quiz въпроси
-/[user]/done                   — краен екран с резултат
-/[user]/reinforcement          — история на преговори + бутон "Започни Преговор"
+/[user]/done                   — краен екран
 /[user]/reinforcement/quiz     — 10 случайни въпроса от quiz.json
-/[user]/reinforcement/result   — "X от 10 познати!", "Опитай пак" / "Приключих с урока"
+/[user]/reinforcement/result   — резултат + опции
+/[user]/parent                 — Дневник (родителски изглед) ✅ имплементиран
 ```
 
+**Няма `/lesson/quiz` route в потока** — файлът `lesson/quiz/page.tsx` е orphan, предстои изтриване.
 **Няма `/lesson/intro` route** — `confirm/page.tsx` изпълнява тази роля.
 
 ### ВАЖНО: LessonLayoutInner
@@ -94,25 +97,15 @@ function navigate(url: string) {
 ## GitHub като база данни
 
 ```
+users/[user]/profile.json                              ← създава се при /join
 users/[user]/adaptations/[subject]/lesson-[n]/adaptation.json
 users/[user]/adaptations/[subject]/lesson-[n]/quiz.json
-users/[user]/sessions.json
-rate-limit.json   ← 1 адаптация на 24 часа (проверява се в /api/generate)
+users/[user]/sessions/sessions.json
+pilot/enrollment.json                                  ← брой записани деца (лимит 20)
+rate-limit.json                                        ← 1 адаптация на 24 часа
 ```
 
-Адаптацията се кешира в `sessionStorage`. Lazy init при рендер с валидация на subject/lesson:
-
-```tsx
-const [adaptation, setAdaptation] = useState<Adaptation | null>(() => {
-  if (typeof window === "undefined") return null;
-  const raw = sessionStorage.getItem("adaptation");
-  if (!raw) return null;
-  const parsed = JSON.parse(raw) as Adaptation;
-  const sp = new URLSearchParams(window.location.search);
-  if (parsed.meta?.subject !== sp.get("subject") || String(parsed.meta?.lesson) !== sp.get("lesson")) return null;
-  return parsed;
-});
-```
+Адаптацията се кешира в `sessionStorage`. Lazy init при рендер с валидация на subject/lesson.
 
 ---
 
@@ -136,6 +129,7 @@ const [adaptation, setAdaptation] = useState<Adaptation | null>(() => {
   "questions": [{
     "id": 1, "module_id": 1, "card_id": 1,
     "question": "...",
+    "explanation": "Едно изречение обяснение — показва се на Факт екрана при грешен отговор.",
     "options": [
       { "id": "a", "text": "...", "correct": true },
       { "id": "b", "text": "...", "correct": false },
@@ -153,9 +147,7 @@ const [adaptation, setAdaptation] = useState<Adaptation | null>(() => {
     {
       "date": "2026-03-15", "subject": "math", "lesson": 14,
       "started_at": "16:02", "duration_min": 28,
-      "type": "learn", "completed": true,
-      "quiz_1": { "score": 4, "total": 5, "errors": [2] },
-      "quiz_2": { "score": 5, "total": 5, "errors": [] }
+      "type": "learn", "completed": true
     },
     {
       "date": "2026-03-19", "subject": "math", "lesson": 14,
@@ -177,7 +169,7 @@ const [adaptation, setAdaptation] = useState<Adaptation | null>(() => {
 |------|------|------|-------|
 | При сканиране | Claude Vision | снимка | предмет + заглавие + урок номер |
 | Ново сканиране | Claude | снимка + инструкции | adaptation.json |
-| Ново сканиране | Claude (фонов) | adaptation + инструкции | quiz.json (20 въпроса) |
+| Ново сканиране | Claude (фонов) | adaptation + инструкции | quiz.json (20 въпроса + explanation) |
 | Повторно отваряне | — | — | зарежда от GitHub кеш |
 | Reinforcement | — | — | random 10 от quiz.json |
 
@@ -189,10 +181,15 @@ const [adaptation, setAdaptation] = useState<Adaptation | null>(() => {
 
 | Файл | Роля |
 |------|------|
-| `src/app/[user]/lesson/LessonLayoutInner.tsx` | Целият lesson UI (intro + cards + separator) |
+| `src/app/[user]/lesson/LessonLayoutInner.tsx` | Целият lesson UI (cards + separator) |
 | `src/app/[user]/lesson/layout.tsx` | Зарежда LessonLayoutInner в Suspense |
-| `src/app/[user]/page.tsx` | Home екран |
+| `src/app/[user]/page.tsx` + `UserHome.tsx` | Home екран |
+| `src/app/[user]/confirm/page.tsx` | Hub: показва урока, избор learn/review |
 | `src/app/[user]/done/page.tsx` | Краен екран |
+| `src/app/[user]/parent/page.tsx` | Дневник — родителски изглед |
+| `src/app/[user]/reinforcement/quiz/page.tsx` | Reinforcement quiz (phase state machine) |
+| `src/app/join/page.tsx` + `JoinWizard.tsx` | Onboarding за нови деца |
+| `src/app/api/join/route.ts` | POST /api/join — записване в enrollment.json |
 | `src/types/index.ts` | Всички типове + цветови константи (NAV, MODULE_*) |
 | `src/lib/navigation.ts` | nextStep / prevStep / nextButtonLabel |
 | `src/app/globals.css` | Tailwind v4 @theme + btn-press клас + @font-face |
@@ -201,8 +198,8 @@ const [adaptation, setAdaptation] = useState<Adaptation | null>(() => {
 
 ---
 
-## Предстои (не е имплементирано)
+## Предстои
 
-- Родителски изглед (`/[user]/parent`) — sessions.json read-only, седмичен стрип
-- Prefetch на следващия route за по-бърза навигация
-- next-intl (BG/EN) — планирано, не имплементирано
+- [ ] Изтриване на orphan файл `src/app/[user]/lesson/quiz/page.tsx`
+- [ ] Prefetch на следващия route за по-бърза навигация
+- [ ] next-intl (BG/EN) — планирано, не имплементирано

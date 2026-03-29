@@ -1,6 +1,6 @@
 # Study Flow — Dev Notes & Капани
 
-_Последна актуализация: 22 Март 2026_
+_Последна актуализация: 29 Март 2026_
 
 Натрупани уроци от разработката. Прочети преди да пишеш код.
 
@@ -113,9 +113,7 @@ startTransition(() => router.push(url))
 - ✅ Сканиране и AI генерация (Claude Vision + Claude)
 - ✅ Rate limiting: 1 адаптация на 24 часа (`rate-limit.json` в GitHub)
 - ✅ 4 модула × 5 карти с swipe навигация
-- ✅ Quiz 1 (след модул 2) + Quiz 2 (след модул 4)
 - ✅ Reinforcement quiz (10 random от 20)
-- ✅ Reinforcement result: "X от 10", прогрес бар, "Ти научи X неща днес"
 - ✅ Запис на сесии в `sessions.json`
 - ✅ Home с последни уроци tiles (групирани по дата)
 - ✅ Confirm екран: hub за learn/review, показва последен резултат
@@ -136,9 +134,29 @@ startTransition(() => router.push(url))
 - ✅ Drawer меню: "История" → "Дневник"
 - ✅ Прогрес бар: сегменти (4 модула) в реда с 🏠 — не отделна лента
 
+### SF-2 + UI redesign (29 Март 2026)
+- ✅ **Intermediate quiz-ове МАХНАТИ** — `navigation.ts`: модул 2→3 директно, модул 4→done директно
+- ✅ **SF-2: Reinforcement quiz** — phase state machine: `"answering" | "correct" | "wrong" | "fact"`
+  - Верен: зелена анимация + confetti + звездички → auto-next (скъсено)
+  - Грешен: shake + розово → верният светва зелен → fact screen (скъсено wait)
+  - Fact screen: 💡 + `explanation` от AI; fallback → въпрос + верен отговор
+  - Ракетата ПРЕМАХНАТА — само синята прогрес лента
+  - Прогрес бар: изминати=NAV.btnSolid 100%, текущ=35%, предстоящи=15%
+- ✅ **Topbar quiz**: `← Субект · Урок N` bold (scan-style) на всички quiz екрани (въпрос + факт)
+- ✅ **Lesson header**: `← Subject · Урок N` + 🏠 в LessonLayoutInner (card + separator)
+- ✅ **Sub-header**: `Модул M от 4 · {moduleTitle}` под lesson header
+- ✅ **Footer progress**: 5 точки (текуща = pill в MODULE_SURFACE, останали = NAV.border)
+- ✅ **FeedbackButton МАХНАТ** от всички екрани
+- ✅ **Confirm**: добавено subtitle на урока под хедъра; lesson card title → "Отвори урока"; quiz card без "Спомни си урока"
+- ✅ **Done**: lesson header добавен; subtitle на урока под хедъра; "Провери знанията" → white card style с 🏆 (идентична с confirm); "За днес толкова" → "Към началото"
+- ✅ **Reinforcement result**: X в "Ти научи X неща днес" = брой **грешни** отговори; "За днес толкова" → "Към началото"
+- ✅ **Parent dashboard null safety**: `s.quiz_1 ?? { score: 0, total: 0 }` — стари сесии без quiz поле не crashват
+- ✅ **QuizQuestion.explanation**: ново поле в типа + prompt инструкция за AI да генерира 1 изречение обяснение
+- ✅ **CSS keyframes**: correct-pop, shake, icon-pop, star-pop, confetti-1..5
+
 ---
 
 ## Предстои
 
-- 🔄 Дневник (`/[user]/parent`): Горен блок (обобщение) + Среден блок (timeline сесии)
+- 🔄 Done page: pending финален стил на "Провери знанията" бутон (white card с 🏆) — commit чакащ
 - [ ] Prefetch на следващия route за по-бърза навигация

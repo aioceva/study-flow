@@ -1,6 +1,6 @@
 # Study Flow — Design System
 
-_Последна актуализация: 22 Март 2026_
+_Последна актуализация: 29 Март 2026_
 
 ## Философия
 
@@ -295,24 +295,32 @@ Lesson екрани използват `MODULE_COLORS[m]` вместо `NAV.bg` 
 
 ### Confirm (`/confirm`) — hub за learn и review
 - Хедър: scan-style ← + "{subjectLabel} · Урок {lesson}" + 🏠
-- Lesson card: идентична с home tiles, горе (не центрирана)
-- Quiz card (само ако има минали сесии): веднага под lesson card
-- Без "Преговор" бутон — действията са директно в картите
+- Subtitle: заглавие на урока под хедъра (text-base, NAV.text)
+- Lesson card: бяла карта + shadow, title = "Отвори урока", горе (не центрирана)
+- Quiz card (само ако има минали сесии): бяла карта + shadow, label "ПРОВЕРКА НА ЗНАНИЯТА" + 🏆 кръг; **БЕЗ** "Спомни си урока" текст
+- Без FeedbackButton
 
 ### Card (`/lesson/[m]/[c]`)
 - Header: `← {Subject} · Урок {N}` (`text-xl font-bold NAV.text`) + 🏠
 - Sub-header: `Модул {M} от 4 · {moduleTitle}` (`text-sm NAV.textMuted`)
 - Content: `MODULE_COLORS[m]` фон, card title `text-xl font-bold NAV.text`
-- 3 секции (📌 / 💡 / ✏️): bg `MODULE_SURFACE[m]` + shadow, label `MODULE_BTN[m]` uppercase, body `NAV.text`
-- Footer: 5 точки прогрес (текущата = pill `MODULE_PROGRESS[m]`, останалите = `NAV.border`) + `←` (`NAV.surface`) + `→` (`NAV.btnSolid`)
+- 3 секции (📌 / 💡 / ✏️): bg `MODULE_SURFACE[m]` + shadow (`0 2px 8px rgba(0,0,0,0.06)`), label `MODULE_BTN[m]` uppercase, body `NAV.text`
+- Footer: 5 точки прогрес (текущата = pill в `MODULE_SURFACE[m]`, останалите = `NAV.border`) + `←` (`NAV.surface`) + `→` (`NAV.btnSolid`)
+- **→ бутон е ВИНАГИ NAV.btnSolid** — независимо от активния модул
 
-### Quiz (`/lesson/quiz`)
-- Progress row: `[5 сегмента][🏠]` — идентична структура с lesson (не dots)
-- Малък label: "Проверка {N}" (`text-sm`)
-- Въпрос: `text-base` (НЕ bold)
+### Reinforcement Quiz (`/reinforcement/quiz`) — SF-2
+- Topbar: `← Субект · Урок N` (bold, scan-style) + 🏠 — идентично с всички екрани
+- Progress bar под topbar: хоризонтална лента; изминати=NAV.btnSolid 100%, текущ=35%, предстоящи=15%
+- **Без ракета** — само синята лента
+- Въпрос: `text-base` (НЕ bold), NAV.text
 - Отговори: `NAV.surface` карти, `text-base` (НЕ bold)
-- Feedback: цветен bg (зелено верен / червено грешен)
-- Footer: `←` + `→` (само стрелки)
+- **Phase state machine:**
+  - `answering` — детето избира
+  - `correct` — зелена анимация, confetti, звездички → auto-next (кратко)
+  - `wrong` — shake + розово → верният светва зелен (кратко чакане) → `fact`
+  - `fact` — 💡 + `explanation` от AI (fallback: въпрос + верен отговор) + "→ Напред" бутон
+- **Без FeedbackButton**, без ← бутон, без текстово feedback поле
+- При верен: звездички се показват при p≥0.93 на прогрес лентата
 
 ### Separator/Браво (`/lesson/separator`)
 - Без back бутон
@@ -320,15 +328,18 @@ Lesson екрани използват `MODULE_COLORS[m]` вместо `NAV.bg` 
 - Footer: само `→` (`NAV.btnSolid`)
 
 ### Done (`/done`)
-- `icon-trophy-glow.svg` 96px (SVG paths, НЕ emoji в `<text>`)
-- "Готово!" (`text-xl font-bold`), lesson info
-- Без back бутон — само "Към началото" (primary)
+- Хедър: scan-style ← (→ home) + "{subjectLabel} · Урок {lesson}" + 🏠
+- Subtitle: заглавие на урока под хедъра
+- `icon-trophy-glow.svg` 96px (SVG paths, НЕ emoji в `<text>`) + "Браво!" + subtitle
+- Footer (learn mode): бяла карта с 🏆 "ПРОВЕРКА НА ЗНАНИЯТА" (идентична с confirm quiz card) + secondary "Към началото"
+- Footer (review mode): само "Към началото" primary
+- Без FeedbackButton, без LessonCard в центъра
 
 ### Reinforcement result (`/reinforcement/result`)
 - Emoji + **"X от 10"** (без удивителни)
 - Прогрес бар (без % стойности пред детето)
-- Описателен текст ("Ти научи X неща днес")
-- Footer: "Опитай пак" (primary) + "Приключих с урока" (secondary, без border)
+- Описателен текст: "Ти научи X неща днес" — **X = брой ГРЕШНИ отговори** (не верни)
+- Footer: "Опитай пак →" (primary) + "Към началото" (secondary, без border)
 
 ### Дневник (`/[user]/parent`) — за родителя
 - Горен блок: обобщение (брой сесии, минути, среден резултат, последна активност)
