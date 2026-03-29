@@ -397,6 +397,15 @@
         8,
         13
       ]
+    },
+    {
+      "date": "2026-03-29",
+      "subject": "bio",
+      "lesson": 45,
+      "started_at": "21:22",
+      "duration_min": 1,
+      "type": "learn",
+      "completed": true
     }
   ]
 }
