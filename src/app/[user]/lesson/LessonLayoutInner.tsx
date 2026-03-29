@@ -136,7 +136,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           <button
             onClick={() => navigate(`/${user}/lesson/${sepFrom}/5?${params}`)}
             className="btn-press flex-1 rounded-xl flex items-center justify-center text-xl"
-            style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
+            style={{ height: 52, backgroundColor: NAV.surface, color: NAV.text }}
           >
             ←
           </button>
@@ -177,7 +177,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           {homeIcon}
         </div>
         {/* Модул N от 4 · Заглавие на модула */}
-        <div className="px-4 pb-2">
+        <div className="px-4 py-2">
           <span className="text-sm" style={{ color: NAV.textMuted }}>
             Модул {moduleId} от 4{moduleData?.title ? ` · ${moduleData.title}` : ""}
           </span>
@@ -203,9 +203,9 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       </div>
 
       {/* Footer: 5 точки прогрес + бутони */}
-      <div className="flex-none bg-white px-4 pb-6 pt-3">
+      <div className="flex-none bg-white px-4 pb-4 pt-2">
         {/* 5 точки — текущата е pill, останалите кръгче */}
-        <div className="flex justify-center items-center gap-2 mb-3">
+        <div className="flex justify-center items-center gap-2 mb-2">
           {[1, 2, 3, 4, 5].map((step) => (
             <div
               key={step}
@@ -226,7 +226,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
               : navigate(prevStep(user, moduleId, cardId, params))
             }
             className="btn-press flex-1 rounded-xl flex items-center justify-center text-xl"
-            style={{ height: 56, backgroundColor: NAV.surface, color: NAV.text }}
+            style={{ height: 52, backgroundColor: NAV.surface, color: NAV.text }}
           >
             ←
           </button>
