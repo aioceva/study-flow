@@ -185,15 +185,15 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       </div>
 
       {/* Съдържание */}
-      <div {...swipeHandlers} className="flex-1 overflow-y-auto px-5 pt-4 pb-2" style={{ backgroundColor: bgColor }}>
+      <div {...swipeHandlers} className="flex-1 overflow-y-auto px-5 pt-3 pb-2" style={{ backgroundColor: bgColor }}>
         {!card ? (
           <div className="flex items-center justify-center h-full">
             <p style={{ color: NAV.textMuted }}>Зарежда...</p>
           </div>
         ) : (
           <div>
-            <p className="text-xl font-bold mb-4 leading-snug" style={{ color: NAV.text }}>{card.title}</p>
-            <div className="space-y-2">
+            <p className="text-xl font-bold mb-2 leading-snug" style={{ color: NAV.text }}>{card.title}</p>
+            <div className="space-y-1.5">
               <Section icon="📌" label="Какво е"      text={card.what}    moduleId={moduleId} />
               <Section icon="💡" label="Защо е важно" text={card.why}     moduleId={moduleId} />
               <Section icon="✏️" label="Пример"       text={card.example} moduleId={moduleId} />
@@ -246,8 +246,8 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 
 function Section({ icon, label, text, moduleId }: { icon: string; label: string; text: string; moduleId: number }) {
   return (
-    <div className="rounded-xl p-4" style={{ backgroundColor: MODULE_SURFACE[moduleId] ?? "#F0F0F0", boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
-      <p className="text-sm font-medium uppercase tracking-wide mb-1" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>
+    <div className="rounded-xl p-3" style={{ backgroundColor: MODULE_SURFACE[moduleId] ?? "#F0F0F0", boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
+      <p className="text-sm font-medium uppercase tracking-wide mb-0.5" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>
         {icon} {label}
       </p>
       <p className="text-base leading-relaxed" style={{ color: NAV.text }}>{text}</p>
