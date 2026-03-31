@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { readJSON } from "@/lib/github";
-import { Sessions, Session, Quiz, NAV, SUBJECT_LABELS, Subject, ReinforcementSession } from "@/types";
+import { Sessions, Session, Quiz, Adaptation, NAV, SUBJECT_LABELS, Subject, ReinforcementSession } from "@/types";
 import { SessionList, QuizMap } from "./SessionList";
 import { FeedbackButton } from "@/components/FeedbackButton";
 
@@ -68,18 +68,26 @@ export default async function ParentPage({
   const result = await readJSON<Sessions>(`users/${user}/sessions/sessions.json`);
   const sessions: Session[] = result?.data?.sessions ?? [];
 
-  // Зареди quiz данни за всеки уникален урок (за грешните въпроси)
+  // Зареди quiz данни и adaptation заглавия за всеки уникален урок
   const lessonKeys = [...new Set(sessions.map((s) => `${s.subject}-${s.lesson}`))];
-  const quizEntries = await Promise.all(
+  const lessonData = await Promise.all(
     lessonKeys.map(async (key) => {
       const [subject, lesson] = key.split("-");
-      const r = await readJSON<Quiz>(
-        `users/${user}/adaptations/${subject}/lesson-${lesson}/quiz.json`
-      );
-      return [key, r?.data?.questions ?? []] as const;
+      const [quizR, adaptR] = await Promise.all([
+        readJSON<Quiz>(`users/${user}/adaptations/${subject}/lesson-${lesson}/quiz.json`),
+        readJSON<Adaptation>(`users/${user}/adaptations/${subject}/lesson-${lesson}/adaptation.json`),
+      ]);
+      return {
+        key,
+        questions: quizR?.data?.questions ?? [],
+        title: adaptR?.data?.meta?.title ?? null,
+      };
     })
   );
-  const quizMap: QuizMap = Object.fromEntries(quizEntries);
+  const quizMap: QuizMap = Object.fromEntries(lessonData.map((d) => [d.key, d.questions]));
+  const titleMap: Record<string, string> = Object.fromEntries(
+    lessonData.filter((d) => d.title).map((d) => [d.key, d.title as string])
+  );
 
   // ── Горен блок ──────────────────────────────────────────────────────────
 
@@ -104,26 +112,33 @@ export default async function ParentPage({
     ? "1 ден тази седмица"
     : `${activeDaysThisWeek} дни тази седмица`;
 
-  // Най-труден предмет — предмет с най-нисък среден % от reinforcement сесии
+  // Най-труден предмет — последен тест по предмет → намери най-слабия резултат
   const reinfSessions = sessions.filter(
     (s): s is ReinforcementSession => s.type === "reinforcement"
   );
   let hardestLabel: string | null = null;
+  let hardestTitle: string | null = null;
   let hardestPct: number | null = null;
   if (reinfSessions.length > 0) {
-    const bySubject: Record<string, number[]> = {};
+    // Намери последната reinforcement сесия за всеки предмет
+    const latestBySubject: Record<string, ReinforcementSession> = {};
     for (const s of reinfSessions) {
-      if (!bySubject[s.subject]) bySubject[s.subject] = [];
-      bySubject[s.subject].push(s.score / s.total);
+      const existing = latestBySubject[s.subject];
+      if (!existing || (s.date + s.started_at) > (existing.date + existing.started_at)) {
+        latestBySubject[s.subject] = s;
+      }
     }
-    let minAvg = Infinity;
-    let minSubj = "";
-    for (const [subj, scores] of Object.entries(bySubject)) {
-      const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-      if (avg < minAvg) { minAvg = avg; minSubj = subj; }
+    // Намери предмета с най-нисък % от последния тест
+    let worstPct = Infinity;
+    for (const [subj, s] of Object.entries(latestBySubject)) {
+      const pct = s.score / s.total;
+      if (pct < worstPct) {
+        worstPct     = pct;
+        hardestLabel = SUBJECT_LABELS[subj as Subject] ?? subj;
+        hardestTitle = titleMap[`${subj}-${s.lesson}`] ?? null;
+        hardestPct   = Math.round(pct * 100);
+      }
     }
-    hardestLabel = SUBJECT_LABELS[minSubj as Subject] ?? minSubj;
-    hardestPct   = Math.round(minAvg * 100);
   }
 
   // ── Среден блок ─────────────────────────────────────────────────────────
@@ -235,6 +250,7 @@ export default async function ParentPage({
             <StatCard
               label="Най-труден предмет"
               value={hardestLabel ?? "—"}
+              mid={hardestTitle ?? undefined}
               sub={hardestPct !== null ? `${hardestPct}%` : undefined}
               subColor={
                 hardestPct === null ? undefined
@@ -272,9 +288,9 @@ export default async function ParentPage({
 // ─── StatCard ──────────────────────────────────────────────────────────────
 
 function StatCard({
-  label, value, sub, subColor, small = false,
+  label, value, mid, sub, subColor, small = false,
 }: {
-  label: string; value: string; sub?: string; subColor?: string; small?: boolean;
+  label: string; value: string; mid?: string; sub?: string; subColor?: string; small?: boolean;
 }) {
   return (
     <div className="rounded-xl p-4 flex flex-col justify-between"
@@ -285,6 +301,9 @@ function StatCard({
           style={{ color: NAV.text }}>
           {value}
         </p>
+        {mid && (
+          <p className="text-sm" style={{ color: NAV.textMuted }}>{mid}</p>
+        )}
         {sub && (
           <p className="text-sm font-medium" style={{ color: subColor ?? NAV.textMuted }}>
             {sub}
