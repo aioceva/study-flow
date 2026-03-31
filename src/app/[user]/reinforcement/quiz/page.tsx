@@ -44,8 +44,12 @@ export default function ReinforcementQuizPage() {
       let quiz: Quiz | null = null;
       const raw = sessionStorage.getItem("quiz");
       if (raw) {
-        quiz = JSON.parse(raw);
-      } else {
+        const parsed = JSON.parse(raw) as Quiz;
+        if (parsed.meta.subject === subject && String(parsed.meta.lesson) === lesson) {
+          quiz = parsed;
+        }
+      }
+      if (!quiz) {
         const res  = await fetch(`/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`);
         const json = await res.json();
         if (!json.exists || !json.quiz) return;
