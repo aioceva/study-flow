@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { readJSON } from "@/lib/github";
-import { Sessions, Session, Quiz, NAV } from "@/types";
+import { Sessions, Session, Quiz, NAV, SUBJECT_LABELS, Subject, ReinforcementSession } from "@/types";
 import { SessionList, QuizMap } from "./SessionList";
 import { FeedbackButton } from "@/components/FeedbackButton";
 
@@ -16,6 +16,11 @@ const BG_MONTHS = [
 function fmtDate(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   return `${d} ${BG_MONTHS[m - 1]} ${y}`;
+}
+
+function fmtShortDate(iso: string): string {
+  const [, m, d] = iso.split("-").map(Number);
+  return `${d} ${BG_MONTHS[m - 1]}`;
 }
 
 function getWeekDays(weekOffset: number): { dateStr: string; label: string; dayNum: number }[] {
@@ -43,15 +48,6 @@ function weekMonthLabel(days: { dateStr: string }[]): string {
   if (first.getMonth() === last.getMonth())
     return `${BG_MONTHS[first.getMonth()]} ${year}`;
   return `${BG_MONTHS[first.getMonth()]} – ${BG_MONTHS[last.getMonth()]} ${year}`;
-}
-
-function sessionScore(s: Session): { score: number; total: number } {
-  if (s.type === "learn") {
-    const q1 = s.quiz_1 ?? { score: 0, total: 0 };
-    const q2 = s.quiz_2 ?? { score: 0, total: 0 };
-    return { score: q1.score + q2.score, total: q1.total + q2.total };
-  }
-  return { score: s.score, total: s.total };
 }
 
 // ─── страница ──────────────────────────────────────────────────────────────
@@ -87,25 +83,48 @@ export default async function ParentPage({
 
   // ── Горен блок ──────────────────────────────────────────────────────────
 
-  const weekDays     = getWeekDays(weekOffset);
-  const monthLabel   = weekMonthLabel(weekDays);
+  const weekDays      = getWeekDays(weekOffset);
+  const monthLabel    = weekMonthLabel(weekDays);
   const isCurrentWeek = weekOffset >= 0;
-  const sessionDays  = new Set(sessions.map((s) => s.date));
-  const todayStr     = new Date().toISOString().slice(0, 10);
+  const sessionDays   = new Set(sessions.map((s) => s.date));
+  const todayStr      = new Date().toISOString().slice(0, 10);
 
-  const totalSessions  = sessions.length;
-  const uniqueLessons  = new Set(sessions.map((s) => `${s.subject}-${s.lesson}`)).size;
+  // Последно учи — дата + час
+  const lastSession = sessions.at(-1);
+  const lastLabel   = lastSession
+    ? `${fmtShortDate(lastSession.date)} · ${lastSession.started_at}`
+    : "—";
 
-  const scores = sessions.map((s) => {
-    const { score, total } = sessionScore(s);
-    return total > 0 ? score / total : 0;
-  });
-  const avgPct = scores.length > 0
-    ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 100)
-    : null;
+  // Учи редовно — уникални дни с учене тази седмица
+  const thisWeekDates  = new Set(getWeekDays(0).map((d) => d.dateStr));
+  const activeDaysThisWeek = new Set(
+    sessions.filter((s) => thisWeekDates.has(s.date)).map((s) => s.date)
+  ).size;
+  const regularLabel = activeDaysThisWeek === 1
+    ? "1 ден тази седмица"
+    : `${activeDaysThisWeek} дни тази седмица`;
 
-  const lastSession    = sessions.at(-1);
-  const lastDateLabel  = lastSession ? fmtDate(lastSession.date) : "—";
+  // Най-труден предмет — предмет с най-нисък среден % от reinforcement сесии
+  const reinfSessions = sessions.filter(
+    (s): s is ReinforcementSession => s.type === "reinforcement"
+  );
+  let hardestLabel: string | null = null;
+  let hardestPct: number | null = null;
+  if (reinfSessions.length > 0) {
+    const bySubject: Record<string, number[]> = {};
+    for (const s of reinfSessions) {
+      if (!bySubject[s.subject]) bySubject[s.subject] = [];
+      bySubject[s.subject].push(s.score / s.total);
+    }
+    let minAvg = Infinity;
+    let minSubj = "";
+    for (const [subj, scores] of Object.entries(bySubject)) {
+      const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+      if (avg < minAvg) { minAvg = avg; minSubj = subj; }
+    }
+    hardestLabel = SUBJECT_LABELS[minSubj as Subject] ?? minSubj;
+    hardestPct   = Math.round(minAvg * 100);
+  }
 
   // ── Среден блок ─────────────────────────────────────────────────────────
 
@@ -208,21 +227,22 @@ export default async function ParentPage({
           </div>
         </div>
 
-        {/* 4 статистики */}
+        {/* 3 статистики */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          <StatCard label="Сесии" value={String(totalSessions)} />
-          <StatCard label="Урока" value={String(uniqueLessons)} />
-          <StatCard
-            label="Среден резултат"
-            value={avgPct !== null ? `${avgPct}%` : "—"}
-            valueColor={
-              avgPct === null ? NAV.textMuted
-              : avgPct >= 80 ? "#22C55E"
-              : avgPct >= 60 ? "#F59E0B"
-              : "#EF4444"
-            }
-          />
-          <StatCard label="Последно учи" value={lastDateLabel} small />
+          <StatCard label="Последно учи" value={lastLabel} small />
+          <StatCard label="Учи редовно" value={regularLabel} small />
+          <div style={{ gridColumn: "1 / -1" }}>
+            <StatCard
+              label="Най-труден предмет"
+              value={hardestLabel ?? "—"}
+              sub={hardestPct !== null ? `${hardestPct}%` : undefined}
+              subColor={
+                hardestPct === null ? undefined
+                : hardestPct >= 70 ? "#3B9E6A"
+                : "#9A6E08"
+              }
+            />
+          </div>
         </div>
 
         {/* ═══ СРЕДЕН БЛОК ══════════════════════════════════════════════ */}
@@ -252,18 +272,25 @@ export default async function ParentPage({
 // ─── StatCard ──────────────────────────────────────────────────────────────
 
 function StatCard({
-  label, value, valueColor, small = false,
+  label, value, sub, subColor, small = false,
 }: {
-  label: string; value: string; valueColor?: string; small?: boolean;
+  label: string; value: string; sub?: string; subColor?: string; small?: boolean;
 }) {
   return (
     <div className="rounded-xl p-4 flex flex-col justify-between"
       style={{ backgroundColor: "#FFFFFF", boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)", minHeight: 72 }}>
       <p className="text-sm" style={{ color: NAV.textMuted }}>{label}</p>
-      <p className={small ? "text-base font-bold" : "text-xl font-bold"}
-        style={{ color: valueColor ?? NAV.text }}>
-        {value}
-      </p>
+      <div>
+        <p className={small ? "text-base font-bold" : "text-xl font-bold"}
+          style={{ color: NAV.text }}>
+          {value}
+        </p>
+        {sub && (
+          <p className="text-sm font-medium" style={{ color: subColor ?? NAV.textMuted }}>
+            {sub}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

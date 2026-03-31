@@ -48,7 +48,7 @@ export default function ReinforcementResultPage() {
 
         <h1 className="text-xl font-bold" style={{ color: NAV.text }}>Браво!</h1>
 
-        <p style={{ fontSize: 48, fontWeight: 700, color: NAV.text, lineHeight: 1, letterSpacing: "-0.02em" }}>
+        <p style={{ fontSize: 34, fontWeight: 700, color: NAV.text, lineHeight: 1, letterSpacing: "-0.01em" }}>
           {percent}%
         </p>
 
