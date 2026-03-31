@@ -435,6 +435,15 @@
       "errors": [
         15
       ]
+    },
+    {
+      "date": "2026-03-31",
+      "subject": "math",
+      "lesson": 0,
+      "started_at": "10:21",
+      "duration_min": 1,
+      "type": "learn",
+      "completed": true
     }
   ]
 }
