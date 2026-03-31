@@ -38,7 +38,7 @@ export default function ConfirmPage() {
           const [, m, d] = s.date.split("-");
           const dateStr = `${parseInt(d)} ${months[parseInt(m) - 1]}`;
           const pct = Math.round((s.score / s.total) * 100);
-          setLastResult({ label: `${dateStr} · ${s.started_at} · ${pct}%`, pct });
+          setLastResult({ label: `${dateStr} · ${pct}%`, pct });
         }
       })
       .catch(() => setHasSessions(false));
@@ -162,12 +162,13 @@ export default function ConfirmPage() {
                 <p className="text-xs font-medium tracking-wider uppercase mb-0.5" style={{ color: NAV.textMuted }}>
                   Проверка на знанията
                 </p>
-                <p className="text-sm" style={{ color: NAV.textMuted }}>10 въпроса · ~3 мин</p>
-                {lastResult && (
-                  <p className="text-sm" style={{ color: lastResult.pct >= 70 ? "#3B9E6A" : "#9A6E08" }}>
-                    {lastResult.label}
-                  </p>
-                )}
+                <p className="text-sm" style={{ color: NAV.textMuted }}>
+                  10 въпроса · ~5 мин{lastResult && (
+                    <span style={{ color: lastResult.pct >= 70 ? "#3B9E6A" : "#9A6E08" }}>
+                      {" · "}{lastResult.label}
+                    </span>
+                  )}
+                </p>
               </div>
               <div
                 className="flex-none w-11 h-11 rounded-full flex items-center justify-center text-lg"
