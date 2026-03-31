@@ -1,0 +1,471 @@
+{
+  "meta": {
+    "user": "bobi",
+    "subject": "math",
+    "lesson": 0,
+    "generated": "2026-03-31",
+    "total": 20
+  },
+  "questions": [
+    {
+      "id": 1,
+      "module_id": 1,
+      "card_id": 1,
+      "question": "Какво означава знакът '>'?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Лявата страна е по-голяма от дясната",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Двете страни са равни",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Лявата страна е по-малка от дясната",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "module_id": 1,
+      "card_id": 3,
+      "question": "Кои числа са решения на неравенството x > 2?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Само числото 2",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Всички числа по-малки от 2",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Всички числа по-големи от 2",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "module_id": 1,
+      "card_id": 5,
+      "question": "Как се изобразява x > 2 на числова ос?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Запълнена точка на 2 и стрелка наляво",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Отворена точка на 2 и стрелка надясно",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Отворена точка на 2 и стрелка наляво",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "module_id": 2,
+      "card_id": 1,
+      "question": "Реши: x + 3 > 7. Какво е решението?",
+      "options": [
+        {
+          "id": "a",
+          "text": "x > 10",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "x > 4",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "x > 3",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "module_id": 2,
+      "card_id": 3,
+      "question": "Реши: -2x > 8. Какво е решението?",
+      "options": [
+        {
+          "id": "a",
+          "text": "x > -4",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "x > 4",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "x < -4",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "module_id": 2,
+      "card_id": 3,
+      "question": "Кога се обръща знакът на неравенството?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Когато делим или умножаваме по отрицателно число",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Когато добавяме число от двете страни",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Когато делим по положително число",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "module_id": 3,
+      "card_id": 2,
+      "question": "Какъв е НОК на знаменателите 2 и 3?",
+      "options": [
+        {
+          "id": "a",
+          "text": "2",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "3",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "6",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "module_id": 3,
+      "card_id": 3,
+      "question": "Умножаваме x/2 + x/3 > 1 по 6. Какво получаваме?",
+      "options": [
+        {
+          "id": "a",
+          "text": "2x + 3x > 6",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "3x + 2x > 6",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "3x + 2x > 1",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "module_id": 3,
+      "card_id": 5,
+      "question": "Ако умножим неравенство по НОК = 6 (положително число), какво се случва със знака?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Знакът се обръща",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Знакът остава същият",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Знакът се заменя с '='",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "module_id": 4,
+      "card_id": 1,
+      "question": "Боби има x лева. Купува нещо за 5 лева и иска да му останат поне 2 лева. Кое неравенство описва ситуацията?",
+      "options": [
+        {
+          "id": "a",
+          "text": "x - 5 > 2",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "x + 5 ≥ 2",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "x - 5 ≥ 2",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "module_id": 4,
+      "card_id": 3,
+      "question": "Опрости: 2(x+1) > x+5. Какво е решението?",
+      "options": [
+        {
+          "id": "a",
+          "text": "x > 5",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "x > 3",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "x > 1",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "module_id": 4,
+      "card_id": 4,
+      "question": "Какъв интервал описва решението x > 3?",
+      "options": [
+        {
+          "id": "a",
+          "text": "(-∞, 3)",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "[3, +∞)",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "(3, +∞)",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Кое от следните е линейно неравенство?",
+      "options": [
+        {
+          "id": "a",
+          "text": "x² > 4",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "2x + 1 > 5",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "x² + x > 3",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Реши: x/2 > 3. Какво е решението?",
+      "options": [
+        {
+          "id": "a",
+          "text": "x > 1.5",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "x > 5",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "x > 6",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Реши: x/3 + 1 > 2. Какво е решението?",
+      "options": [
+        {
+          "id": "a",
+          "text": "x > 9",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "x > 3",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "x > 6",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Каква е разликата между x = 5 и x > 5?",
+      "options": [
+        {
+          "id": "a",
+          "text": "x = 5 има едно решение, x > 5 има безкрайно много решения",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "И двете имат едно решение",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "x > 5 има по-малко решения от x = 5",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Реши: 3x - 6 > 9. Какво е решението?",
+      "options": [
+        {
+          "id": "a",
+          "text": "x > 3",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "x > 5",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "x > 6",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Кой е правилният първи ход при решаване на неравенство с дроби?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Да обърнем знака на неравенството",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Да намерим НОК и да умножим по него",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Да изваждаме дробите от двете страни",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Проверяваме решението x > 4 с x = 5 в неравенството 2x > 8. Вярно ли е?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Не, защото 2·5 = 10 не е по-голямо от 8",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Не може да се провери",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Да, защото 2·5 = 10 > 8",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "module_id": 0,
+      "card_id": 0,
+      "question": "Кои са правилните стъпки за решаване на неравенство с дробни коефициенти?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Намери НОК → умножи по НОК → реши линейното неравенство → провери",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Обърни знака → умножи по НОК → реши → провери",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Намери НОК → раздели по НОК → реши → провери",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}
