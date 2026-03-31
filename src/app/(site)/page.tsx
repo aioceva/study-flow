@@ -255,7 +255,7 @@ const howItems = [
   { icon: "📸", step: "1", title: "Качваш урок", desc: "Снимка от учебника или текст" },
   { icon: "✨", step: "2", title: "Ние го адаптираме", desc: "Урокът става на кратки карти с прост език" },
   { icon: "🧠", step: "3", title: "Детето учи", desc: "Самостоятелно, в собствено темпо" },
-  { icon: "📊", step: "4", title: "Ти следиш", desc: "Виждаш как се справя в родителския дневник" },
+  { icon: "📊", step: "4", title: "Ти виждаш прогреса", desc: "Виждаш как се справя в родителския дневник" },
 ];
 
 export default function LandingPage() {
@@ -298,9 +298,8 @@ export default function LandingPage() {
           Пилот · Април–Май 2026
         </span>
         <h1
+          className="text-xl font-bold"
           style={{
-            fontSize: "clamp(28px, 6vw, 40px)",
-            fontWeight: 700,
             color: NAV.text,
             lineHeight: 1.25,
             margin: "0 0 16px",
@@ -309,24 +308,19 @@ export default function LandingPage() {
         >
           Дете с дислексия може да учи само.
         </h1>
-        <p style={{ fontSize: 16, color: NAV.textMuted, maxWidth: 440, margin: "0 auto 12px", lineHeight: 1.8 }}>
+        <p className="text-base" style={{ color: NAV.textMuted, maxWidth: 440, margin: "0 auto 12px", lineHeight: 1.8 }}>
           Качваш урок. Study Flow го превръща в кратки, разбираеми карти.
         </p>
-        <p style={{ fontSize: 14, color: NAV.textMuted, maxWidth: 420, margin: "0 auto 28px", lineHeight: 1.75 }}>
+        <p className="text-sm" style={{ color: NAV.textMuted, maxWidth: 420, margin: "0 auto 28px", lineHeight: 1.75 }}>
           Детето учи спокойно. Ти виждаш кога има нужда от помощ.
         </p>
         <Link
           href="/join"
           className="inline-block rounded-xl px-8 py-4 text-white font-medium text-base"
-          style={{ backgroundColor: NAV.btnSolid, fontSize: 15 }}
+          style={{ backgroundColor: NAV.btnSolid }}
         >
           Присъедини се към пилота →
         </Link>
-
-        {/* Hero screenshot */}
-        <div className="mt-12 w-full" style={{ maxWidth: 380 }}>
-          <LessonCardMock />
-        </div>
       </section>
 
       {/* ── ПРОБЛЕМЪТ ── */}
@@ -368,7 +362,7 @@ export default function LandingPage() {
           <p style={{ fontSize: 15, color: NAV.textMuted, textAlign: "center", marginBottom: 40, lineHeight: 1.8 }}>
             Детето минава през кратки стъпки и учи самостоятелно.
           </p>
-          <div className="grid gap-8" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
+          <div className="grid gap-8" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
             {[
               { label: "Урок", mock: <LessonCardMock /> },
               { label: "Тест", mock: <QuizCardMock /> },
