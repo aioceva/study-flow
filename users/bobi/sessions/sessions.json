@@ -497,6 +497,25 @@
         17,
         14
       ]
+    },
+    {
+      "date": "2026-03-31",
+      "subject": "math",
+      "lesson": 0,
+      "started_at": "16:26",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "score": 2,
+      "total": 10,
+      "errors": [
+        6,
+        10,
+        3,
+        2,
+        15,
+        12,
+        7
+      ]
     }
   ]
 }
