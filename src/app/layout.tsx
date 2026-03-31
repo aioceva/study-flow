@@ -13,11 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="bg">
-      <body>
-        <div style={{ maxWidth: "480px", margin: "0 auto", borderLeft: "1px solid #E2E5EA", borderRight: "1px solid #E2E5EA", minHeight: "100dvh" }}>
-          {children}
-        </div>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
