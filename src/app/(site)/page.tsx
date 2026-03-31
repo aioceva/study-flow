@@ -280,13 +280,22 @@ export default function LandingPage() {
         }}
       >
         <span style={{ fontWeight: 700, fontSize: 17, color: NAV.text }}>Study Flow</span>
-        <Link
-          href="/join"
-          className="rounded-xl px-5 py-2 text-white font-medium text-sm"
-          style={{ backgroundColor: NAV.btnSolid }}
-        >
-          Присъедини се
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/bobi"
+            className="rounded-xl px-4 py-2 font-medium text-sm"
+            style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
+          >
+            Към приложението
+          </Link>
+          <Link
+            href="/join"
+            className="rounded-xl px-5 py-2 text-white font-medium text-sm"
+            style={{ backgroundColor: NAV.btnSolid }}
+          >
+            Присъедини се
+          </Link>
+        </div>
       </nav>
 
       {/* ── HERO ── */}
