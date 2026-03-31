@@ -3,7 +3,6 @@
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { startTransition } from "react";
 import { NAV } from "@/types";
-import { FeedbackButton } from "@/components/FeedbackButton";
 
 export default function ReinforcementResultPage() {
   const { user } = useParams<{ user: string }>();
@@ -22,14 +21,13 @@ export default function ReinforcementResultPage() {
   const missed = total - score;
   const percent = Math.round((score / total) * 100);
   const perfect = score === total;
-  const good = percent >= 80;
-  const emoji = perfect ? "🏆" : good ? "🌟" : "💪";
+  const emoji = perfect ? "🏆" : percent >= 80 ? "🌟" : "💪";
 
   return (
     <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
-      {/* Хедър: [📣] [🏠] вдясно */}
-      <div className="flex-none flex items-center justify-end gap-1 px-4 py-3">
-        <FeedbackButton user={user} />
+
+      {/* Хедър */}
+      <div className="flex-none flex items-center justify-end px-4 py-3">
         <button
           onClick={() => navigate(`/${user}`)}
           className="btn-press w-8 h-8 flex items-center justify-center"
@@ -42,22 +40,24 @@ export default function ReinforcementResultPage() {
           </svg>
         </button>
       </div>
-      <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-4">
 
-        <div className="text-6xl">{emoji}</div>
+      {/* Съдържание */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 text-center" style={{ gap: 14 }}>
 
-        <h1 className="text-xl font-bold" style={{ color: NAV.text }}>
-          {score} от {total}
-        </h1>
+        <div style={{ fontSize: 36 }}>{emoji}</div>
 
-        {/* Прогрес бар — без проценти */}
-        <div className="w-full rounded-2xl px-6 py-4" style={{ backgroundColor: good ? "#DCFCE7" : "#FEF9C3" }}>
-          <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: good ? "#BBF7D0" : "#FDE68A" }}>
-            <div
-              className="h-2 rounded-full"
-              style={{ width: `${percent}%`, backgroundColor: good ? "#22C55E" : "#F59E0B" }}
-            />
-          </div>
+        <h1 className="text-xl font-bold" style={{ color: NAV.text }}>Браво!</h1>
+
+        <p style={{ fontSize: 48, fontWeight: 700, color: NAV.text, lineHeight: 1, letterSpacing: "-0.02em" }}>
+          {percent}%
+        </p>
+
+        {/* Progress bar */}
+        <div className="w-full rounded-full overflow-hidden" style={{ height: 8, backgroundColor: NAV.surface }}>
+          <div
+            className="rounded-full"
+            style={{ width: `${percent}%`, height: "100%", backgroundColor: NAV.btnSolid }}
+          />
         </div>
 
         {/* Обобщение */}
@@ -71,6 +71,7 @@ export default function ReinforcementResultPage() {
 
       </div>
 
+      {/* Бутони */}
       <div className="flex-none px-4 pb-6 pt-3 space-y-2">
         {!perfect && (
           <button
@@ -92,6 +93,7 @@ export default function ReinforcementResultPage() {
           Към началото
         </button>
       </div>
+
     </div>
   );
 }
