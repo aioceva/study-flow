@@ -255,7 +255,7 @@ const howItems = [
   { icon: "📸", step: "1", title: "Качваш урок", desc: "Снимка от учебника или текст" },
   { icon: "✨", step: "2", title: "Ние го адаптираме", desc: "Урокът става на кратки карти с прост език" },
   { icon: "🧠", step: "3", title: "Детето учи", desc: "Самостоятелно, в собствено темпо" },
-  { icon: "📊", step: "4", title: "Ти следиш", desc: "Виждаш как се справя в родителския дневник" },
+  { icon: "📊", step: "4", title: "Виждаш как се справя", desc: "В родителския дневник" },
 ];
 
 export default function LandingPage() {
@@ -280,13 +280,22 @@ export default function LandingPage() {
         }}
       >
         <span style={{ fontWeight: 700, fontSize: 17, color: NAV.text }}>Study Flow</span>
-        <Link
-          href="/join"
-          className="rounded-xl px-5 py-2 text-white font-medium text-sm"
-          style={{ backgroundColor: NAV.btnSolid }}
-        >
-          Присъедини се
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/bobi"
+            className="rounded-xl px-5 py-2 font-medium text-sm"
+            style={{ backgroundColor: NAV.surface, color: NAV.text }}
+          >
+            Към приложението
+          </Link>
+          <Link
+            href="/join"
+            className="rounded-xl px-5 py-2 text-white font-medium text-sm"
+            style={{ backgroundColor: NAV.btnSolid }}
+          >
+            Присъедини се
+          </Link>
+        </div>
       </nav>
 
       {/* ── HERO ── */}
@@ -323,10 +332,6 @@ export default function LandingPage() {
           Присъедини се към пилота →
         </Link>
 
-        {/* Hero screenshot */}
-        <div className="mt-12 w-full" style={{ maxWidth: 380 }}>
-          <LessonCardMock />
-        </div>
       </section>
 
       {/* ── ПРОБЛЕМЪТ ── */}
@@ -368,7 +373,7 @@ export default function LandingPage() {
           <p style={{ fontSize: 15, color: NAV.textMuted, textAlign: "center", marginBottom: 40, lineHeight: 1.8 }}>
             Детето минава през кратки стъпки и учи самостоятелно.
           </p>
-          <div className="grid gap-8" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
+          <div className="grid gap-8" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
             {[
               { label: "Урок", mock: <LessonCardMock /> },
               { label: "Тест", mock: <QuizCardMock /> },
@@ -387,14 +392,14 @@ export default function LandingPage() {
 
       {/* ── КАК РАБОТИ ── */}
       <section className="px-5 py-14" style={{ backgroundColor: NAV.surface }}>
-        <div style={{ maxWidth: 680, margin: "0 auto" }}>
+        <div style={{ maxWidth: 760, margin: "0 auto" }}>
           <p style={{ fontSize: 13, fontWeight: 500, color: MODULE_BTN[3], textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12, textAlign: "center" }}>
             Как работи
           </p>
           <h2 style={{ fontSize: 22, fontWeight: 700, color: NAV.text, marginBottom: 32, textAlign: "center" }}>
             Четири стъпки. Нищо повече.
           </h2>
-          <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))" }}>
+          <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
             {howItems.map((item) => (
               <div
                 key={item.step}
@@ -402,6 +407,7 @@ export default function LandingPage() {
                 style={{
                   backgroundColor: NAV.bg,
                   border: `1px solid ${NAV.border}`,
+                  aspectRatio: "1",
                 }}
               >
                 <span style={{ fontSize: 22 }}>{item.icon}</span>
