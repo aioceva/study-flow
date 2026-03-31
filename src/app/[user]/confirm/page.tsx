@@ -2,7 +2,7 @@
 
 import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { NAV, SUBJECT_LABELS, Subject, Sessions, Adaptation, MODULE_PROGRESS } from "@/types";
+import { NAV, SUBJECT_LABELS, Subject, Sessions, Adaptation, MODULE_PROGRESS, ReinforcementSession } from "@/types";
 
 export default function ConfirmPage() {
   const { user } = useParams<{ user: string }>();
@@ -17,6 +17,7 @@ export default function ConfirmPage() {
   const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
 
   const [hasSessions, setHasSessions] = useState<boolean | null>(null);
+  const [lastResult, setLastResult] = useState<{ label: string; pct: number } | null>(null);
   const [adaptation, setAdaptation] = useState<Adaptation | null>(null);
 
   useEffect(() => {
@@ -27,6 +28,18 @@ export default function ConfirmPage() {
           (s) => s.subject === subject && String(s.lesson) === lesson
         );
         setHasSessions(relevant.length > 0);
+
+        const months = ["яну", "фев", "март", "апр", "май", "юни", "юли", "авг", "сеп", "окт", "ное", "дек"];
+        const quizSessions = relevant
+          .filter((s): s is ReinforcementSession => s.type === "reinforcement")
+          .sort((a, b) => (a.date + a.started_at) > (b.date + b.started_at) ? -1 : 1);
+        if (quizSessions.length > 0) {
+          const s = quizSessions[0];
+          const [, m, d] = s.date.split("-");
+          const dateStr = `${parseInt(d)} ${months[parseInt(m) - 1]}`;
+          const pct = Math.round((s.score / s.total) * 100);
+          setLastResult({ label: `${dateStr} · ${s.started_at} · ${pct}%`, pct });
+        }
       })
       .catch(() => setHasSessions(false));
   }, [user, subject, lesson]);
@@ -150,6 +163,11 @@ export default function ConfirmPage() {
                   Проверка на знанията
                 </p>
                 <p className="text-sm" style={{ color: NAV.textMuted }}>10 въпроса · ~3 мин</p>
+                {lastResult && (
+                  <p className="text-sm" style={{ color: lastResult.pct >= 70 ? "#3B9E6A" : "#9A6E08" }}>
+                    {lastResult.label}
+                  </p>
+                )}
               </div>
               <div
                 className="flex-none w-11 h-11 rounded-full flex items-center justify-center text-lg"
