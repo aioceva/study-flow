@@ -81,7 +81,13 @@ const sections = [
   },
 ];
 
-export default function TermsPage() {
+type Props = { searchParams: Promise<{ from?: string }> };
+
+export default async function TermsPage({ searchParams }: Props) {
+  const { from } = await searchParams;
+  const backHref = from === "join" ? "/join" : "/";
+  const backLabel = from === "join" ? "← Обратно към записването" : "← Към началото";
+
   return (
     <div
       style={{
@@ -94,29 +100,15 @@ export default function TermsPage() {
         overflowX: "hidden",
       }}
     >
-      {/* NAV */}
-      <nav
-        className="sticky top-0 z-50 flex items-center justify-between px-4 py-3"
-        style={{
-          backgroundColor: "rgba(255,255,255,0.92)",
-          backdropFilter: "blur(12px)",
-          borderBottom: `0.5px solid ${NAV.border}`,
-        }}
-      >
-        <Link href="/" style={{ fontWeight: 700, fontSize: 16, color: NAV.text, textDecoration: "none" }}>
-          Study Flow
-        </Link>
-        <Link
-          href="/join"
-          className="rounded-xl px-4 py-1.5 text-white font-medium"
-          style={{ backgroundColor: NAV.btnSolid, fontSize: 15 }}
-        >
-          Присъедини се
-        </Link>
-      </nav>
-
       {/* Content */}
-      <div style={{ maxWidth: 640, margin: "0 auto", padding: "48px 20px 80px" }}>
+      <div style={{ maxWidth: 640, margin: "0 auto", padding: "40px 20px 80px" }}>
+        {/* Back link */}
+        <Link
+          href={backHref}
+          style={{ fontSize: 14, color: NAV.textMuted, textDecoration: "none", display: "inline-block", marginBottom: 36 }}
+        >
+          {backLabel}
+        </Link>
         <p style={{ fontSize: 11, fontWeight: 500, color: MODULE_BTN3, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>
           Пилот · Април–Май 2026
         </p>
@@ -149,28 +141,6 @@ export default function TermsPage() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer
-        className="px-5 py-6 flex items-center justify-between flex-wrap gap-3"
-        style={{ borderTop: `1px solid ${NAV.border}` }}
-      >
-        <span style={{ fontWeight: 700, fontSize: 15, color: NAV.text }}>Study Flow</span>
-        <p style={{ fontSize: 14, color: NAV.textMuted, margin: 0 }}>© 2026 Study Flow · Пилот</p>
-        <div className="flex items-center gap-4">
-          <Link
-            href="/terms"
-            style={{ fontSize: 14, color: NAV.textMuted, textDecoration: "underline", textUnderlineOffset: 3 }}
-          >
-            Условия за участие
-          </Link>
-          <Link
-            href="/join"
-            style={{ fontSize: 14, color: NAV.text, fontWeight: 500, textDecoration: "underline", textUnderlineOffset: 3 }}
-          >
-            Присъедини се →
-          </Link>
-        </div>
-      </footer>
     </div>
   );
 }

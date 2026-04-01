@@ -237,7 +237,7 @@ export function JoinWizard() {
             <span>
               Съгласен/съгласна съм с{" "}
               <Link
-                href="/terms"
+                href="/terms?from=join"
                 target="_blank"
                 style={{ color: NAV.text, fontWeight: 500, textDecoration: "underline", textUnderlineOffset: 3 }}
               >
