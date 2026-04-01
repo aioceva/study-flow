@@ -289,7 +289,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── КАК ИЗГЛЕЖДА ── */}
-      <section className="py-10" style={{ overflow: "hidden" }}>
+      <section className="py-10">
         <div className="px-5" style={{ maxWidth: 680, margin: "0 auto" }}>
           <p style={{ ...LABEL_STYLE, textAlign: "center" }}>Как изглежда Study Flow</p>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: NAV.text, marginBottom: 6, textAlign: "center" }}>
@@ -299,45 +299,50 @@ export default function LandingPage() {
             Детето минава през кратки стъпки и учи самостоятелно.
           </p>
         </div>
-        {/* Carousel — scroll-snap, contained overflow */}
-        <div
-          className="flex gap-4 pb-3"
-          style={{
-            overflowX: "auto",
-            scrollSnapType: "x mandatory",
-            WebkitOverflowScrolling: "touch",
-            scrollbarWidth: "none",
-            paddingLeft: 20,
-            paddingRight: 20,
-          }}
-        >
-          {[
-            { label: "Урок", mock: <LessonCardMock /> },
-            { label: "Тест", mock: <QuizCardMock /> },
-            { label: "Резултат", mock: <ResultCardMock /> },
-          ].map(({ label, mock }) => (
-            <div
-              key={label}
-              className="flex-shrink-0 flex flex-col gap-2"
-              style={{ scrollSnapAlign: "start", width: "min(300px, calc(100vw - 48px))" }}
-            >
-              <p style={{ fontSize: 11, color: NAV.textMuted, fontWeight: 500, textAlign: "center", textTransform: "uppercase", letterSpacing: "0.06em", margin: 0 }}>
-                {label}
-              </p>
-              {mock}
-            </div>
-          ))}
+
+        {/* Carousel wrapper — clips mobile overflow */}
+        <div style={{ overflow: "hidden" }}>
+          <div
+            className="flex gap-5 pb-3"
+            style={{
+              overflowX: "auto",
+              scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
+              scrollbarWidth: "none",
+              justifyContent: "center",
+              paddingLeft: 24,
+              paddingRight: 24,
+            }}
+          >
+            {[
+              { label: "Урок", mock: <LessonCardMock /> },
+              { label: "Тест", mock: <QuizCardMock /> },
+              { label: "Резултат", mock: <ResultCardMock /> },
+            ].map(({ label, mock }) => (
+              <div
+                key={label}
+                className="flex-shrink-0 flex flex-col gap-2"
+                style={{ scrollSnapAlign: "center", width: "min(280px, calc(100vw - 56px))" }}
+              >
+                <p style={{ fontSize: 11, color: NAV.textMuted, fontWeight: 500, textAlign: "center", textTransform: "uppercase", letterSpacing: "0.06em", margin: 0 }}>
+                  {label}
+                </p>
+                {mock}
+              </div>
+            ))}
+          </div>
         </div>
-        {/* Dot indicators */}
-        <div className="flex justify-center gap-2 mt-3">
+
+        {/* Dot indicators — visible only on mobile (all 3 shown on desktop) */}
+        <div className="flex sm:hidden justify-center gap-2 mt-3">
           {[0, 1, 2].map((i) => (
             <div
               key={i}
               style={{
-                width: i === 0 ? 18 : 8,
+                width: 8,
                 height: 8,
                 borderRadius: 4,
-                backgroundColor: i === 0 ? NAV.btnSolid : NAV.border,
+                backgroundColor: NAV.border,
               }}
             />
           ))}
