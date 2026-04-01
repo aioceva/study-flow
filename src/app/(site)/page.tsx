@@ -265,10 +265,10 @@ export default function LandingPage() {
             Flow
             <span style={{
               position: "absolute",
-              bottom: -5,
-              left: 0,
-              right: 0,
-              height: 4,
+              bottom: -2,
+              left: "5%",
+              right: "5%",
+              height: 3,
               backgroundColor: TEAL,
               borderRadius: 2,
             }} />
