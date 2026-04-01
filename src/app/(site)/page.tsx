@@ -400,14 +400,17 @@ export default function LandingPage() {
           <h2 style={{ fontSize: 22, fontWeight: 700, color: NAV.text, marginBottom: 12, lineHeight: 1.3 }}>
             Търсим 15–20 семейства
           </h2>
+          <p style={{ ...P, textAlign: "center", marginBottom: 6 }}>
+            Търсим родители, които искат да изпробват как Study Flow помага на децата им да учат.
+          </p>
           <p style={{ ...P, textAlign: "center", marginBottom: 20 }}>
-            които искат да изпробват Study Flow в реални учебни ситуации.
+            Избирате предмет, качвате уроци, а детето учи със Study Flow в рамките на пилота.
           </p>
 
           <div className="flex flex-col gap-5 text-left" style={{ marginBottom: 28 }}>
             <div>
               <p style={{ fontWeight: 700, color: NAV.text, fontSize: 15, margin: "0 0 6px" }}>Какво получавате:</p>
-              {["Безплатен достъп по време на пилота", "До 10 адаптирани урока", "Личен профил за детето"].map((item) => (
+              {["Безплатен достъп", "До 10 адаптирани урока", "Личен профил за детето"].map((item) => (
                 <p key={item} style={{ ...P, margin: "0 0 3px" }}>· {item}</p>
               ))}
             </div>
