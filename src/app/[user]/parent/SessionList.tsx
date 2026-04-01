@@ -130,15 +130,15 @@ export function SessionList({
                   {isOpen && wrongQs.length > 0 && (
                     <div
                       style={{
-                        backgroundColor: "#FEF2F2",
+                        backgroundColor: "#EEE9F8",
                         padding: "12px 16px",
                         display: "flex",
                         flexDirection: "column",
                         gap: 10,
                       }}
                     >
-                      <p className="text-sm" style={{ color: "#EF4444" }}>
-                        Грешни въпроси
+                      <p className="text-sm" style={{ color: NAV.text }}>
+                        Отговори грешно на следните въпроси:
                       </p>
                       {wrongQs.map((q) => {
                         const correctOpt = q.options.find((o) => o.correct);
