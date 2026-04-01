@@ -12,6 +12,22 @@ _Последна актуализация: 29 Март 2026_
 
 ---
 
+## Cursor правило
+
+**Глобално, дефинирано в `globals.css`:**
+
+```css
+button, a, [role="button"] { cursor: pointer; }
+button:disabled               { cursor: default; }
+```
+
+- Всеки `<button>`, `<a>` и `[role="button"]` → `cursor: pointer`
+- Disabled бутон → `cursor: default`
+- Не-clickable елементи → не добавяй `cursor: pointer` ръчно
+- Ако добавяш clickable div/span → задължително добави `role="button"` за a11y и cursor
+
+---
+
 ## Цветови константи (src/types/index.ts)
 
 ### NAV палитра — всички nav/home/done екрани

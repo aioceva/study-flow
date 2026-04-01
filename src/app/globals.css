@@ -75,6 +75,16 @@ h1, h2, h3 {
   animation: cardFadeIn 0.18s ease-out;
 }
 
+/* ── Cursor — clickable елементи винаги показват pointer ───────────────── */
+button,
+a,
+[role="button"] {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+}
+
 .btn-press {
   touch-action: manipulation;
   transition: transform 0.15s ease, filter 0.15s ease; /* плавно връщане */
