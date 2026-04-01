@@ -6,6 +6,12 @@ import { Quiz, QuizQuestion, NAV, SUBJECT_LABELS, Subject } from "@/types";
 
 type Phase = "answering" | "correct" | "wrong" | "fact";
 
+const LABEL_PALETTE = [
+  { bg: "#E8F4FD", color: "#3B6FA8" }, // светлосиньо
+  { bg: "#E8F9F1", color: "#2E7D5A" }, // светлозелено
+  { bg: "#F3E8FD", color: "#7B52A8" }, // светлолилаво
+];
+
 const CONFETTI_COLORS = [
   "#6FA3E8", "#6DC297", "#C49020", "#A384CC",
   "#F5A623", "#E05555", "#50C8A0", "#FF9500",
@@ -267,10 +273,25 @@ export default function ReinforcementQuizPage() {
 
       {/* Съдържание */}
       <div className="flex-1 overflow-y-auto px-5 pt-4 pb-2" style={{ backgroundColor: screenBg }}>
-        {/* Номер на въпроса */}
-        <p className="text-sm mb-1" style={{ color: NAV.textMuted, fontWeight: 500 }}>
-          Въпрос {current + 1}.
-        </p>
+        {/* Номер на въпроса — цветен label */}
+        {(() => {
+          const lc = LABEL_PALETTE[current % LABEL_PALETTE.length];
+          return (
+            <span style={{
+              display: "inline-block",
+              backgroundColor: lc.bg,
+              color: lc.color,
+              fontSize: 12,
+              fontWeight: 700,
+              padding: "3px 11px",
+              borderRadius: 20,
+              letterSpacing: "0.04em",
+              marginBottom: 10,
+            }}>
+              Въпрос {current + 1}
+            </span>
+          );
+        })()}
         <p className="text-xl font-bold mb-4 leading-snug" style={{ color: NAV.text }}>
           {q.question}
         </p>
