@@ -16,7 +16,7 @@ const MODULE_COLORS = { 1: "#EBF4FF", 2: "#E8F9F1", 3: "#FEFAE8", 4: "#F3EEFF" }
 const MODULE_SURFACE = { 1: "#BDD8F7", 2: "#B4E5CC", 3: "#F7E49E", 4: "#D4C4EE" };
 const MODULE_BTN = { 1: "#3B7DD8", 2: "#3B9E6A", 3: "#9A6E08", 4: "#7B5EA7" };
 
-const P = { fontSize: 14, lineHeight: 1.65, color: NAV.textMuted, margin: 0 } as const;
+const P = { fontSize: 15, lineHeight: 1.65, color: NAV.textMuted, margin: 0 } as const;
 
 function LessonCardMock() {
   return (
@@ -359,8 +359,8 @@ export default function LandingPage() {
                 style={{ backgroundColor: NAV.bg, border: `1px solid ${NAV.border}` }}
               >
                 <span style={{ fontSize: 20 }}>{item.icon}</span>
-                <p className="text-sm" style={{ fontWeight: 700, color: NAV.text, margin: 0 }}>{item.title}</p>
-                <p className="text-sm" style={{ ...P }}>{item.desc}</p>
+                <p style={{ fontWeight: 700, color: NAV.text, margin: 0, fontSize: 15 }}>{item.title}</p>
+                <p style={{ ...P }}>{item.desc}</p>
               </div>
             ))}
           </div>
@@ -379,8 +379,8 @@ export default function LandingPage() {
               <div key={item.title} className="flex gap-3 items-start">
                 <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
                 <div>
-                  <p className="text-sm" style={{ fontWeight: 700, color: NAV.text, margin: "0 0 2px" }}>{item.title}</p>
-                  <p className="text-sm" style={{ ...P }}>{item.desc}</p>
+                  <p style={{ fontWeight: 700, color: NAV.text, margin: "0 0 2px", fontSize: 15 }}>{item.title}</p>
+                  <p style={{ ...P }}>{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -400,14 +400,14 @@ export default function LandingPage() {
           <h2 style={{ fontSize: 22, fontWeight: 700, color: NAV.text, marginBottom: 12, lineHeight: 1.3 }}>
             Търсим 15–20 семейства.
           </h2>
-          <p className="text-sm" style={{ ...P, margin: "0 auto 20px" }}>
+          <p style={{ ...P, margin: "0 auto 20px" }}>
             Безплатен достъп за целия период. До 10 адаптирани урока. Личен профил за детето.
             Искаме само да използвате приложението и да споделите обратна връзка.
           </p>
           <Link
             href="/join"
-            className="inline-block rounded-xl px-7 py-3 text-white font-medium text-sm"
-            style={{ backgroundColor: NAV.btnSolid }}
+            className="inline-block rounded-xl px-7 py-3 text-white font-medium"
+            style={{ backgroundColor: NAV.btnSolid, fontSize: 15 }}
           >
             Присъедини се към пилота →
           </Link>
@@ -418,14 +418,14 @@ export default function LandingPage() {
       <section className="px-5 py-10">
         <div style={{ maxWidth: 500, margin: "0 auto" }}>
           <p style={LABEL_STYLE}>За нас</p>
-          <p className="text-sm" style={{ ...P, marginBottom: 10 }}>
+          <p style={{ ...P, marginBottom: 10 }}>
             Study Flow започна от реална нужда. Като родител на дете с дислексия, която открихме чак в 7 клас, се сблъсках с много трудности.
             Учехме с часове, но резултатите не се подобряваха. Мотивацията намаляваше.
           </p>
-          <p className="text-sm" style={{ ...P, marginBottom: 10 }}>
+          <p style={{ ...P, marginBottom: 10 }}>
             Търсех начин детето ми да започне да учи по-често само — да изгради навик и да поддържа стабилно ниво на знания.
           </p>
-          <p className="text-sm" style={{ ...P, color: NAV.text, fontWeight: 500 }}>
+          <p style={{ ...P, color: NAV.text, fontWeight: 500 }}>
             Така в началото на 2026 се появи Study Flow.
           </p>
         </div>
@@ -436,15 +436,22 @@ export default function LandingPage() {
         className="px-5 py-6 flex items-center justify-between flex-wrap gap-3"
         style={{ borderTop: `1px solid ${NAV.border}` }}
       >
-        <span style={{ fontWeight: 700, fontSize: 14, color: NAV.text }}>Study Flow</span>
-        <p className="text-sm" style={{ ...P, margin: 0 }}>© 2026 Study Flow · Пилот</p>
-        <Link
-          href="/join"
-          className="text-sm"
-          style={{ color: NAV.text, fontWeight: 500, textDecoration: "underline", textUnderlineOffset: 3 }}
-        >
-          Присъедини се →
-        </Link>
+        <span style={{ fontWeight: 700, fontSize: 15, color: NAV.text }}>Study Flow</span>
+        <p style={{ ...P, margin: 0, fontSize: 14 }}>© 2026 Study Flow · Пилот</p>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/terms"
+            style={{ fontSize: 14, color: NAV.textMuted, textDecoration: "underline", textUnderlineOffset: 3 }}
+          >
+            Условия за участие
+          </Link>
+          <Link
+            href="/join"
+            style={{ fontSize: 14, color: NAV.text, fontWeight: 500, textDecoration: "underline", textUnderlineOffset: 3 }}
+          >
+            Присъедини се →
+          </Link>
+        </div>
       </footer>
     </div>
   );

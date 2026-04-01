@@ -11,41 +11,72 @@ const NAV = {
 
 const MODULE_BTN3 = "#9A6E08";
 
+const P: React.CSSProperties = {
+  fontSize: 15,
+  color: NAV.textMuted,
+  lineHeight: 1.65,
+  margin: 0,
+};
+
 const sections = [
   {
-    title: "1. Общи условия",
-    body: [
-      "Study Flow е пилотно приложение за адаптирано учебно съдържание за деца с дислексия. Достъпът до приложението е безплатен за периода на пилота (Април–Май 2026).",
-      "Използването на приложението означава, че приемате настоящите условия.",
+    title: "Какво представлява пилотът",
+    body: "Study Flow е експериментално приложение, което помага на деца с дислексия да учат по-самостоятелно чрез адаптирано учебно съдържание. Пилотът тества продукта в реална среда с ограничен брой семейства.",
+    bullets: null as string[] | null,
+  },
+  {
+    title: "Достъп и използване",
+    body: null as string | null,
+    bullets: [
+      "Участието в пилота е безплатно за периода април–май 2026.",
+      "След регистрация ще получите личен линк за достъп, предназначен само за вашето дете.",
+      "Молим да не споделяте линка с други хора.",
     ],
   },
   {
-    title: "2. Лични данни",
-    body: [
-      "При записване събираме: първото име на детето, клас и предпочитан фон за четене. Тези данни се използват единствено за персонализиране на приложението.",
-      "Не събираме имейл адрес, телефон или друга лична информация. Данните се съхраняват в GitHub и не се споделят с трети страни.",
-      "След приключване на пилота данните ще бъдат изтрити.",
+    title: "Данни и поверителност",
+    body: "Събираме минимална информация:",
+    bullets: [
+      "Име на детето — за да създадем личен акаунт.",
+      "Имейл на родителя — за да изпратим линка към приложението.",
+    ],
+    extra: "Тези данни се използват само за достъп до приложението, комуникация по време на пилота и подобрение на продукта. Данните няма да бъдат споделяни с трети страни.",
+  },
+  {
+    title: "Учебно съдържание",
+    body: null,
+    bullets: [
+      "Приложението използва AI за генериране на адаптирано учебно съдържание.",
+      "Възможно е да има неточности или грешки.",
+      "Родителят носи отговорност да преглежда съдържанието и да подпомага детето при нужда.",
     ],
   },
   {
-    title: "3. Използване от деца",
-    body: [
-      "Приложението е предназначено за деца на възраст 11–18 години. Достъпът се осъществява чрез личен URL, предоставен на родителя.",
-      "Родителят е отговорен за споделянето и съхранението на личния URL.",
+    title: "Очаквания към участниците",
+    body: "Като участник в пилота, се очаква:",
+    bullets: [
+      "Да използвате приложението в реални учебни ситуации.",
+      "Да дадете обратна връзка в края на периода.",
     ],
   },
   {
-    title: "4. Съдържание",
-    body: [
-      "Учебното съдържание се генерира с изкуствен интелект на база материал, качен от потребителя. Study Flow не носи отговорност за точността на адаптираното съдържание.",
-      "Приложението не замества учител или специалист по дислексия.",
+    title: "Ограничения",
+    body: "Study Flow е в ранен етап на развитие. Възможни са:",
+    bullets: [
+      "Технически проблеми.",
+      "Временна недостъпност.",
+      "Промени във функционалността.",
     ],
   },
   {
-    title: "5. Контакт",
-    body: [
-      "При въпроси или проблеми, свързани с приложението или личните данни, можете да се свържете с нас чрез обратна връзка в приложението.",
-    ],
+    title: "Прекратяване",
+    body: "Можете да прекратите участието си по всяко време, като спрете да използвате приложението.",
+    bullets: null,
+  },
+  {
+    title: "Контакт",
+    body: "При въпроси можете да се свържете с нас на: annio@abv.bg",
+    bullets: null,
   },
 ];
 
@@ -56,27 +87,28 @@ export default function TermsPage() {
         backgroundColor: NAV.bg,
         color: NAV.text,
         fontFamily: "'Adys', 'OpenDyslexic', Arial, sans-serif",
-        lineHeight: 1.75,
+        lineHeight: 1.65,
         letterSpacing: "0.02em",
         minHeight: "100vh",
+        overflowX: "hidden",
       }}
     >
       {/* NAV */}
       <nav
-        className="sticky top-0 z-50 flex items-center justify-between px-5 py-4"
+        className="sticky top-0 z-50 flex items-center justify-between px-4 py-3"
         style={{
           backgroundColor: "rgba(255,255,255,0.92)",
           backdropFilter: "blur(12px)",
           borderBottom: `0.5px solid ${NAV.border}`,
         }}
       >
-        <Link href="/" style={{ fontWeight: 700, fontSize: 17, color: NAV.text, textDecoration: "none" }}>
+        <Link href="/" style={{ fontWeight: 700, fontSize: 16, color: NAV.text, textDecoration: "none" }}>
           Study Flow
         </Link>
         <Link
           href="/join"
-          className="rounded-xl px-5 py-2 text-white font-medium text-sm"
-          style={{ backgroundColor: NAV.btnSolid }}
+          className="rounded-xl px-4 py-1.5 text-white font-medium"
+          style={{ backgroundColor: NAV.btnSolid, fontSize: 15 }}
         >
           Присъедини се
         </Link>
@@ -84,29 +116,33 @@ export default function TermsPage() {
 
       {/* Content */}
       <div style={{ maxWidth: 640, margin: "0 auto", padding: "48px 20px 80px" }}>
-        <p style={{ fontSize: 13, fontWeight: 500, color: MODULE_BTN3, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>
-          Правни условия
+        <p style={{ fontSize: 11, fontWeight: 500, color: MODULE_BTN3, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>
+          Пилот · Април–Май 2026
         </p>
-        <h1 style={{ fontSize: 26, fontWeight: 700, color: NAV.text, marginBottom: 8, lineHeight: 1.25 }}>
-          Условия за използване
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: NAV.text, marginBottom: 6, lineHeight: 1.25 }}>
+          Условия за участие в пилота
         </h1>
-        <p style={{ fontSize: 14, color: NAV.textMuted, marginBottom: 48 }}>
-          Последна актуализация: Април 2026
-        </p>
+        <p style={{ ...P, marginBottom: 48 }}>Study Flow — Пилот (Април–Май 2026)</p>
 
         <div className="flex flex-col gap-10">
           {sections.map((s) => (
             <div key={s.title}>
-              <h2 style={{ fontSize: 17, fontWeight: 700, color: NAV.text, marginBottom: 12 }}>
+              <h2 style={{ fontSize: 17, fontWeight: 700, color: NAV.text, marginBottom: 10 }}>
                 {s.title}
               </h2>
-              <div className="flex flex-col gap-3">
-                {s.body.map((p, i) => (
-                  <p key={i} style={{ fontSize: 15, color: NAV.textMuted, lineHeight: 1.85, margin: 0 }}>
-                    {p}
-                  </p>
-                ))}
-              </div>
+              {s.body && (
+                <p style={{ ...P, marginBottom: s.bullets ? 8 : 0 }}>{s.body}</p>
+              )}
+              {s.bullets && (
+                <ul style={{ paddingLeft: 20, margin: "0 0 0 0", display: "flex", flexDirection: "column", gap: 6 }}>
+                  {s.bullets.map((b) => (
+                    <li key={b} style={{ ...P }}>{b}</li>
+                  ))}
+                </ul>
+              )}
+              {"extra" in s && s.extra && (
+                <p style={{ ...P, marginTop: 10 }}>{s.extra}</p>
+              )}
             </div>
           ))}
         </div>
@@ -114,19 +150,25 @@ export default function TermsPage() {
 
       {/* Footer */}
       <footer
-        className="px-5 py-8 flex items-center justify-between flex-wrap gap-4"
+        className="px-5 py-6 flex items-center justify-between flex-wrap gap-3"
         style={{ borderTop: `1px solid ${NAV.border}` }}
       >
         <span style={{ fontWeight: 700, fontSize: 15, color: NAV.text }}>Study Flow</span>
-        <p style={{ fontSize: 13, color: NAV.textMuted, margin: 0 }}>
-          © 2026 Study Flow · Пилот
-        </p>
-        <Link
-          href="/join"
-          style={{ fontSize: 13, color: NAV.text, fontWeight: 500, textDecoration: "underline", textUnderlineOffset: 3 }}
-        >
-          Присъедини се →
-        </Link>
+        <p style={{ fontSize: 14, color: NAV.textMuted, margin: 0 }}>© 2026 Study Flow · Пилот</p>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/terms"
+            style={{ fontSize: 14, color: NAV.textMuted, textDecoration: "underline", textUnderlineOffset: 3 }}
+          >
+            Условия за участие
+          </Link>
+          <Link
+            href="/join"
+            style={{ fontSize: 14, color: NAV.text, fontWeight: 500, textDecoration: "underline", textUnderlineOffset: 3 }}
+          >
+            Присъедини се →
+          </Link>
+        </div>
       </footer>
     </div>
   );
