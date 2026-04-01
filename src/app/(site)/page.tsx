@@ -15,7 +15,7 @@ const NAV = {
 const MODULE_COLORS = { 1: "#EBF4FF", 2: "#E8F9F1", 3: "#FEFAE8", 4: "#F3EEFF" };
 const MODULE_SURFACE = { 1: "#BDD8F7", 2: "#B4E5CC", 3: "#F7E49E", 4: "#D4C4EE" };
 const MODULE_BTN = { 1: "#3B7DD8", 2: "#3B9E6A", 3: "#9A6E08", 4: "#7B5EA7" };
-const TEAL = "#3B9E8A";
+const TEAL = "#45B8D4";
 
 const P = { fontSize: 15, lineHeight: 1.65, color: NAV.textMuted, margin: 0 } as const;
 
@@ -241,7 +241,17 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="px-5 pt-12 pb-10 flex flex-col items-center text-center" style={{ maxWidth: 560, margin: "0 auto" }}>
+      <section className="px-5 pt-12 pb-10 flex flex-col items-center text-center" style={{ maxWidth: 560, margin: "0 auto", position: "relative" }}>
+
+        {/* Декоративна дъга — ляво */}
+        <svg aria-hidden="true" style={{ position: "absolute", left: -80, top: 20, pointerEvents: "none", overflow: "visible" }} width="160" height="160" viewBox="0 0 160 160" fill="none">
+          <path d="M 140 10 A 120 120 0 0 0 10 140" stroke={TEAL} strokeWidth="1.5" strokeLinecap="round" opacity="0.22" />
+        </svg>
+
+        {/* Декоративна дъга — дясно долу */}
+        <svg aria-hidden="true" style={{ position: "absolute", right: -60, bottom: 10, pointerEvents: "none", overflow: "visible" }} width="120" height="120" viewBox="0 0 120 120" fill="none">
+          <path d="M 10 110 A 90 90 0 0 0 110 10" stroke={TEAL} strokeWidth="1" strokeLinecap="round" opacity="0.15" />
+        </svg>
 
         {/* Пилот — обикновен малък текст, без фон */}
         <p style={{ fontSize: 13, color: MODULE_BTN[1], fontWeight: 500, margin: "0 0 8px", letterSpacing: "0.03em" }}>
@@ -255,12 +265,12 @@ export default function LandingPage() {
             Flow
             <span style={{
               position: "absolute",
-              bottom: -3,
-              left: "8%",
-              right: "8%",
-              height: 3,
+              bottom: -2,
+              left: 0,
+              right: 0,
+              height: 2,
               backgroundColor: TEAL,
-              borderRadius: 2,
+              borderRadius: 1,
             }} />
           </span>
         </p>
@@ -278,25 +288,13 @@ export default function LandingPage() {
           Качваш снимка на урок. Приложението го превръща в кратки, разбираеми карти. Детето учи. Родителите спестяват време.
         </p>
 
-        <div style={{ position: "relative", display: "inline-block" }}>
-          <Link
-            href="/join"
-            className="inline-block rounded-xl px-7 py-3 text-white font-medium text-sm"
-            style={{ backgroundColor: NAV.btnSolid }}
-          >
-            Присъедини се към пилота →
-          </Link>
-          {/* Малка teal точка */}
-          <span style={{
-            position: "absolute",
-            top: -4,
-            right: -4,
-            width: 7,
-            height: 7,
-            borderRadius: "50%",
-            backgroundColor: TEAL,
-          }} />
-        </div>
+        <Link
+          href="/join"
+          className="inline-block rounded-xl px-7 py-3 text-white font-medium text-sm"
+          style={{ backgroundColor: NAV.btnSolid }}
+        >
+          Присъедини се към пилота →
+        </Link>
       </section>
 
       {/* ── ПРОБЛЕМЪТ ── */}
