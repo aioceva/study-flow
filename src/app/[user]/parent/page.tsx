@@ -2,7 +2,6 @@ import Link from "next/link";
 import { readJSON } from "@/lib/github";
 import { Sessions, Session, Quiz, Adaptation, NAV, SUBJECT_LABELS, Subject, ReinforcementSession } from "@/types";
 import { SessionList, QuizMap } from "./SessionList";
-import { FeedbackButton } from "@/components/FeedbackButton";
 
 export const dynamic = "force-dynamic";
 
@@ -173,7 +172,16 @@ export default async function ParentPage({
             Дневник · {displayName}
           </h1>
         </div>
-        <FeedbackButton user={user} />
+        <Link
+          href={`/${user}`}
+          aria-label="Начало"
+          style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 40, height: 40 }}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.textMuted} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+        </Link>
       </div>
 
       <div className="flex-1 px-4 pb-8 space-y-5">
