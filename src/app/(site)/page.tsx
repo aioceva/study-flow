@@ -241,25 +241,53 @@ export default function LandingPage() {
 
       {/* ── HERO ── */}
       <section className="px-5 pt-12 pb-10 flex flex-col items-center text-center" style={{ maxWidth: 560, margin: "0 auto" }}>
-        <span
-          className="inline-block rounded-full px-4 py-1 mb-5 text-sm font-medium"
-          style={{ backgroundColor: MODULE_COLORS[1], color: MODULE_BTN[1] }}
-        >
+
+        {/* Пилот — обикновен малък текст, без фон */}
+        <p style={{ fontSize: 13, color: MODULE_BTN[1], fontWeight: 500, margin: "0 0 8px", letterSpacing: "0.03em" }}>
           Пилот · Април–Май 2026
-        </span>
-        {/* Тънка цветна линия над заглавието */}
-        <div style={{ width: 40, height: 3, borderRadius: 2, backgroundColor: MODULE_BTN[1], marginBottom: 16, opacity: 0.7 }} />
+        </p>
+
+        {/* Продуктово име */}
+        <p style={{
+          fontSize: 28,
+          fontWeight: 700,
+          margin: "0 0 12px",
+          background: `linear-gradient(135deg, ${MODULE_BTN[1]} 0%, ${MODULE_BTN[4]} 100%)`,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+          lineHeight: 1.2,
+        }}>
+          Study Flow
+        </p>
+
+        {/* Линия 1 — между продуктовото име и заглавието */}
+        <div style={{
+          width: 48, height: 2, borderRadius: 2, marginBottom: 16,
+          background: `linear-gradient(90deg, ${MODULE_BTN[1]}, ${MODULE_BTN[4]})`,
+          opacity: 0.6,
+        }} />
+
         <h1
           className="text-xl font-bold"
           style={{ color: NAV.text, lineHeight: 1.3, margin: "0 0 16px" }}
         >
           Помага на деца с дислексия да учат по-лесно уроците от учебника
         </h1>
+
+        {/* Линия 2 — между заглавието и текста */}
+        <div style={{
+          width: 32, height: 2, borderRadius: 2, marginBottom: 16,
+          backgroundColor: MODULE_BTN[1],
+          opacity: 0.3,
+        }} />
+
         <p style={{ ...P, textAlign: "center", marginBottom: 24 }}>
           Study Flow помага на деца с дислексия да учат по-лесно и самостоятелно. Помага на родителите да виждат кога и къде детето има нужда от помощ, без да поемат цялото учене.
           <br /><br />
           Качваш снимка на урок. Приложението го превръща в кратки, разбираеми карти. Детето учи. Родителите спестяват време.
         </p>
+
         <Link
           href="/join"
           className="inline-block rounded-xl px-7 py-3 text-white font-medium text-sm"
