@@ -465,34 +465,47 @@ export default function LandingPage() {
             Търсим 15–20 семейства
           </h2>
 
-          {/* Кратко обяснение — ляво */}
-          <div style={{ marginBottom: 28 }}>
-            <p style={{ ...P, margin: "0 0 6px" }}>
-              Търсим родители, които искат да изпробват как Study Flow помага на децата им да учат.
-            </p>
-            <p style={{ ...P, margin: 0 }}>
-              Избирате предмет, качвате уроци, а детето учи със Study Flow.
-            </p>
-          </div>
+          {/* Кратко обяснение */}
+          <p style={{ ...P, marginBottom: 24 }}>
+            Търсим родители, които искат да изпробват как Study Flow помага на децата им да учат. Избирате предмет, качвате уроци, а детето учи със Study Flow.
+          </p>
 
-          {/* Два блока — 2 колони на desktop, 1 на mobile */}
-          <div className="grid gap-6" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", marginBottom: 28 }}>
-            <div>
-              <p style={{ fontWeight: 700, color: NAV.text, fontSize: 15, margin: "0 0 8px" }}>Какво получавате:</p>
-              <div className="flex flex-col gap-1">
-                {["Безплатен достъп", "До 10 адаптирани урока", "Личен профил за детето"].map((item) => (
-                  <p key={item} style={{ ...P, margin: 0 }}>· {item}</p>
-                ))}
+          {/* Две карти — стил като "Как работи" */}
+          <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", marginBottom: 32 }}>
+            {[
+              {
+                title: "Какво получавате",
+                items: ["Безплатен достъп", "До 10 адаптирани урока", "Личен профил за детето"],
+                bg: MODULE_COLORS[1], color: MODULE_BTN[1],
+              },
+              {
+                title: "По време на пилота",
+                items: ["Използвате приложението у дома", "Споделяте какво работи и какво липсва"],
+                bg: MODULE_COLORS[2], color: MODULE_BTN[2],
+              },
+            ].map((card) => (
+              <div
+                key={card.title}
+                className="rounded-2xl overflow-hidden flex flex-col"
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  border: `1px solid ${NAV.border}`,
+                  boxShadow: "0 2px 12px rgba(74,111,165,0.07)",
+                }}
+              >
+                <div style={{ height: 5, backgroundColor: card.bg, borderBottom: `1px solid ${card.color}22` }} />
+                <div className="p-5 flex flex-col gap-3">
+                  <p style={{ fontSize: 13, fontWeight: 600, color: card.color, margin: 0, letterSpacing: "0.04em" }}>
+                    {card.title}
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {card.items.map((item) => (
+                      <p key={item} style={{ ...P, margin: 0, lineHeight: 1.6 }}>· {item}</p>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
-            <div>
-              <p style={{ fontWeight: 700, color: NAV.text, fontSize: 15, margin: "0 0 8px" }}>По време на пилота:</p>
-              <div className="flex flex-col gap-1">
-                {["Използвате приложението у дома", "Споделяте какво работи и какво липсва"].map((item) => (
-                  <p key={item} style={{ ...P, margin: 0 }}>· {item}</p>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
 
           {/* CTA — центриран */}
