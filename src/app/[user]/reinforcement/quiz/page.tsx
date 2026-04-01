@@ -283,10 +283,11 @@ export default function ReinforcementQuizPage() {
               color: lc.color,
               fontSize: 12,
               fontWeight: 700,
-              padding: "3px 11px",
-              borderRadius: 20,
+              lineHeight: "1.5",
+              padding: "5px 13px",
+              borderRadius: 24,
               letterSpacing: "0.04em",
-              marginBottom: 10,
+              marginBottom: 14,
             }}>
               Въпрос {current + 1}
             </span>
@@ -354,24 +355,29 @@ export default function ReinforcementQuizPage() {
         </div>
       </div>
 
-      {/* Footer — timer line */}
+      {/* Footer — постоянна прогрес линия */}
       <div
-        className="flex-none px-4 pb-5 pt-3 flex items-center justify-center"
-        style={{ borderTop: `0.5px solid ${NAV.border}`, minHeight: 56, backgroundColor: "white" }}
+        className="flex-none px-4 pb-5 pt-3 flex flex-col gap-2"
+        style={{ borderTop: `0.5px solid ${NAV.border}`, backgroundColor: "white" }}
       >
-        {!showTimer ? (
-          <span className="text-sm" style={{ color: NAV.textMuted }}>Докосни отговор</span>
-        ) : (
-          <div style={{ width: "100%", height: 4, borderRadius: 2, backgroundColor: NAV.border }}>
-            <div style={{
-              height: "100%",
-              borderRadius: 2,
-              backgroundColor: phase === "correct" ? "#3B9E6A" : NAV.btnSolid,
-              width: `${timerPct * 100}%`,
-              transition: "width 0.05s linear",
-            }} />
-          </div>
-        )}
+        <div style={{ width: "100%", height: 4, borderRadius: 2, backgroundColor: NAV.border }}>
+          <div style={{
+            height: "100%",
+            borderRadius: 2,
+            backgroundColor: phase === "correct" ? "#3B9E6A" : NAV.btnSolid,
+            width: showTimer
+              ? `${timerPct * 100}%`
+              : `${(current / questions.length) * 100}%`,
+            opacity: showTimer ? 1 : 0.4,
+            transition: showTimer ? "width 0.05s linear" : "none",
+          }} />
+        </div>
+        <span className="text-sm text-center" style={{
+          color: NAV.textMuted,
+          opacity: showTimer ? 0 : 1,
+        }}>
+          Докосни отговор
+        </span>
       </div>
     </div>
   );
