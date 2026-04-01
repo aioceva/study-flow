@@ -74,11 +74,21 @@ export function SessionList({
               const wrongQs   = questions.filter((q) => errors.includes(q.id));
               const isOpen    = expanded === key;
 
+              const canExpand = errors.length > 0;
+
               return (
                 <div
                   key={key}
-                  className="rounded-xl"
-                  style={{ backgroundColor: "#FFFFFF", boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)", overflow: "hidden" }}
+                  className={`rounded-xl${canExpand ? " btn-press" : ""}`}
+                  onClick={canExpand ? () => setExpanded(isOpen ? null : key) : undefined}
+                  role={canExpand ? "button" : undefined}
+                  aria-expanded={canExpand ? isOpen : undefined}
+                  style={{
+                    backgroundColor: "#FFFFFF",
+                    boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)",
+                    overflow: "hidden",
+                    cursor: canExpand ? "pointer" : "default",
+                  }}
                 >
                   {/* Основен ред */}
                   <div className="px-4 py-3 flex items-center justify-between">
@@ -105,29 +115,15 @@ export function SessionList({
                     </div>
 
                     {/* Процент */}
-                    {errors.length > 0 ? (
-                      <button
-                        onClick={() => setExpanded(isOpen ? null : key)}
-                        className="btn-press"
-                        style={{
-                          cursor: "pointer",
-                          backgroundColor: isOpen ? "#FEF2F2" : "transparent",
-                          borderRadius: 8,
-                          padding: "4px 10px",
-                          transition: "background-color 0.15s",
-                        }}
-                        aria-expanded={isOpen}
-                        aria-label="Виж грешките"
-                      >
-                        <span className="text-base" style={{ color: scoreColor(score, total) }}>
-                          {toPercent(score, total)}
-                        </span>
-                      </button>
-                    ) : (
-                      <span className="text-base" style={{ color: scoreColor(score, total) }}>
-                        {toPercent(score, total)}
-                      </span>
-                    )}
+                    <span
+                      className="text-base"
+                      style={{
+                        color: scoreColor(score, total),
+                        padding: "4px 10px",
+                      }}
+                    >
+                      {toPercent(score, total)}
+                    </span>
                   </div>
 
                   {/* Разгъната секция — грешни въпроси */}
