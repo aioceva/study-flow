@@ -238,7 +238,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="px-5 pt-12 pb-10" style={{ maxWidth: 560, margin: "0 auto" }}>
+      <section className="px-5 pt-12 pb-10 flex flex-col items-center text-center" style={{ maxWidth: 560, margin: "0 auto" }}>
         <span
           className="inline-block rounded-full px-4 py-1 mb-5 text-sm font-medium"
           style={{ backgroundColor: MODULE_COLORS[1], color: MODULE_BTN[1] }}
@@ -249,13 +249,10 @@ export default function LandingPage() {
           className="text-xl font-bold"
           style={{ color: NAV.text, lineHeight: 1.3, margin: "0 0 16px" }}
         >
-          Помага на деца с дислексия да учат по-лесно и по-самостоятелно.
+          Помага на деца с дислексия да учат по-лесно уроците от учебника
         </h1>
-        <p style={{ ...P, marginBottom: 10 }}>
-          Помага на родителите да виждат кога и къде детето има нужда от помощ, без да поемат цялото учене. Качваш урок. Ние го превръщаме в кратки, разбираеми карти.
-        </p>
-        <p style={{ ...P, marginBottom: 24 }}>
-          В момента тестваме приложението с малък брой семейства.
+        <p style={{ ...P, textAlign: "center", marginBottom: 24 }}>
+          Study Flow помага на деца с дислексия да учат по-лесно и самостоятелно. Помага на родителите да виждат кога и къде детето има нужда от помощ, без да поемат цялото учене. Качваш снимка на урок. Приложението го превръща в кратки, разбираеми карти. Детето учи. Родителите спестяват време.
         </p>
         <Link
           href="/join"
@@ -268,10 +265,10 @@ export default function LandingPage() {
 
       {/* ── ПРОБЛЕМЪТ ── */}
       <section className="px-5 py-10" style={{ backgroundColor: NAV.surface }}>
-        <div style={{ maxWidth: 560, margin: "0 auto" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
           <p style={LABEL_STYLE}>Проблемът</p>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: NAV.text, marginBottom: 16, lineHeight: 1.35 }}>
-            Учебниците не са пригодени за деца с дислексия.
+            Учебниците не са пригодени за деца с дислексия
           </h2>
           <div className="flex flex-col gap-3">
             {[
@@ -280,7 +277,7 @@ export default function LandingPage() {
               "Налага се да напомняш да учи, да проверяваш и да обясняваш отново и отново.",
               "Това отнема време. И изтощава и двама ви.",
             ].map((t) => (
-              <p key={t} className="text-sm" style={{ ...P }}>
+              <p key={t} className="text-sm" style={{ ...P, textAlign: "center" }}>
                 {t}
               </p>
             ))}
@@ -293,7 +290,7 @@ export default function LandingPage() {
         <div className="px-5" style={{ maxWidth: 560, margin: "0 auto" }}>
           <p style={{ ...LABEL_STYLE, textAlign: "center" }}>Как изглежда Study Flow</p>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: NAV.text, marginBottom: 6, textAlign: "center" }}>
-            Ето как изглежда един урок.
+            Ето как изглежда един урок
           </h2>
           <p className="text-sm" style={{ ...P, textAlign: "center", margin: "0 auto 24px" }}>
             Детето минава през кратки стъпки и учи самостоятелно.
@@ -354,7 +351,7 @@ export default function LandingPage() {
         <div style={{ maxWidth: 560, margin: "0 auto" }}>
           <p style={{ ...LABEL_STYLE, textAlign: "center" }}>Как работи</p>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: NAV.text, marginBottom: 20, textAlign: "center" }}>
-            Четири стъпки. Нищо повече.
+            Четири стъпки. Нищо повече
           </h2>
           <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))" }}>
             {howItems.map((item) => (
@@ -375,9 +372,9 @@ export default function LandingPage() {
       {/* ── КАК Е СЪЗДАДЕНО ── */}
       <section className="px-5 py-10">
         <div style={{ maxWidth: 560, margin: "0 auto" }}>
-          <p style={LABEL_STYLE}>Как е създадено</p>
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: NAV.text, marginBottom: 20, lineHeight: 1.35 }}>
-            Създаден с мисъл за деца с дислексия.
+          <p style={{ ...LABEL_STYLE, textAlign: "center" }}>Как е създадено</p>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: NAV.text, marginBottom: 20, lineHeight: 1.35, textAlign: "center" }}>
+            Създаден с мисъл за деца с дислексия
           </h2>
           <div className="flex flex-col gap-4">
             {whyItems.map((item) => (
@@ -400,19 +397,27 @@ export default function LandingPage() {
       >
         <div style={{ maxWidth: 560, margin: "0 auto" }}>
           <p style={{ ...LABEL_STYLE, color: MODULE_BTN[1], textAlign: "center" }}>
-            Пилот · Април–Май 2026
+            Пилот — Април–Май 2026
           </p>
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: NAV.text, marginBottom: 12, lineHeight: 1.3 }}>
-            Тестваме Study Flow с малък брой семейства.
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: NAV.text, marginBottom: 20, lineHeight: 1.3 }}>
+            Търсим 15–20 семейства
           </h2>
-          <p style={{ ...P, margin: "0 auto 10px" }}>
-            Безплатен достъп по време на пилота. До 10 адаптирани урока. Личен профил за детето.
-          </p>
-          <div className="flex flex-col gap-1" style={{ marginBottom: 20, textAlign: "left" }}>
-            <p style={{ ...P, margin: 0 }}>Очакваме:</p>
-            <p style={{ ...P, margin: 0 }}>· да използвате приложението в реални учебни ситуации</p>
-            <p style={{ ...P, margin: 0 }}>· да споделите обратна връзка</p>
+
+          <div className="flex flex-col gap-5 text-left" style={{ marginBottom: 28 }}>
+            <div>
+              <p style={{ fontWeight: 700, color: NAV.text, fontSize: 15, margin: "0 0 6px" }}>Какво получаваш:</p>
+              {["Достъп за целия период", "10 адаптирани урока", "Личен профил за детето"].map((item) => (
+                <p key={item} style={{ ...P, margin: "0 0 3px" }}>· {item}</p>
+              ))}
+            </div>
+            <div>
+              <p style={{ fontWeight: 700, color: NAV.text, fontSize: 15, margin: "0 0 6px" }}>Какво е нужно от теб:</p>
+              {["Да използвате приложението", "Да споделите обратна връзка"].map((item) => (
+                <p key={item} style={{ ...P, margin: "0 0 3px" }}>· {item}</p>
+              ))}
+            </div>
           </div>
+
           <Link
             href="/join"
             className="inline-block rounded-xl px-7 py-3 text-white font-medium"
@@ -425,8 +430,8 @@ export default function LandingPage() {
 
       {/* ── ЗА НАС ── */}
       <section className="px-5 py-10">
-        <div style={{ maxWidth: 560, margin: "0 auto" }}>
-          <p style={LABEL_STYLE}>За нас</p>
+        <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
+          <p style={{ ...LABEL_STYLE, textAlign: "center" }}>За нас</p>
           <p style={{ ...P, marginBottom: 10 }}>
             Study Flow започна от реална нужда. Като родител на дете с дислексия, която открихме чак в 7 клас, се сблъсках с много трудности.
             Учехме с часове, но резултатите не се подобряваха. Мотивацията намаляваше. Търсех начин детето ми да започне да учи по-често само, да изгради навик и да поддържа стабилно ниво на знания. Така в началото на 2026 се появи Study Flow.
