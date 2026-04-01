@@ -265,10 +265,10 @@ export default function LandingPage() {
             Flow
             <span style={{
               position: "absolute",
-              bottom: -1,
+              bottom: -5,
               left: 0,
               right: 0,
-              height: 3,
+              height: 4,
               backgroundColor: TEAL,
               borderRadius: 2,
             }} />
@@ -305,16 +305,20 @@ export default function LandingPage() {
           <h2 style={{ fontSize: 20, fontWeight: 700, color: NAV.text, marginBottom: 16, lineHeight: 1.35 }}>
             Учебниците не са пригодени за деца с дислексия
           </h2>
-          <div
-            className="flex flex-col gap-2"
-            style={{ borderLeft: `3px solid ${MODULE_BTN[3]}99`, paddingLeft: 16 }}
-          >
-            <p className="text-sm" style={{ ...P, textAlign: "left" }}>
-              Текстовете са дълги, сложни и трудни за следване.
-            </p>
-            <p className="text-sm" style={{ ...P, textAlign: "left" }}>
-              Детето полага усилия, но често не вижда по-добри резултати. Мотивацията намалява. Налага се да напомняш да учи, да проверяваш и да обясняваш отново и отново. Това отнема време и изтощава.
-            </p>
+          <div style={{ position: "relative", paddingLeft: 19 }}>
+            <div style={{
+              position: "absolute", left: 0, top: "10%", bottom: "10%",
+              width: 3, borderRadius: 2,
+              backgroundColor: `${MODULE_BTN[3]}99`,
+            }} />
+            <div className="flex flex-col gap-2">
+              <p className="text-sm" style={{ ...P, textAlign: "left" }}>
+                Текстовете са дълги, сложни и трудни за следване.
+              </p>
+              <p className="text-sm" style={{ ...P, textAlign: "left" }}>
+                Детето полага усилия, но често не вижда по-добри резултати. Мотивацията намалява. Налага се да напомняш да учи, да проверяваш и да обясняваш отново и отново. Това отнема време и изтощава.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -530,7 +534,12 @@ export default function LandingPage() {
             Study Flow започна от реална нужда
           </h2>
 
-          <div style={{ borderLeft: `3px solid ${MODULE_BTN[3]}99`, paddingLeft: 16 }}>
+          <div style={{ position: "relative", paddingLeft: 19 }}>
+            <div style={{
+              position: "absolute", left: 0, top: "10%", bottom: "10%",
+              width: 3, borderRadius: 2,
+              backgroundColor: `${MODULE_BTN[3]}99`,
+            }} />
             <p style={{ ...P, margin: "0 0 14px" }}>
               Като родител на дете с дислексия, която открихме чак в 7 клас, се сблъсках с много трудности. Учехме с часове, но резултатите не се подобряваха. Мотивацията намаляваше. Търсех начин детето ми да започне да учи по-често само, да изгради навик и да поддържа стабилно ниво на знания.
             </p>
