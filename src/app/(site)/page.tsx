@@ -181,10 +181,10 @@ const whyItems = [
 ];
 
 const howItems = [
-  { icon: "📸", step: "1", title: "Качваш урок", desc: "Снимка от учебника или текст" },
-  { icon: "✨", step: "2", title: "Ние го адаптираме", desc: "Урокът става на кратки карти с прост език" },
-  { icon: "🧠", step: "3", title: "Детето учи", desc: "Самостоятелно, в собствено темпо" },
-  { icon: "📊", step: "4", title: "Ти виждаш прогреса", desc: "Виждаш как се справя в родителския дневник" },
+  { step: "1", title: "Качваш урок", desc: "Снимка от учебника или текст", bg: MODULE_COLORS[1], color: MODULE_BTN[1] },
+  { step: "2", title: "Ние го адаптираме", desc: "Урокът става на кратки карти с прост език", bg: MODULE_COLORS[2], color: MODULE_BTN[2] },
+  { step: "3", title: "Детето учи", desc: "Самостоятелно, в собствено темпо", bg: MODULE_COLORS[3], color: MODULE_BTN[3] },
+  { step: "4", title: "Ти виждаш прогреса", desc: "Виждаш как се справя в родителския дневник", bg: MODULE_COLORS[4], color: MODULE_BTN[4] },
 ];
 
 const LABEL_STYLE = {
@@ -351,16 +351,18 @@ export default function LandingPage() {
           <h2 style={{ fontSize: 20, fontWeight: 700, color: NAV.text, marginBottom: 20, textAlign: "center" }}>
             Четири стъпки. Нищо повече
           </h2>
-          <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))" }}>
+          <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
             {howItems.map((item) => (
               <div
                 key={item.step}
-                className="rounded-2xl p-4 flex flex-col gap-1.5"
-                style={{ backgroundColor: NAV.bg, border: `1px solid ${NAV.border}` }}
+                className="rounded-2xl p-5 flex flex-col gap-2"
+                style={{ backgroundColor: item.bg }}
               >
-                <span style={{ fontSize: 20 }}>{item.icon}</span>
-                <p style={{ fontWeight: 700, color: NAV.text, margin: 0, fontSize: 15 }}>{item.title}</p>
-                <p style={{ ...P }}>{item.desc}</p>
+                <p style={{ fontSize: 11, fontWeight: 600, color: item.color, margin: 0, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                  {item.step}
+                </p>
+                <p style={{ fontWeight: 700, color: NAV.text, margin: 0, fontSize: 15, lineHeight: 1.3 }}>{item.title}</p>
+                <p style={{ ...P, margin: 0 }}>{item.desc}</p>
               </div>
             ))}
           </div>
