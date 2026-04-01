@@ -15,6 +15,7 @@ const NAV = {
 const MODULE_COLORS = { 1: "#EBF4FF", 2: "#E8F9F1", 3: "#FEFAE8", 4: "#F3EEFF" };
 const MODULE_SURFACE = { 1: "#BDD8F7", 2: "#B4E5CC", 3: "#F7E49E", 4: "#D4C4EE" };
 const MODULE_BTN = { 1: "#3B7DD8", 2: "#3B9E6A", 3: "#9A6E08", 4: "#7B5EA7" };
+const TEAL = "#3B9E8A";
 
 const P = { fontSize: 15, lineHeight: 1.65, color: NAV.textMuted, margin: 0 } as const;
 
@@ -247,26 +248,22 @@ export default function LandingPage() {
           Пилот · Април–Май 2026
         </p>
 
-        {/* Продуктово име */}
-        <p style={{
-          fontSize: 28,
-          fontWeight: 700,
-          margin: "0 0 12px",
-          background: `linear-gradient(135deg, ${MODULE_BTN[1]} 0%, ${MODULE_BTN[4]} 100%)`,
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text",
-          lineHeight: 1.2,
-        }}>
-          Study Flow
+        {/* Продуктово име — чист син, "Flow" с teal underline */}
+        <p style={{ fontSize: 28, fontWeight: 700, margin: "0 0 16px", color: NAV.text, lineHeight: 1.2 }}>
+          Study{" "}
+          <span style={{ position: "relative", display: "inline-block" }}>
+            Flow
+            <span style={{
+              position: "absolute",
+              bottom: -3,
+              left: "8%",
+              right: "8%",
+              height: 3,
+              backgroundColor: TEAL,
+              borderRadius: 2,
+            }} />
+          </span>
         </p>
-
-        {/* Линия 1 — между продуктовото име и заглавието */}
-        <div style={{
-          width: 48, height: 2, borderRadius: 2, marginBottom: 16,
-          background: `linear-gradient(90deg, ${MODULE_BTN[1]}, ${MODULE_BTN[4]})`,
-          opacity: 0.6,
-        }} />
 
         <h1
           className="text-xl font-bold"
@@ -275,26 +272,31 @@ export default function LandingPage() {
           Помага на деца с дислексия да учат по-лесно уроците от учебника
         </h1>
 
-        {/* Линия 2 — между заглавието и текста */}
-        <div style={{
-          width: 32, height: 2, borderRadius: 2, marginBottom: 16,
-          backgroundColor: MODULE_BTN[1],
-          opacity: 0.3,
-        }} />
-
         <p style={{ ...P, textAlign: "center", marginBottom: 24 }}>
           Study Flow помага на деца с дислексия да учат по-лесно и самостоятелно. Помага на родителите да виждат кога и къде детето има нужда от помощ, без да поемат цялото учене.
           <br /><br />
           Качваш снимка на урок. Приложението го превръща в кратки, разбираеми карти. Детето учи. Родителите спестяват време.
         </p>
 
-        <Link
-          href="/join"
-          className="inline-block rounded-xl px-7 py-3 text-white font-medium text-sm"
-          style={{ backgroundColor: NAV.btnSolid }}
-        >
-          Присъедини се към пилота →
-        </Link>
+        <div style={{ position: "relative", display: "inline-block" }}>
+          <Link
+            href="/join"
+            className="inline-block rounded-xl px-7 py-3 text-white font-medium text-sm"
+            style={{ backgroundColor: NAV.btnSolid }}
+          >
+            Присъедини се към пилота →
+          </Link>
+          {/* Малка teal точка */}
+          <span style={{
+            position: "absolute",
+            top: -4,
+            right: -4,
+            width: 7,
+            height: 7,
+            borderRadius: "50%",
+            backgroundColor: TEAL,
+          }} />
+        </div>
       </section>
 
       {/* ── ПРОБЛЕМЪТ ── */}
