@@ -171,14 +171,16 @@ function ResultCardMock() {
 }
 
 const whyItems = [
-  { icon: "🔤", title: "Ясен шрифт", desc: "Използваме шрифт, който улеснява разпознаването на буквите." },
-  { icon: "📏", title: "Кратки изречения", desc: "Една идея в изречение. Без дълги и сложни конструкции." },
-  { icon: "🃏", title: "Карти вместо параграфи", desc: "Урокът е разделен на малки стъпки, което улеснява обработката." },
-  { icon: "🌈", title: "Спокойна визия", desc: "Чист екран, меки цветове и достатъчно разстояние. По-малко визуален шум." },
-  { icon: "🔁", title: "Затвърждаване", desc: "Кратък тест помага детето да се върне към наученото и да го упражни." },
-  { icon: "⏱️", title: "Без напрежение", desc: "Няма таймер. Детето учи в собствено темпо." },
-  { icon: "📊", title: "Дневник за родителя", desc: "Виждаш дали детето учи и къде има нужда от помощ." },
+  { title: "Ясен шрифт", desc: "Използваме шрифт, който улеснява разпознаването на буквите." },
+  { title: "Кратки изречения", desc: "Една идея в изречение. Без дълги и сложни конструкции." },
+  { title: "Карти вместо параграфи", desc: "Урокът е разделен на малки стъпки, което улеснява обработката." },
+  { title: "Спокойна визия", desc: "Чист екран, меки цветове и достатъчно разстояние. По-малко визуален шум." },
+  { title: "Затвърждаване", desc: "Кратък тест помага детето да се върне към наученото и да го упражни." },
+  { title: "Без напрежение", desc: "Няма таймер. Детето учи в собствено темпо." },
+  { title: "Дневник за родителя", desc: "Виждаш дали детето учи и къде има нужда от помощ." },
 ];
+
+const DOT_COLORS = [MODULE_BTN[1], MODULE_BTN[2], MODULE_BTN[3], MODULE_BTN[4]];
 
 const howItems = [
   { step: "1", title: "Качваш урок", desc: "Снимка от учебника или текст", bg: MODULE_COLORS[1], color: MODULE_BTN[1] },
@@ -395,15 +397,26 @@ export default function LandingPage() {
             Създаден с мисъл за деца с дислексия
           </h2>
           <div className="flex flex-col gap-4">
-            {whyItems.map((item) => (
-              <div key={item.title} className="flex gap-3 items-start">
-                <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
-                <div>
-                  <p style={{ fontWeight: 700, color: NAV.text, margin: "0 0 2px", fontSize: 15 }}>{item.title}</p>
-                  <p style={{ ...P }}>{item.desc}</p>
+            {whyItems.map((item, i) => {
+              const dotColor = DOT_COLORS[i % DOT_COLORS.length];
+              const dotBg    = [MODULE_COLORS[1], MODULE_COLORS[2], MODULE_COLORS[3], MODULE_COLORS[4]][i % 4];
+              return (
+                <div key={item.title} className="flex gap-3 items-start">
+                  <div style={{
+                    width: 14, height: 14,
+                    borderRadius: "50%",
+                    backgroundColor: dotBg,
+                    border: `1.5px solid ${dotColor}`,
+                    flexShrink: 0,
+                    marginTop: 3,
+                  }} />
+                  <div>
+                    <p style={{ fontWeight: 700, color: NAV.text, margin: "0 0 2px", fontSize: 15 }}>{item.title}</p>
+                    <p style={{ ...P }}>{item.desc}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
