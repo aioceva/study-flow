@@ -355,14 +355,32 @@ export default function LandingPage() {
             {howItems.map((item) => (
               <div
                 key={item.step}
-                className="rounded-2xl p-5 flex flex-col gap-2"
-                style={{ backgroundColor: item.bg }}
+                className="rounded-2xl overflow-hidden flex flex-col"
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  border: `1px solid ${NAV.border}`,
+                  boxShadow: "0 2px 12px rgba(74,111,165,0.07)",
+                }}
               >
-                <p style={{ fontSize: 11, fontWeight: 600, color: item.color, margin: 0, letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                  {item.step}
-                </p>
-                <p style={{ fontWeight: 700, color: NAV.text, margin: 0, fontSize: 15, lineHeight: 1.3 }}>{item.title}</p>
-                <p style={{ ...P, margin: 0 }}>{item.desc}</p>
+                {/* Цветна лента горе */}
+                <div style={{ height: 5, backgroundColor: item.bg, borderBottom: `1px solid ${item.color}22` }} />
+                <div className="p-5 flex flex-col gap-2">
+                  <span style={{
+                    display: "inline-block",
+                    backgroundColor: item.bg,
+                    color: item.color,
+                    fontSize: 11,
+                    fontWeight: 700,
+                    padding: "2px 9px",
+                    borderRadius: 20,
+                    letterSpacing: "0.06em",
+                    width: "fit-content",
+                  }}>
+                    {item.step}
+                  </span>
+                  <p style={{ fontWeight: 700, color: NAV.text, margin: 0, fontSize: 15, lineHeight: 1.3 }}>{item.title}</p>
+                  <p style={{ ...P, margin: 0 }}>{item.desc}</p>
+                </div>
               </div>
             ))}
           </div>
