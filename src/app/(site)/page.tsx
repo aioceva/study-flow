@@ -245,12 +245,12 @@ export default function LandingPage() {
 
         {/* Декоративна дъга — ляво */}
         <svg aria-hidden="true" style={{ position: "absolute", left: -80, top: 20, pointerEvents: "none", overflow: "visible" }} width="160" height="160" viewBox="0 0 160 160" fill="none">
-          <path d="M 140 10 A 120 120 0 0 0 10 140" stroke={TEAL} strokeWidth="1.5" strokeLinecap="round" opacity="0.22" />
+          <path d="M 140 10 A 120 120 0 0 0 10 140" stroke={TEAL} strokeWidth="1.5" strokeLinecap="round" opacity="0.26" />
         </svg>
 
         {/* Декоративна дъга — дясно долу */}
         <svg aria-hidden="true" style={{ position: "absolute", right: -60, bottom: 10, pointerEvents: "none", overflow: "visible" }} width="120" height="120" viewBox="0 0 120 120" fill="none">
-          <path d="M 10 110 A 90 90 0 0 0 110 10" stroke={TEAL} strokeWidth="1" strokeLinecap="round" opacity="0.15" />
+          <path d="M 10 110 A 90 90 0 0 0 110 10" stroke={TEAL} strokeWidth="1.5" strokeLinecap="round" opacity="0.22" />
         </svg>
 
         {/* Пилот — обикновен малък текст, без фон */}
@@ -265,22 +265,23 @@ export default function LandingPage() {
             Flow
             <span style={{
               position: "absolute",
-              bottom: -2,
+              bottom: -1,
               left: 0,
               right: 0,
-              height: 2,
+              height: 3,
               backgroundColor: TEAL,
-              borderRadius: 1,
+              borderRadius: 2,
             }} />
           </span>
         </p>
 
         <h1
           className="text-xl font-bold"
-          style={{ color: NAV.text, lineHeight: 1.3, margin: "0 0 16px" }}
+          style={{ color: NAV.text, lineHeight: 1.3, margin: "0 0 10px" }}
         >
           Помага на деца с дислексия да учат по-лесно уроците от учебника
         </h1>
+        <div style={{ width: "100%", height: 1, backgroundColor: TEAL, opacity: 0.18, borderRadius: 1, marginBottom: 16 }} />
 
         <p style={{ ...P, textAlign: "center", marginBottom: 24 }}>
           Study Flow помага на деца с дислексия да учат по-лесно и самостоятелно. Помага на родителите да виждат кога и къде детето има нужда от помощ, без да поемат цялото учене.
