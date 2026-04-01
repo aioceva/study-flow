@@ -497,7 +497,7 @@ export default function LandingPage() {
               >
                 <div style={{ height: 5, backgroundColor: card.bg, borderBottom: `1px solid ${card.color}22` }} />
                 <div className="p-5 flex flex-col gap-3">
-                  <p style={{ fontSize: 13, fontWeight: 600, color: MODULE_BTN[1], margin: 0, letterSpacing: "0.04em" }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: NAV.text, margin: 0, letterSpacing: "0.04em" }}>
                     {card.title}
                   </p>
                   <div className="flex flex-col gap-2">
@@ -543,7 +543,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <p style={{ ...P, margin: "20px 0 0", color: NAV.textMuted }}>
+          <p style={{ ...P, margin: "20px 0 0", color: NAV.textMuted, textAlign: "right" }}>
             Анна Йоцева · <a href="mailto:annio@abv.bg" style={{ color: NAV.textMuted }}>annio@abv.bg</a>
           </p>
         </div>
