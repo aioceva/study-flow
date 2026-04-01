@@ -476,12 +476,12 @@ export default function LandingPage() {
               {
                 title: "Какво получавате",
                 items: ["Безплатен достъп", "До 10 адаптирани урока", "Личен профил за детето"],
-                bg: MODULE_COLORS[1], color: MODULE_BTN[1],
+                bg: MODULE_COLORS[3], color: MODULE_BTN[3],
               },
               {
                 title: "По време на пилота",
                 items: ["Използвате приложението у дома", "Споделяте какво работи и какво липсва"],
-                bg: MODULE_COLORS[2], color: MODULE_BTN[2],
+                bg: MODULE_COLORS[4], color: MODULE_BTN[4],
               },
             ].map((card) => (
               <div
@@ -495,7 +495,7 @@ export default function LandingPage() {
               >
                 <div style={{ height: 5, backgroundColor: card.bg, borderBottom: `1px solid ${card.color}22` }} />
                 <div className="p-5 flex flex-col gap-3">
-                  <p style={{ fontSize: 13, fontWeight: 600, color: card.color, margin: 0, letterSpacing: "0.04em" }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: MODULE_BTN[1], margin: 0, letterSpacing: "0.04em" }}>
                     {card.title}
                   </p>
                   <div className="flex flex-col gap-2">
