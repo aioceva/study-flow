@@ -247,6 +247,8 @@ export default function LandingPage() {
         >
           Пилот · Април–Май 2026
         </span>
+        {/* Тънка цветна линия над заглавието */}
+        <div style={{ width: 40, height: 3, borderRadius: 2, backgroundColor: MODULE_BTN[1], marginBottom: 16, opacity: 0.7 }} />
         <h1
           className="text-xl font-bold"
           style={{ color: NAV.text, lineHeight: 1.3, margin: "0 0 16px" }}
@@ -274,11 +276,14 @@ export default function LandingPage() {
           <h2 style={{ fontSize: 20, fontWeight: 700, color: NAV.text, marginBottom: 16, lineHeight: 1.35 }}>
             Учебниците не са пригодени за деца с дислексия
           </h2>
-          <div className="flex flex-col gap-2">
-            <p className="text-sm" style={{ ...P, textAlign: "center" }}>
+          <div
+            className="flex flex-col gap-2"
+            style={{ borderLeft: `3px solid ${MODULE_BTN[3]}99`, paddingLeft: 16 }}
+          >
+            <p className="text-sm" style={{ ...P, textAlign: "left" }}>
               Текстовете са дълги, сложни и трудни за следване.
             </p>
-            <p className="text-sm" style={{ ...P, textAlign: "center" }}>
+            <p className="text-sm" style={{ ...P, textAlign: "left" }}>
               Детето полага усилия, но често не вижда по-добри резултати. Мотивацията намалява. Налага се да напомняш да учи, да проверяваш и да обясняваш отново и отново. Това отнема време и изтощава.
             </p>
           </div>
