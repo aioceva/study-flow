@@ -155,7 +155,7 @@ export default function ReinforcementQuizPage() {
     if (isCorrect) {
       setScore((s) => s + 1);
       setPhase("correct");
-      startTimer(950, advanceQuestion);
+      startTimer(1800, advanceQuestion);
     } else {
       setErrors((e) => [...e, q.id]);
       setPhase("wrong");
