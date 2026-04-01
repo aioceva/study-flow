@@ -1,154 +1,190 @@
 "use client";
 
-import { useState, startTransition } from "react";
-import { useRouter } from "next/navigation";
-import { NAV } from "@/types";
+import { useState } from "react";
+import Link from "next/link";
 
-const COLOR_OPTIONS = [
-  { label: "Топло жълто", value: "#FEFCE8", emoji: "☀️" },
-  { label: "Светло синьо", value: "#EBF4FF", emoji: "🩵" },
-  { label: "Светло зелено", value: "#F0FDF4", emoji: "🌿" },
-  { label: "Бяло", value: "#FFFFFF", emoji: "⬜" },
-];
+const NAV = {
+  btnSolid: "#4A6FA5",
+  surface: "#F0F2F5",
+  bg: "#FFFFFF",
+  text: "#4A6FA5",
+  textMuted: "#5A6A7E",
+  border: "#E2E5EA",
+};
 
-const GRADES = ["5", "6", "7", "8", "9", "10", "11", "12"];
+const GRADES = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 
-type Step = "welcome" | "data" | "color" | "done";
+const P: React.CSSProperties = { fontSize: 15, color: NAV.textMuted, lineHeight: 1.65, margin: 0 };
+const LABEL: React.CSSProperties = { fontSize: 13, color: NAV.textMuted, fontWeight: 500, display: "block", marginBottom: 8 };
 
-export function JoinWizard({ enrolled, limit }: { enrolled: number; limit: number }) {
-  const router = useRouter();
-  const [step, setStep] = useState<Step>("welcome");
+export function JoinWizard() {
   const [name, setName] = useState("");
   const [grade, setGrade] = useState("");
-  const [color, setColor] = useState("#FFFFFF");
-  const [slug, setSlug] = useState("");
+  const [email, setEmail] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [done, setDone] = useState(false);
 
-  const isFull = enrolled >= limit;
+  const canSubmit = name.trim().length > 0 && grade !== "" && email.trim().length > 0 && agreed && !loading;
 
-  async function handleSubmit() {
-    if (!name.trim() || !grade) return;
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!canSubmit) return;
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/join", {
+      const res = await fetch("/api/pilot-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), grade, readingColor: color }),
+        body: JSON.stringify({ name: name.trim(), grade, email: email.trim() }),
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Грешка при записване");
-        setLoading(false);
+        setError(data.error ?? "Грешка при изпращане. Опитайте отново.");
         return;
       }
-      setSlug(data.slug);
-      setStep("done");
+      setDone(true);
     } catch {
-      setError("Грешка при свързване. Опитай отново.");
+      setError("Грешка при свързване. Опитайте отново.");
     } finally {
       setLoading(false);
     }
   }
 
-  function copyLink() {
-    const url = `${window.location.origin}/${slug}`;
-    navigator.clipboard.writeText(url).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  }
-
-  function goToApp() {
-    setTimeout(() => startTransition(() => router.push(`/${slug}`)), 150);
-  }
-
-  // ── Welcome ─────────────────────────────────────────────────────────────────
-  if (step === "welcome") {
+  // ── Success ────────────────────────────────────────────────────────────────
+  if (done) {
     return (
-      <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
-        <div className="flex-1 flex flex-col items-center justify-center px-6 gap-6 text-center">
-          <div className="text-5xl">📚</div>
-          <div>
-            <h1 className="text-xl font-bold mb-2" style={{ color: NAV.text }}>
-              Участие в пилотна употреба на Study Flow
-            </h1>
-            <p className="text-sm" style={{ color: NAV.textMuted }}>
-              Помагаме на деца с дислексия да учат по-лесно.
-            </p>
-          </div>
+      <div
+        style={{
+          backgroundColor: NAV.bg,
+          fontFamily: "'Adys', 'OpenDyslexic', Arial, sans-serif",
+          minHeight: "100vh",
+          overflowX: "hidden",
+        }}
+      >
+        <div style={{ maxWidth: 560, margin: "0 auto", padding: "64px 24px 80px" }}>
           <div
-            className="rounded-xl px-5 py-3"
-            style={{ backgroundColor: NAV.surface }}
+            className="flex flex-col gap-6"
+            style={{ textAlign: "center", alignItems: "center" }}
           >
-            <p className="text-sm" style={{ color: NAV.textMuted }}>
-              Включени: <span style={{ color: NAV.text }}>{enrolled} от {limit} деца</span>
-            </p>
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: "50%",
+                backgroundColor: "#E8F9F1",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 24,
+              }}
+            >
+              ✓
+            </div>
+            <div>
+              <h1
+                className="text-xl font-bold"
+                style={{ color: NAV.text, marginBottom: 12 }}
+              >
+                Заявката е изпратена
+              </h1>
+              <p style={{ ...P, marginBottom: 10 }}>
+                Благодарим. Ще ви пишем по имейл при първа възможност.
+              </p>
+              <p style={{ ...P }}>
+                Ако детето бъде включено, ще получите линк за достъп до приложението.
+              </p>
+            </div>
+            <Link
+              href="/"
+              className="inline-block rounded-xl px-7 py-3 text-white font-medium"
+              style={{ backgroundColor: NAV.btnSolid, fontSize: 15 }}
+            >
+              Към началото →
+            </Link>
           </div>
-        </div>
-        <div className="flex-none px-6 pb-10">
-          <button
-            onClick={() => setStep("data")}
-            disabled={isFull}
-            className="btn-press w-full rounded-xl py-4 text-white text-base"
-            style={{ backgroundColor: isFull ? NAV.border : NAV.btnSolid }}
-          >
-            {isFull ? "Местата са запълнени" : "Запиши се →"}
-          </button>
         </div>
       </div>
     );
   }
 
-  // ── Data ────────────────────────────────────────────────────────────────────
-  if (step === "data") {
-    return (
-      <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
-        <div className="flex-none flex items-center px-4 py-3">
-          <button
-            onClick={() => setStep("welcome")}
-            className="btn-press w-8 h-8 flex items-center justify-center"
-            style={{ opacity: 0.55 }}
-            aria-label="Назад"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 5l-7 7 7 7" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold ml-2" style={{ color: NAV.text }}>Данни за детето</h1>
-        </div>
+  // ── Form ──────────────────────────────────────────────────────────────────
+  return (
+    <div
+      style={{
+        backgroundColor: NAV.bg,
+        fontFamily: "'Adys', 'OpenDyslexic', Arial, sans-serif",
+        minHeight: "100vh",
+        overflowX: "hidden",
+      }}
+    >
+      <div style={{ maxWidth: 560, margin: "0 auto", padding: "40px 24px 80px" }}>
 
-        <div className="flex-1 px-6 pt-4 space-y-6">
+        {/* Back link */}
+        <Link
+          href="/"
+          style={{ fontSize: 14, color: NAV.textMuted, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4, marginBottom: 36 }}
+        >
+          ← Към началото
+        </Link>
+
+        {/* Header */}
+        <h1
+          className="text-xl font-bold"
+          style={{ color: NAV.text, marginBottom: 10 }}
+        >
+          Присъедини се към пилота
+        </h1>
+        <p style={{ ...P, marginBottom: 6 }}>
+          Ще създадем профил за твоето дете и ще ти изпратим личен линк по имейл.
+        </p>
+        <p style={{ ...P, marginBottom: 36 }}>
+          След записване ще получиш имейл с адреса, на който детето може да влезе и да започне да използва приложението.
+        </p>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+
+          {/* Ime na deteto */}
           <div>
-            <p className="text-sm mb-2" style={{ color: NAV.textMuted }}>Как се казва детето?</p>
+            <label style={LABEL}>Име на детето</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Например: Димитър"
-              className="w-full rounded-xl px-4 py-3 text-base"
+              autoComplete="off"
               style={{
+                width: "100%",
+                fontSize: 15,
+                padding: "12px 16px",
+                borderRadius: 12,
                 backgroundColor: NAV.surface,
                 color: NAV.text,
                 border: `1px solid ${NAV.border}`,
                 outline: "none",
+                boxSizing: "border-box",
               }}
             />
           </div>
 
+          {/* Klas */}
           <div>
-            <p className="text-sm mb-2" style={{ color: NAV.textMuted }}>В кой клас е?</p>
+            <label style={LABEL}>Клас</label>
             <div className="flex flex-wrap gap-2">
               {GRADES.map((g) => (
                 <button
                   key={g}
+                  type="button"
                   onClick={() => setGrade(g)}
-                  className="btn-press rounded-xl px-4 py-2 text-base"
+                  className="btn-press rounded-xl"
                   style={{
+                    padding: "8px 14px",
+                    fontSize: 15,
                     backgroundColor: grade === g ? NAV.btnSolid : NAV.surface,
                     color: grade === g ? "#FFFFFF" : NAV.text,
+                    border: grade === g ? `1px solid ${NAV.btnSolid}` : `1px solid ${NAV.border}`,
                   }}
                 >
                   {g}
@@ -156,129 +192,84 @@ export function JoinWizard({ enrolled, limit }: { enrolled: number; limit: numbe
               ))}
             </div>
           </div>
-        </div>
 
-        <div className="flex-none px-6 pb-10">
-          <button
-            onClick={() => setStep("color")}
-            disabled={!name.trim() || !grade}
-            className="btn-press w-full rounded-xl py-4 text-white text-base"
-            style={{ backgroundColor: NAV.btnSolid, opacity: (!name.trim() || !grade) ? 0.4 : 1 }}
-          >
-            Напред →
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Color ───────────────────────────────────────────────────────────────────
-  if (step === "color") {
-    return (
-      <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
-        <div className="flex-none flex items-center px-4 py-3">
-          <button
-            onClick={() => setStep("data")}
-            className="btn-press w-8 h-8 flex items-center justify-center"
-            style={{ opacity: 0.55 }}
-            aria-label="Назад"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 5l-7 7 7 7" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold ml-2" style={{ color: NAV.text }}>Предпочитан фон</h1>
-        </div>
-
-        <div className="flex-1 px-6 pt-4 space-y-4">
-          <p className="text-sm" style={{ color: NAV.textMuted }}>Кой фон е най-удобен за четене?</p>
-
-          <div className="grid grid-cols-2 gap-3">
-            {COLOR_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => setColor(opt.value)}
-                className="btn-press rounded-xl p-4 flex flex-col items-center gap-2"
-                style={{
-                  backgroundColor: opt.value,
-                  border: color === opt.value ? `2px solid ${NAV.btnSolid}` : `2px solid ${NAV.border}`,
-                }}
-              >
-                <span className="text-2xl">{opt.emoji}</span>
-                <span className="text-sm" style={{ color: NAV.text }}>{opt.label}</span>
-              </button>
-            ))}
+          {/* Email */}
+          <div>
+            <label style={LABEL}>Имейл на родителя</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="example@mail.com"
+              autoComplete="email"
+              style={{
+                width: "100%",
+                fontSize: 15,
+                padding: "12px 16px",
+                borderRadius: 12,
+                backgroundColor: NAV.surface,
+                color: NAV.text,
+                border: `1px solid ${NAV.border}`,
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+            />
           </div>
 
-          {/* Preview */}
-          <div
-            className="rounded-xl p-4"
-            style={{ backgroundColor: color, border: `1px solid ${NAV.border}` }}
+          {/* Terms checkbox */}
+          <label
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 10,
+              cursor: "pointer",
+              fontSize: 14,
+              color: NAV.textMuted,
+              lineHeight: 1.55,
+            }}
           >
-            <p className="text-sm" style={{ color: NAV.text }}>
-              Примерен текст от учебник. Буквите се четат лесно на този фон.
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              style={{ marginTop: 3, width: 16, height: 16, flexShrink: 0, accentColor: NAV.btnSolid }}
+            />
+            <span>
+              Съгласен/съгласна съм с{" "}
+              <Link
+                href="/terms"
+                target="_blank"
+                style={{ color: NAV.text, fontWeight: 500, textDecoration: "underline", textUnderlineOffset: 3 }}
+              >
+                условията за участие
+              </Link>
+            </span>
+          </label>
+
+          {/* Error */}
+          {error && (
+            <p style={{ fontSize: 14, color: "#EF4444", margin: 0 }}>{error}</p>
+          )}
+
+          {/* Submit */}
+          <div className="flex flex-col gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={!canSubmit}
+              className="btn-press w-full rounded-xl py-4 text-white font-medium"
+              style={{
+                backgroundColor: NAV.btnSolid,
+                fontSize: 15,
+                opacity: canSubmit ? 1 : 0.4,
+              }}
+            >
+              {loading ? "Изпращаме..." : "Създай достъп"}
+            </button>
+            <p style={{ fontSize: 13, color: NAV.textMuted, textAlign: "center", margin: 0 }}>
+              Данните се използват само за този пилот и няма да бъдат споделяни.
             </p>
           </div>
-
-          {error && (
-            <p className="text-sm" style={{ color: "#EF4444" }}>{error}</p>
-          )}
-        </div>
-
-        <div className="flex-none px-6 pb-10">
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="btn-press w-full rounded-xl py-4 text-white text-base"
-            style={{ backgroundColor: NAV.btnSolid, opacity: loading ? 0.6 : 1 }}
-          >
-            {loading ? "Записваме..." : "Готово →"}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Done ────────────────────────────────────────────────────────────────────
-  const appUrl = typeof window !== "undefined" ? `${window.location.origin}/${slug}` : `/${slug}`;
-
-  return (
-    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
-      <div className="flex-1 flex flex-col items-center justify-center px-6 gap-6 text-center">
-        <div className="text-5xl">✓</div>
-        <div>
-          <h1 className="text-xl font-bold mb-2" style={{ color: NAV.text }}>
-            Готово, {name}!
-          </h1>
-          <p className="text-sm" style={{ color: NAV.textMuted }}>Твоят личен линк:</p>
-        </div>
-
-        <button
-          onClick={copyLink}
-          className="btn-press w-full rounded-xl px-4 py-3 text-base"
-          style={{ backgroundColor: NAV.surface, color: NAV.text }}
-        >
-          {copied ? "✓ Копирано!" : appUrl}
-        </button>
-
-        <div
-          className="rounded-xl px-4 py-3 w-full text-left"
-          style={{ backgroundColor: "#FEF9C3" }}
-        >
-          <p className="text-sm" style={{ color: "#92400E" }}>
-            ⚠️ Запази го — това е начинът да влезеш отново
-          </p>
-        </div>
-      </div>
-
-      <div className="flex-none px-6 pb-10">
-        <button
-          onClick={goToApp}
-          className="btn-press w-full rounded-xl py-4 text-white text-base"
-          style={{ backgroundColor: NAV.btnSolid }}
-        >
-          Към урока →
-        </button>
+        </form>
       </div>
     </div>
   );
