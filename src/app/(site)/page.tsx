@@ -238,7 +238,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="px-5 pt-12 pb-10 flex flex-col items-center text-center" style={{ maxWidth: 620, margin: "0 auto" }}>
+      <section className="px-5 pt-12 pb-10" style={{ maxWidth: 560, margin: "0 auto" }}>
         <span
           className="inline-block rounded-full px-4 py-1 mb-5 text-sm font-medium"
           style={{ backgroundColor: MODULE_COLORS[1], color: MODULE_BTN[1] }}
@@ -247,14 +247,14 @@ export default function LandingPage() {
         </span>
         <h1
           className="text-xl font-bold"
-          style={{ color: NAV.text, lineHeight: 1.25, margin: "0 0 14px" }}
+          style={{ color: NAV.text, lineHeight: 1.3, margin: "0 0 16px" }}
         >
           Помага на деца с дислексия да учат по-лесно и по-самостоятелно.
         </h1>
-        <p className="text-sm" style={{ color: NAV.textMuted, maxWidth: 420, margin: "0 auto 8px" }}>
+        <p style={{ ...P, marginBottom: 10 }}>
           Помага на родителите да виждат кога и къде детето има нужда от помощ, без да поемат цялото учене. Качваш урок. Ние го превръщаме в кратки, разбираеми карти.
         </p>
-        <p className="text-sm" style={{ color: NAV.textMuted, maxWidth: 400, margin: "0 auto 24px" }}>
+        <p style={{ ...P, marginBottom: 24 }}>
           В момента тестваме приложението с малък брой семейства.
         </p>
         <Link
@@ -268,7 +268,7 @@ export default function LandingPage() {
 
       {/* ── ПРОБЛЕМЪТ ── */}
       <section className="px-5 py-10" style={{ backgroundColor: NAV.surface }}>
-        <div style={{ maxWidth: 540, margin: "0 auto" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
           <p style={LABEL_STYLE}>Проблемът</p>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: NAV.text, marginBottom: 16, lineHeight: 1.35 }}>
             Учебниците не са пригодени за деца с дислексия.
@@ -290,7 +290,7 @@ export default function LandingPage() {
 
       {/* ── КАК ИЗГЛЕЖДА ── */}
       <section className="py-10">
-        <div className="px-5" style={{ maxWidth: 680, margin: "0 auto" }}>
+        <div className="px-5" style={{ maxWidth: 560, margin: "0 auto" }}>
           <p style={{ ...LABEL_STYLE, textAlign: "center" }}>Как изглежда Study Flow</p>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: NAV.text, marginBottom: 6, textAlign: "center" }}>
             Ето как изглежда един урок.
@@ -351,7 +351,7 @@ export default function LandingPage() {
 
       {/* ── КАК РАБОТИ ── */}
       <section className="px-5 py-10" style={{ backgroundColor: NAV.surface }}>
-        <div style={{ maxWidth: 640, margin: "0 auto" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
           <p style={{ ...LABEL_STYLE, textAlign: "center" }}>Как работи</p>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: NAV.text, marginBottom: 20, textAlign: "center" }}>
             Четири стъпки. Нищо повече.
@@ -374,7 +374,7 @@ export default function LandingPage() {
 
       {/* ── КАК Е СЪЗДАДЕНО ── */}
       <section className="px-5 py-10">
-        <div style={{ maxWidth: 520, margin: "0 auto" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
           <p style={LABEL_STYLE}>Как е създадено</p>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: NAV.text, marginBottom: 20, lineHeight: 1.35 }}>
             Създаден с мисъл за деца с дислексия.
@@ -398,7 +398,7 @@ export default function LandingPage() {
         className="px-5 py-12 flex flex-col items-center text-center"
         style={{ backgroundColor: MODULE_COLORS[1] }}
       >
-        <div style={{ maxWidth: 460, margin: "0 auto" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
           <p style={{ ...LABEL_STYLE, color: MODULE_BTN[1], textAlign: "center" }}>
             Пилот · Април–Май 2026
           </p>
@@ -425,7 +425,7 @@ export default function LandingPage() {
 
       {/* ── ЗА НАС ── */}
       <section className="px-5 py-10">
-        <div style={{ maxWidth: 500, margin: "0 auto" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
           <p style={LABEL_STYLE}>За нас</p>
           <p style={{ ...P, marginBottom: 10 }}>
             Study Flow започна от реална нужда. Като родител на дете с дислексия, която открихме чак в 7 клас, се сблъсках с много трудности.
