@@ -397,20 +397,23 @@ export default function LandingPage() {
           <p style={{ ...LABEL_STYLE, color: MODULE_BTN[1], textAlign: "center" }}>
             Пилот — Април–Май 2026
           </p>
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: NAV.text, marginBottom: 20, lineHeight: 1.3 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: NAV.text, marginBottom: 12, lineHeight: 1.3 }}>
             Търсим 15–20 семейства
           </h2>
+          <p style={{ ...P, textAlign: "center", marginBottom: 20 }}>
+            които искат да изпробват Study Flow в реални учебни ситуации.
+          </p>
 
           <div className="flex flex-col gap-5 text-left" style={{ marginBottom: 28 }}>
             <div>
-              <p style={{ fontWeight: 700, color: NAV.text, fontSize: 15, margin: "0 0 6px" }}>Какво получаваш:</p>
-              {["Достъп за целия период", "10 адаптирани урока", "Личен профил за детето"].map((item) => (
+              <p style={{ fontWeight: 700, color: NAV.text, fontSize: 15, margin: "0 0 6px" }}>Какво получавате:</p>
+              {["Безплатен достъп по време на пилота", "До 10 адаптирани урока", "Личен профил за детето"].map((item) => (
                 <p key={item} style={{ ...P, margin: "0 0 3px" }}>· {item}</p>
               ))}
             </div>
             <div>
-              <p style={{ fontWeight: 700, color: NAV.text, fontSize: 15, margin: "0 0 6px" }}>Какво е нужно от теб:</p>
-              {["Да използвате приложението", "Да споделите обратна връзка"].map((item) => (
+              <p style={{ fontWeight: 700, color: NAV.text, fontSize: 15, margin: "0 0 6px" }}>По време на пилота:</p>
+              {["Използвате приложението у дома", "Споделяте какво работи и какво липсва"].map((item) => (
                 <p key={item} style={{ ...P, margin: "0 0 3px" }}>· {item}</p>
               ))}
             </div>
