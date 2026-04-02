@@ -2,6 +2,29 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { generatePrompt } from "@/prompts/generate";
 import { readJSON, writeJSON } from "@/lib/github";
+import type { Adaptation } from "@/types";
+
+function validateAdaptation(obj: unknown): obj is Adaptation {
+  if (!obj || typeof obj !== "object") return false;
+  const a = obj as Record<string, unknown>;
+  if (!a.meta || typeof a.meta !== "object") return false;
+  const meta = a.meta as Record<string, unknown>;
+  if (!meta.user || !meta.subject || meta.lesson === undefined || !meta.generated || !meta.title)
+    return false;
+  if (!Array.isArray(a.modules) || a.modules.length === 0) return false;
+  for (const mod of a.modules as unknown[]) {
+    if (!mod || typeof mod !== "object") return false;
+    const m = mod as Record<string, unknown>;
+    if (!m.id || !m.title || !m.color || !Array.isArray(m.cards) || m.cards.length === 0)
+      return false;
+    for (const card of m.cards as unknown[]) {
+      if (!card || typeof card !== "object") return false;
+      const c = card as Record<string, unknown>;
+      if (!c.id || !c.title || !c.what || !c.why || !c.example) return false;
+    }
+  }
+  return true;
+}
 
 const client = new Anthropic();
 const MAX_PER_DAY = 5;
@@ -78,7 +101,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Неуспешно генериране" }, { status: 422 });
     }
 
-    const adaptation = JSON.parse(jsonMatch[0]);
+    const parsed = JSON.parse(jsonMatch[0]);
+    if (!validateAdaptation(parsed)) {
+      console.error("Invalid adaptation structure from Claude:", JSON.stringify(parsed).slice(0, 300));
+      return NextResponse.json({ error: "Неуспешно генериране — невалидна структура" }, { status: 422 });
+    }
+    const adaptation = parsed;
 
     // Записваме per-user брояча за деня
     await writeJSON(ratePath, { date: today, count: todayCount + 1 }, rateFile?.sha);
