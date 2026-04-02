@@ -75,8 +75,6 @@ Study Flow не само записва грешките — анализира 
 **Ниво 1 — Записване на грешките (следва да се имплементира)**
 ```
 sessions.json за всяка сесия:
-- quiz_1: { score, total, errors: [въпрос id-та] }
-- quiz_2: { score, total, errors: [въпрос id-та] }
 - reinforcement: { score, total, errors: [въпрос id-та] }
 - тренд: подобрява ли се резултатът при повторение?
 ```

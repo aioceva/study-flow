@@ -65,8 +65,6 @@ export interface LearnSession {
   type: "learn";
   status?: "completed" | "partial";
   completed: boolean;
-  quiz_1?: { score: number; total: number; errors: number[] };
-  quiz_2?: { score: number; total: number; errors: number[] };
 }
 
 export interface ReinforcementSession {

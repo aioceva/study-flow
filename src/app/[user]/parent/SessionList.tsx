@@ -16,18 +16,12 @@ function fmtDate(iso: string): string {
 export type QuizMap = Record<string, QuizQuestion[]>; // "subject-lesson" → въпроси
 
 function sessionScore(s: Session): { score: number; total: number } {
-  if (s.type === "learn") {
-    const q1 = s.quiz_1 ?? { score: 0, total: 0 };
-    const q2 = s.quiz_2 ?? { score: 0, total: 0 };
-    return { score: q1.score + q2.score, total: q1.total + q2.total };
-  }
+  if (s.type === "learn") return { score: 0, total: 0 };
   return { score: s.score, total: s.total };
 }
 
 function sessionErrors(s: Session): number[] {
-  if (s.type === "learn") {
-    return [...(s.quiz_1?.errors ?? []), ...(s.quiz_2?.errors ?? [])];
-  }
+  if (s.type === "learn") return [];
   return s.errors ?? [];
 }
 
