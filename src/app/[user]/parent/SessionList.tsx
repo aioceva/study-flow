@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Session, SUBJECT_LABELS, Subject, NAV, QuizQuestion } from "@/types";
+import { Session, LearnSession, SUBJECT_LABELS, Subject, NAV, QuizQuestion } from "@/types";
 
 const BG_MONTHS = [
   "януари","февруари","март","април","май","юни",
@@ -61,14 +61,30 @@ export function SessionList({
             {fmtDate(date)}
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {grouped[date].map((s, i) => {
+            {grouped[date]
+            .filter((s) => {
+              // Скрий partial ако за същия урок/дата вече има completed
+              if (s.type === "learn" && (s as LearnSession).status === "partial") {
+                return !grouped[date].some(
+                  (other) =>
+                    other !== s &&
+                    other.type === "learn" &&
+                    (other as LearnSession).status !== "partial" &&
+                    other.subject === s.subject &&
+                    other.lesson === s.lesson
+                );
+              }
+              return true;
+            })
+            .map((s, i) => {
               const key = `${date}-${i}`;
               const { score, total } = sessionScore(s);
               const errors = sessionErrors(s);
               const subjectLabel = SUBJECT_LABELS[s.subject as Subject] ?? s.subject;
-              const typeLabel  = s.type === "learn" ? "Учене" : "Преговор";
-              const typeBg    = s.type === "learn" ? "#EBF4FF" : "#F3EEFF";
-              const typeColor = s.type === "learn" ? "#3B7DD8" : "#7B5EA7";
+              const isPartial = s.type === "learn" && (s as LearnSession).status === "partial";
+              const typeLabel  = isPartial ? "Започнат урок" : s.type === "learn" ? "Учене" : "Преговор";
+              const typeBg    = isPartial ? "#FEF3C7"        : s.type === "learn" ? "#EBF4FF" : "#F3EEFF";
+              const typeColor = isPartial ? "#92400E"        : s.type === "learn" ? "#3B7DD8" : "#7B5EA7";
               const quizKey   = `${s.subject}-${s.lesson}`;
               const questions = quizMap[quizKey] ?? [];
               const wrongQs   = questions.filter((q) => errors.includes(q.id));

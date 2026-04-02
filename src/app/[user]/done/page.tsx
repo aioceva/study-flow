@@ -33,6 +33,10 @@ export default function DonePage() {
     setDuration(dur);
 
     const now = new Date();
+
+    // Изчисти partial ключа — урокът е завършен
+    sessionStorage.removeItem(`partial_sent_${subject}_${lesson}`);
+
     fetch("/api/session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -45,6 +49,7 @@ export default function DonePage() {
           started_at: now.toTimeString().slice(0, 5),
           duration_min: dur,
           type: "learn",
+          status: "completed",
           completed: true,
         },
       }),

@@ -82,8 +82,33 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     setTimeout(() => startTransition(() => router.push(url)), 150);
   }
 
+  function maybeRecordPartial() {
+    if (moduleId !== 1 || cardId !== 1) return;
+    const partialKey = `partial_sent_${subject}_${lesson}`;
+    if (sessionStorage.getItem(partialKey)) return;
+    sessionStorage.setItem(partialKey, "1");
+    const now = new Date();
+    fetch("/api/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user,
+        session: {
+          date: now.toISOString().split("T")[0],
+          subject,
+          lesson: parseInt(lesson),
+          started_at: now.toTimeString().slice(0, 5),
+          duration_min: 1,
+          type: "learn",
+          status: "partial",
+          completed: false,
+        },
+      }),
+    }).catch(console.error);
+  }
+
   const swipeHandlers = useSwipeable({
-    onSwipedLeft:  () => { if (isCardPage) navigate(nextStep(user, moduleId, cardId, params)); },
+    onSwipedLeft:  () => { if (isCardPage) { maybeRecordPartial(); navigate(nextStep(user, moduleId, cardId, params)); } },
     onSwipedRight: () => { if (isCardPage && !isFirst) navigate(prevStep(user, moduleId, cardId, params)); },
     preventScrollOnSwipe: true,
     trackMouse: false,
@@ -231,7 +256,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
             ←
           </button>
           <button
-            onClick={() => navigate(nextStep(user, moduleId, cardId, params))}
+            onClick={() => { maybeRecordPartial(); navigate(nextStep(user, moduleId, cardId, params)); }}
             className="btn-press flex-1 rounded-xl text-white text-xl flex items-center justify-center"
             style={{ backgroundColor: NAV.btnSolid, height: 56 }}
           >
