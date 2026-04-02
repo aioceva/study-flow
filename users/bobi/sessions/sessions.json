@@ -516,6 +516,16 @@
         12,
         7
       ]
+    },
+    {
+      "date": "2026-04-02",
+      "subject": "bio",
+      "lesson": 45,
+      "started_at": "16:49",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
