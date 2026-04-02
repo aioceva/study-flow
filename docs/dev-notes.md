@@ -1,6 +1,6 @@
 # Study Flow — Dev Notes & Капани
 
-_Последна актуализация: 29 Март 2026_
+_Последна актуализация: 2 Април 2026_
 
 Натрупани уроци от разработката. Прочети преди да пишеш код.
 
@@ -28,6 +28,25 @@ export default function SeparatorPage() {
 ---
 
 ## iOS / Mobile капани
+
+### URL.createObjectURL() — Memory Leak при неуспешно зареждане
+
+В `scan/page.tsx` — всеки `createObjectURL()` трябва да се освободи с `revokeObjectURL()`.
+
+```tsx
+// ✅ ПРАВИЛНО — освобождава при грешка или при cleanup
+const url = URL.createObjectURL(file);
+try {
+  // ... използвай url
+} catch {
+  URL.revokeObjectURL(url); // освобождава ако нещо се счупи
+  throw;
+}
+// или в useEffect cleanup:
+return () => URL.revokeObjectURL(url);
+```
+
+Симптом: memory leak при многократно качване на снимки в един tab.
 
 ### CSS :active без navigate delay не работи
 
@@ -154,9 +173,17 @@ startTransition(() => router.push(url))
 - ✅ **QuizQuestion.explanation**: ново поле в типа + prompt инструкция за AI да генерира 1 изречение обяснение
 - ✅ **CSS keyframes**: correct-pop, shake, icon-pop, star-pop, confetti-1..5
 
+### Технически подобрения (2 Април 2026)
+- ✅ **Memory leak fix** — `URL.createObjectURL()` се освобождава при грешка в `scan/page.tsx`
+- ✅ **Claude JSON валидация** — `validateAdaptation()` в `api/generate/route.ts`; невалидна структура → 422 вместо crash
+- ✅ **Original image save** — `writeBinaryFile()` в `github.ts`; оригиналната снимка се записва fire-and-forget до `adaptations/[subject]/lesson-[n]/original.jpg`; само `image/jpeg|png|webp` типове; грешката не блокира потока
+- ✅ **Partial learning tracking** — `LearnSession` получи `status?: "completed" | "partial"`; `maybeRecordPartial()` в `LessonLayoutInner` fires при първи → от карта 1/1; `sessionStorage` ключ предотвратява дублиране; badge „Започнат урок" в SessionList; partial се скрива ако completed съществува за същия урок/дата
+- ✅ **Минимален тестов слой** — Vitest за unit tests (`navigation.ts`); Playwright E2E за основните flows (home / confirm / quiz / parent); fixtures за adaptation и quiz без реални AI calls
+
 ---
 
 ## Предстои
 
-- 🔄 Done page: pending финален стил на "Провери знанията" бутон (white card с 🏆) — commit чакащ
+- [ ] Изтриване на orphan файл `src/app/[user]/lesson/quiz/page.tsx`
 - [ ] Prefetch на следващия route за по-бърза навигация
+- [ ] E2E тестове с mock за GitHub (parent dashboard в CI без реален GITHUB_TOKEN)

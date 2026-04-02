@@ -1,6 +1,6 @@
 # Study Flow — Проект контекст
 
-_Последна актуализация: 29 Март 2026_
+_Последна актуализация: 2 Април 2026_
 
 ## Какво е
 
@@ -100,6 +100,7 @@ function navigate(url: string) {
 users/[user]/profile.json                              ← създава се при /join
 users/[user]/adaptations/[subject]/lesson-[n]/adaptation.json
 users/[user]/adaptations/[subject]/lesson-[n]/quiz.json
+users/[user]/adaptations/[subject]/lesson-[n]/original.jpg  ← оригиналната снимка от scan
 users/[user]/sessions/sessions.json
 pilot/enrollment.json                                  ← брой записани деца (лимит 20)
 rate-limit.json                                        ← 1 адаптация на 24 часа
@@ -146,8 +147,13 @@ rate-limit.json                                        ← 1 адаптация 
   "sessions": [
     {
       "date": "2026-03-15", "subject": "math", "lesson": 14,
+      "started_at": "14:30", "duration_min": 1,
+      "type": "learn", "status": "partial", "completed": false
+    },
+    {
+      "date": "2026-03-15", "subject": "math", "lesson": 14,
       "started_at": "16:02", "duration_min": 28,
-      "type": "learn", "completed": true
+      "type": "learn", "status": "completed", "completed": true
     },
     {
       "date": "2026-03-19", "subject": "math", "lesson": 14,
@@ -157,6 +163,13 @@ rate-limit.json                                        ← 1 адаптация 
   ]
 }
 ```
+
+**Session типове:**
+- `type: "learn"` + `status: "completed"` — детето е стигнало до `/done` (пълен цикъл)
+- `type: "learn"` + `status: "partial"` — детето е минало поне 1 карта, но не е завършило
+- `type: "reinforcement"` — завършен reinforcement quiz
+
+`status` е опционален — стари записи без него се третират като `"completed"`.
 
 ### Subject кодове
 `math`, `bio`, `chem`, `phys`, `hist`, `lit`, `gen`
@@ -181,20 +194,27 @@ rate-limit.json                                        ← 1 адаптация 
 
 | Файл | Роля |
 |------|------|
-| `src/app/[user]/lesson/LessonLayoutInner.tsx` | Целият lesson UI (cards + separator) |
+| `src/app/[user]/lesson/LessonLayoutInner.tsx` | Целият lesson UI (cards + separator) + partial session tracking |
 | `src/app/[user]/lesson/layout.tsx` | Зарежда LessonLayoutInner в Suspense |
 | `src/app/[user]/page.tsx` + `UserHome.tsx` | Home екран |
 | `src/app/[user]/confirm/page.tsx` | Hub: показва урока, избор learn/review |
-| `src/app/[user]/done/page.tsx` | Краен екран |
+| `src/app/[user]/done/page.tsx` | Краен екран + запис на completed сесия |
 | `src/app/[user]/parent/page.tsx` | Дневник — родителски изглед |
+| `src/app/[user]/parent/SessionList.tsx` | Списък сесии с badge за тип (Учене / Започнат урок / Преговор) |
 | `src/app/[user]/reinforcement/quiz/page.tsx` | Reinforcement quiz (phase state machine) |
+| `src/app/[user]/scan/page.tsx` | Camera/upload — image upload с memory leak fix |
 | `src/app/join/page.tsx` + `JoinWizard.tsx` | Onboarding за нови деца |
 | `src/app/api/join/route.ts` | POST /api/join — записване в enrollment.json |
+| `src/app/api/generate/route.ts` | AI генерация + rate limiting + запис на original.jpg |
+| `src/app/api/session/route.ts` | POST/GET сесии → sessions.json |
 | `src/types/index.ts` | Всички типове + цветови константи (NAV, MODULE_*) |
 | `src/lib/navigation.ts` | nextStep / prevStep / nextButtonLabel |
+| `src/lib/github.ts` | readFile / writeFile / readJSON / writeJSON / writeBinaryFile |
 | `src/app/globals.css` | Tailwind v4 @theme + btn-press клас + @font-face |
-| `src/app/api/generate/route.ts` | AI генерация + rate limiting |
 | `public/icons/` | icon-lesson.svg, icon-trophy-glow.svg, icon-welcome.svg |
+| `tests/unit/navigation.test.ts` | Vitest unit tests за navigation helpers |
+| `tests/e2e/flows.spec.ts` | Playwright E2E — home / confirm / quiz / parent |
+| `vitest.config.ts` + `playwright.config.ts` | Test конфигурации |
 
 ---
 
@@ -203,3 +223,4 @@ rate-limit.json                                        ← 1 адаптация 
 - [ ] Изтриване на orphan файл `src/app/[user]/lesson/quiz/page.tsx`
 - [ ] Prefetch на следващия route за по-бърза навигация
 - [ ] next-intl (BG/EN) — планирано, не имплементирано
+- [ ] E2E тестове с mock за GitHub (parent dashboard в CI без реален GITHUB_TOKEN)
