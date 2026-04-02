@@ -52,3 +52,20 @@ export async function readJSON<T>(path: string): Promise<{ data: T; sha: string 
 export async function writeJSON(path: string, data: unknown, sha?: string): Promise<void> {
   await writeFile(path, JSON.stringify(data, null, 2), sha);
 }
+
+export async function writeBinaryFile(path: string, base64Content: string, sha?: string): Promise<void> {
+  const body: Record<string, string> = {
+    message: `update ${path}`,
+    content: base64Content,
+  };
+  if (sha) body.sha = sha;
+
+  const res = await githubRequest(`/${path}`, {
+    method: "PUT",
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`GitHub write error: ${res.status} ${err}`);
+  }
+}

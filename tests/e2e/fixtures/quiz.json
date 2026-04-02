@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "user": "bobi",
+    "subject": "bio",
+    "lesson": 5,
+    "generated": "2026-04-01",
+    "total": 10
+  },
+  "questions": [
+    {
+      "id": 1, "module_id": 1, "card_id": 1,
+      "question": "Какво произвежда фотосинтезата?",
+      "options": [
+        { "id": "a", "text": "Глюкоза и кислород", "correct": true },
+        { "id": "b", "text": "Вода и CO₂", "correct": false },
+        { "id": "c", "text": "Азот и водород", "correct": false }
+      ]
+    },
+    {
+      "id": 2, "module_id": 1, "card_id": 2,
+      "question": "Кое НЕ е необходимо за фотосинтезата?",
+      "options": [
+        { "id": "a", "text": "Кислород", "correct": true },
+        { "id": "b", "text": "Вода", "correct": false },
+        { "id": "c", "text": "Светлина", "correct": false }
+      ]
+    },
+    {
+      "id": 3, "module_id": 1, "card_id": 3,
+      "question": "Какво е хлорофилът?",
+      "options": [
+        { "id": "a", "text": "Зелен пигмент в листата", "correct": true },
+        { "id": "b", "text": "Вид захар", "correct": false },
+        { "id": "c", "text": "Тип клетка", "correct": false }
+      ]
+    },
+    {
+      "id": 4, "module_id": 2, "card_id": 1,
+      "question": "Кое е уравнението на фотосинтезата?",
+      "options": [
+        { "id": "a", "text": "6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂", "correct": true },
+        { "id": "b", "text": "C₆H₁₂O₆ → CO₂ + H₂O", "correct": false },
+        { "id": "c", "text": "N₂ + O₂ → NO₂", "correct": false }
+      ]
+    },
+    {
+      "id": 5, "module_id": 2, "card_id": 2,
+      "question": "Къде протича светлинната фаза?",
+      "options": [
+        { "id": "a", "text": "В тилакоидите", "correct": true },
+        { "id": "b", "text": "В стромата", "correct": false },
+        { "id": "c", "text": "В митохондрията", "correct": false }
+      ]
+    },
+    {
+      "id": 6, "module_id": 2, "card_id": 3,
+      "question": "Какво прави АТФ?",
+      "options": [
+        { "id": "a", "text": "Съхранява енергия", "correct": true },
+        { "id": "b", "text": "Носи кислород", "correct": false },
+        { "id": "c", "text": "Поглъща светлина", "correct": false }
+      ]
+    },
+    {
+      "id": 7, "module_id": 3, "card_id": 1,
+      "question": "При каква температура е оптимална фотосинтезата?",
+      "options": [
+        { "id": "a", "text": "Около 25°C", "correct": true },
+        { "id": "b", "text": "Около 0°C", "correct": false },
+        { "id": "c", "text": "Около 60°C", "correct": false }
+      ]
+    },
+    {
+      "id": 8, "module_id": 3, "card_id": 2,
+      "question": "Как влияе повече CO₂ върху фотосинтезата?",
+      "options": [
+        { "id": "a", "text": "Увеличава производството на глюкоза", "correct": true },
+        { "id": "b", "text": "Спира реакцията", "correct": false },
+        { "id": "c", "text": "Няма ефект", "correct": false }
+      ]
+    },
+    {
+      "id": 9, "module_id": 4, "card_id": 1,
+      "question": "Защо растенията са важни за климата?",
+      "options": [
+        { "id": "a", "text": "Поглъщат CO₂ от атмосферата", "correct": true },
+        { "id": "b", "text": "Произвеждат CO₂", "correct": false },
+        { "id": "c", "text": "Нямат ефект върху климата", "correct": false }
+      ]
+    },
+    {
+      "id": 10, "module_id": 4, "card_id": 2,
+      "question": "От какво са изградени изкопаемите горива?",
+      "options": [
+        { "id": "a", "text": "От стари растения и организми", "correct": true },
+        { "id": "b", "text": "От морска вода", "correct": false },
+        { "id": "c", "text": "От атмосферен азот", "correct": false }
+      ]
+    }
+  ]
+}
