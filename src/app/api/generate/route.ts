@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { generatePrompt } from "@/prompts/generate";
-import { readJSON, writeJSON } from "@/lib/github";
+import { readJSON, writeJSON, writeBinaryFile } from "@/lib/github";
 import type { Adaptation } from "@/types";
 
 function validateAdaptation(obj: unknown): obj is Adaptation {
@@ -110,6 +110,15 @@ export async function POST(req: NextRequest) {
 
     // Записваме per-user брояча за деня
     await writeJSON(ratePath, { date: today, count: todayCount + 1 }, rateFile?.sha);
+
+    // Записваме оригиналната снимка (фоново — не блокира при грешка)
+    const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
+    if ((ALLOWED_IMAGE_TYPES as readonly string[]).includes(mediaType)) {
+      const imgPath = `users/${user}/adaptations/${subject}/lesson-${lesson}/original.jpg`;
+      writeBinaryFile(imgPath, base64).catch((err) =>
+        console.error("Original image save failed (non-blocking):", err)
+      );
+    }
 
     return NextResponse.json(adaptation);
   } catch (err) {
