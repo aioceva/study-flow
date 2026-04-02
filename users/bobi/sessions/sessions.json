@@ -564,6 +564,16 @@
       "type": "learn",
       "status": "partial",
       "completed": false
+    },
+    {
+      "date": "2026-04-02",
+      "subject": "math",
+      "lesson": 0,
+      "started_at": "18:01",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
