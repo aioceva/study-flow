@@ -36,9 +36,6 @@ Study Flow е MVP за деца с дислексия. Детето сканир
 → Reinforcement quiz (10 въпроса с анимации) → Result екран
 ```
 
-**Забележка:** Quiz × 2 по средата на урока са ПРЕМАХНАТИ (29 Март 2026).
-`navigation.ts`: модул 2 → модул 3 директно, модул 4 → done директно.
-
 ### Reinforcement режим (повторно отваряне)
 ```
 Home → tile на урок → "Отвори урока"
@@ -68,7 +65,6 @@ Home → tile на урок → "Отвори урока"
 /[user]/parent                 — Дневник (родителски изглед) ✅ имплементиран
 ```
 
-**Няма `/lesson/quiz` route в потока** — файлът `lesson/quiz/page.tsx` е orphan, предстои изтриване.
 **Няма `/lesson/intro` route** — `confirm/page.tsx` изпълнява тази роля.
 
 ### ВАЖНО: LessonLayoutInner
@@ -220,7 +216,6 @@ rate-limit.json                                        ← 1 адаптация 
 
 ## Предстои
 
-- [ ] Изтриване на orphan файл `src/app/[user]/lesson/quiz/page.tsx`
 - [ ] Prefetch на следващия route за по-бърза навигация
 - [ ] next-intl (BG/EN) — планирано, не имплементирано
 - [ ] E2E тестове с mock за GitHub (parent dashboard в CI без реален GITHUB_TOKEN)

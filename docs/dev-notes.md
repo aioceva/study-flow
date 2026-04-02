@@ -154,7 +154,6 @@ startTransition(() => router.push(url))
 - ✅ Прогрес бар: сегменти (4 модула) в реда с 🏠 — не отделна лента
 
 ### SF-2 + UI redesign (29 Март 2026)
-- ✅ **Intermediate quiz-ове МАХНАТИ** — `navigation.ts`: модул 2→3 директно, модул 4→done директно
 - ✅ **SF-2: Reinforcement quiz** — phase state machine: `"answering" | "correct" | "wrong" | "fact"`
   - Верен: зелена анимация + confetti + звездички → auto-next (скъсено)
   - Грешен: shake + розово → верният светва зелен → fact screen (скъсено wait)
@@ -169,7 +168,6 @@ startTransition(() => router.push(url))
 - ✅ **Confirm**: добавено subtitle на урока под хедъра; lesson card title → "Отвори урока"; quiz card без "Спомни си урока"
 - ✅ **Done**: lesson header добавен; subtitle на урока под хедъра; "Провери знанията" → white card style с 🏆 (идентична с confirm); "За днес толкова" → "Към началото"
 - ✅ **Reinforcement result**: X в "Ти научи X неща днес" = брой **грешни** отговори; "За днес толкова" → "Към началото"
-- ✅ **Parent dashboard null safety**: `s.quiz_1 ?? { score: 0, total: 0 }` — стари сесии без quiz поле не crashват
 - ✅ **QuizQuestion.explanation**: ново поле в типа + prompt инструкция за AI да генерира 1 изречение обяснение
 - ✅ **CSS keyframes**: correct-pop, shake, icon-pop, star-pop, confetti-1..5
 
@@ -184,6 +182,5 @@ startTransition(() => router.push(url))
 
 ## Предстои
 
-- [ ] Изтриване на orphan файл `src/app/[user]/lesson/quiz/page.tsx`
 - [ ] Prefetch на следващия route за по-бърза навигация
 - [ ] E2E тестове с mock за GitHub (parent dashboard в CI без реален GITHUB_TOKEN)
