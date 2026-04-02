@@ -47,7 +47,7 @@ async function compressImage(file: File): Promise<{ blob: Blob; base64: string; 
         QUALITY
       );
     };
-    img.onerror = reject;
+    img.onerror = (err) => { URL.revokeObjectURL(url); reject(err); };
     img.src = url;
   });
 }
@@ -70,7 +70,7 @@ export default function ScanPage() {
     if (!f) return;
     setFile(f);
     setError(null);
-    setPreview(URL.createObjectURL(f));
+    setPreview((prev) => { if (prev) URL.revokeObjectURL(prev); return URL.createObjectURL(f); });
   }
 
   async function handleRecognize() {
@@ -185,7 +185,7 @@ export default function ScanPage() {
               {recognizing ? "Разпознавам..." : "Използвай тази снимка →"}
             </button>
             <button
-              onClick={() => { setPreview(null); setFile(null); inputRef.current?.click(); }}
+              onClick={() => { if (preview) URL.revokeObjectURL(preview); setPreview(null); setFile(null); inputRef.current?.click(); }}
               disabled={recognizing}
               className="btn-press w-full rounded-xl py-3 font-medium text-base disabled:opacity-60"
               style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}

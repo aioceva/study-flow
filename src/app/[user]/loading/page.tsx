@@ -79,29 +79,25 @@ export default function LoadingPage() {
 
       sessionStorage.setItem("adaptation", JSON.stringify(adaptation));
 
-      // Стъпка 3: Генерираме quiz (фоново — не блокира)
+      // Стъпка 3: Генерираме quiz (изчакваме — нужен е за урока)
       setStatus("quiz");
-      fetch("/api/quiz", {
+      const quizRes = await fetch("/api/quiz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ adaptation }),
-      })
-        .then((r) => r.json())
-        .then((quiz) => {
-          sessionStorage.setItem("quiz", JSON.stringify(quiz));
-          // Записваме и двата файла в GitHub
-          fetch("/api/adaptation", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ user, subject, lesson, adaptation, quiz }),
-          });
-        })
-        .catch(() => {
-          // Quiz грешка не блокира потребителя — ще се пробва пак
-          console.error("Quiz generation failed");
-        });
+      });
+      if (!quizRes.ok) throw new Error("Грешка при генериране на quiz");
+      const quiz = await quizRes.json();
+      sessionStorage.setItem("quiz", JSON.stringify(quiz));
 
-      // Стъпка 4: Записваме адаптацията (без quiz — той е фонов)
+      // Записваме в GitHub (фоново — не блокира навигацията)
+      fetch("/api/adaptation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user, subject, lesson, adaptation, quiz }),
+      }).catch(() => console.error("GitHub save failed"));
+
+      // Стъпка 4: Готово — навигираме
       setStatus("done");
       setTimeout(() => navigateToConfirm(), 500);
     } catch (err) {
