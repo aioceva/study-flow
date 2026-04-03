@@ -35,12 +35,15 @@ export default function ReinforcementPage() {
         const relevant = (data.sessions ?? []).filter(
           (s) => s.subject === subject && String(s.lesson) === lesson && s.type === "reinforcement"
         );
-        const mapped: QuizResult[] = relevant.map((s) => ({
-          date: s.date,
-          score: (s as { score: number }).score,
-          total: (s as { total: number }).total,
-          type: s.type,
-        }));
+        const mapped: QuizResult[] = relevant.map((s) => {
+          const rs = s as { score?: number; total: number; errors?: number[] };
+          const errors = rs.errors ?? [];
+          // Единствен source of truth: total − грешни; фалбек към legacy score
+          const correct = errors.length > 0
+            ? rs.total - errors.length
+            : (rs.score ?? rs.total);
+          return { date: s.date, score: correct, total: rs.total, type: s.type };
+        });
         setResults(mapped.reverse());
       })
       .catch(() => setResults([]))
