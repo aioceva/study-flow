@@ -37,6 +37,7 @@ export default function ReinforcementQuizPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [score,      setScore]      = useState(0);
   const [errors,     setErrors]     = useState<number[]>([]);
+  const scoreRef = useRef(0); // sync ref — избягва stale closure при async timer callbacks
 
   // Timer progress 0→1
   const [timerPct, setTimerPct] = useState(0);
@@ -115,7 +116,7 @@ export default function ReinforcementQuizPage() {
     const q = questions[current];
     const isLast = current >= questions.length - 1;
     if (isLast) {
-      const finalScore = score;
+      const finalScore = scoreRef.current; // ref — винаги актуален, без stale closure
       const now = new Date();
       fetch("/api/session", {
         method: "POST",
@@ -153,6 +154,7 @@ export default function ReinforcementQuizPage() {
     const isCorrect = q.options.find((o) => o.correct)?.id === optionId;
 
     if (isCorrect) {
+      scoreRef.current += 1;
       setScore((s) => s + 1);
       setPhase("correct");
       startTimer(1800, advanceQuestion);
