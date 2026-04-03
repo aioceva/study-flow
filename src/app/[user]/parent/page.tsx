@@ -130,7 +130,8 @@ export default async function ParentPage({
     // Намери предмета с най-нисък % от последния тест
     let worstPct = Infinity;
     for (const [subj, s] of Object.entries(latestBySubject)) {
-      const pct = s.score / s.total;
+      const correct = s.errors.length > 0 ? s.total - s.errors.length : (s.score ?? s.total);
+      const pct = correct / s.total;
       if (pct < worstPct) {
         worstPct     = pct;
         hardestLabel = SUBJECT_LABELS[subj as Subject] ?? subj;
