@@ -660,6 +660,17 @@
       "score": 9,
       "total": 10,
       "errors": []
+    },
+    {
+      "date": "2026-04-03",
+      "subject": "bio",
+      "lesson": 45,
+      "started_at": "13:36",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "score": 9,
+      "total": 10,
+      "errors": []
     }
   ]
 }
