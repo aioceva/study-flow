@@ -37,7 +37,8 @@ export default function ConfirmPage() {
           const s = quizSessions[0];
           const [, m, d] = s.date.split("-");
           const dateStr = `${parseInt(d)} ${months[parseInt(m) - 1]}`;
-          const pct = Math.round((s.score / s.total) * 100);
+          const correct = s.errors.length > 0 ? s.total - s.errors.length : (s.score ?? s.total);
+          const pct = Math.round((correct / s.total) * 100);
           setLastResult({ label: `${dateStr} · ${pct}%`, pct });
         }
       })
