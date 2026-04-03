@@ -17,7 +17,13 @@ export type QuizMap = Record<string, QuizQuestion[]>; // "subject-lesson" → в
 
 function sessionScore(s: Session): { score: number; total: number } {
   if (s.type === "learn") return { score: 0, total: 0 };
-  return { score: s.score, total: s.total };
+  const errors = s.errors ?? [];
+  // Единствен source of truth: брой верни = total − грешни
+  // Фалбек към legacy score само ако errors е празен И score е записан
+  const correct = errors.length > 0
+    ? s.total - errors.length
+    : (s.score ?? s.total);
+  return { score: correct, total: s.total };
 }
 
 function sessionErrors(s: Session): number[] {

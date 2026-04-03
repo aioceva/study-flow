@@ -130,7 +130,6 @@ export default function ReinforcementQuizPage() {
             started_at: now.toTimeString().slice(0, 5),
             duration_min: 1,
             type: "reinforcement",
-            score: finalScore,
             total: questions.length,
             errors,
           },

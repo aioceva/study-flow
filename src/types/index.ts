@@ -74,7 +74,7 @@ export interface ReinforcementSession {
   started_at: string;
   duration_min: number;
   type: "reinforcement";
-  score: number;
+  score?: number; // legacy — нови сесии не го пазят; ползвай total - errors.length
   total: number;
   errors: number[];
 }
