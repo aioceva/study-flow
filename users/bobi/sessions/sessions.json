@@ -629,6 +629,16 @@
       "score": 9,
       "total": 10,
       "errors": []
+    },
+    {
+      "date": "2026-04-03",
+      "subject": "lit",
+      "lesson": 13,
+      "started_at": "13:26",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
