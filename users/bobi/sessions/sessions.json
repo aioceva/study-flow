@@ -649,6 +649,17 @@
       "type": "learn",
       "status": "completed",
       "completed": true
+    },
+    {
+      "date": "2026-04-03",
+      "subject": "lit",
+      "lesson": 13,
+      "started_at": "13:34",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "score": 9,
+      "total": 10,
+      "errors": []
     }
   ]
 }
