@@ -779,6 +779,22 @@
       "type": "learn",
       "status": "completed",
       "completed": true
+    },
+    {
+      "date": "2026-04-10",
+      "subject": "math",
+      "lesson": 0,
+      "started_at": "07:37",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        3,
+        15,
+        11,
+        1,
+        4
+      ]
     }
   ]
 }
