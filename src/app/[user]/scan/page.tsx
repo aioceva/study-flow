@@ -86,13 +86,20 @@ export default function ScanPage() {
     navigate(`/${user}/loading?${params}`);
   }
 
+  function openCamera() {
+    if (inputRef.current) {
+      inputRef.current.value = "";
+      inputRef.current.click();
+    }
+  }
+
   function handleRetake() {
     if (preview) URL.revokeObjectURL(preview);
     setPreview(null);
     setFile(null);
     setQuality(null);
     setRecognizeResult(null);
-    inputRef.current?.click();
+    openCamera();
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -209,66 +216,59 @@ export default function ScanPage() {
 
       {/* Footer с бутони */}
       <div className="flex-none px-4 pb-6 pt-3 space-y-2">
+        <input ref={inputRef} type="file" accept="image/*" capture="environment" onChange={handleFileChange} className="hidden" />
         {!preview ? (
+          <button
+            onClick={openCamera}
+            className="btn-press w-full rounded-xl py-3.5 text-white font-medium text-base flex items-center justify-center gap-2"
+            style={{ backgroundColor: NAV.btnSolid }}
+          >
+            <span>📷</span>
+            Снимай
+          </button>
+        ) : quality === "low" ? (
+          <button
+            onClick={handleRetake}
+            className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2"
+            style={{ backgroundColor: NAV.btnSolid }}
+          >
+            Снимай отново
+          </button>
+        ) : quality === "medium" ? (
           <>
             <button
-              onClick={() => inputRef.current?.click()}
-              className="btn-press w-full rounded-xl py-3.5 text-white font-medium text-base flex items-center justify-center gap-2"
+              onClick={() => recognizeResult && navigateToLoading(recognizeResult)}
+              className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2"
               style={{ backgroundColor: NAV.btnSolid }}
             >
-              <span>📷</span>
-              Снимай
+              Продължи →
             </button>
-            <input ref={inputRef} type="file" accept="image/*" capture="environment" onChange={handleFileChange} className="hidden" />
+            <button
+              onClick={handleRetake}
+              className="btn-press w-full rounded-xl py-3 font-medium text-base"
+              style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
+            >
+              Снимай отново
+            </button>
           </>
         ) : (
           <>
-            {quality === "low" ? (
-              <button
-                onClick={handleRetake}
-                className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2"
-                style={{ backgroundColor: NAV.btnSolid }}
-              >
-                Снимай отново
-              </button>
-            ) : quality === "medium" ? (
-              <>
-                <button
-                  onClick={() => recognizeResult && navigateToLoading(recognizeResult)}
-                  className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2"
-                  style={{ backgroundColor: NAV.btnSolid }}
-                >
-                  Продължи →
-                </button>
-                <button
-                  onClick={handleRetake}
-                  className="btn-press w-full rounded-xl py-3 font-medium text-base"
-                  style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
-                >
-                  Снимай отново
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={handleRecognize}
-                  disabled={recognizing}
-                  className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-60"
-                  style={{ backgroundColor: NAV.btnSolid }}
-                >
-                  {recognizing ? "Разпознавам..." : "Използвай тази снимка →"}
-                </button>
-                <button
-                  onClick={handleRetake}
-                  disabled={recognizing}
-                  className="btn-press w-full rounded-xl py-3 font-medium text-base disabled:opacity-60"
-                  style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
-                >
-                  Снимай отново
-                </button>
-              </>
-            )}
-            <input ref={inputRef} type="file" accept="image/*" capture="environment" onChange={handleFileChange} className="hidden" />
+            <button
+              onClick={handleRecognize}
+              disabled={recognizing}
+              className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+              style={{ backgroundColor: NAV.btnSolid }}
+            >
+              {recognizing ? "Разпознавам..." : "Използвай тази снимка →"}
+            </button>
+            <button
+              onClick={handleRetake}
+              disabled={recognizing}
+              className="btn-press w-full rounded-xl py-3 font-medium text-base disabled:opacity-60"
+              style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
+            >
+              Снимай отново
+            </button>
           </>
         )}
       </div>
