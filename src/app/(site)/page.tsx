@@ -284,8 +284,6 @@ export default function LandingPage() {
         <div style={{ width: "100%", height: 1, backgroundColor: TEAL, opacity: 0.18, borderRadius: 1, marginBottom: 16 }} />
 
         <p style={{ ...P, textAlign: "center", marginBottom: 24 }}>
-          Study Flow помага на деца с дислексия да учат по-лесно и самостоятелно. Помага на родителите да виждат кога и къде детето има нужда от помощ, без да поемат цялото учене.
-          <br /><br />
           Качваш снимка на урок. Приложението го превръща в кратки, разбираеми карти. Детето учи. Родителите спестяват време.
         </p>
 
