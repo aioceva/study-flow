@@ -110,16 +110,15 @@ export default function ScanPage() {
     setQuality(null);
     setRecognizeResult(null);
     setPreview((prev) => { if (prev) URL.revokeObjectURL(prev); return URL.createObjectURL(f); });
+    checkQuality(f);
   }
 
-  async function handleRecognize() {
-    if (!file) return;
+  async function checkQuality(f: File) {
     setRecognizing(true);
     setError(null);
-    setQuality(null);
 
     try {
-      const { blob, base64, type } = await compressImage(file);
+      const { blob, base64, type } = await compressImage(f);
       sessionStorage.setItem("scan_image_base64", base64);
       sessionStorage.setItem("scan_image_type", type);
 
@@ -133,15 +132,10 @@ export default function ScanPage() {
 
       setQuality(result.confidence);
       setRecognizeResult(result);
-
-      if (result.confidence === "high") {
-        navigateToLoading(result);
-      } else {
-        setRecognizing(false);
-      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Неуспешно разпознаване";
       setError(`${msg}. Опитай отново с по-ясна снимка.`);
+    } finally {
       setRecognizing(false);
     }
   }
@@ -251,20 +245,35 @@ export default function ScanPage() {
               Снимай отново
             </button>
           </>
-        ) : (
+        ) : quality === "high" ? (
           <>
             <button
-              onClick={handleRecognize}
-              disabled={recognizing}
-              className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+              onClick={() => recognizeResult && navigateToLoading(recognizeResult)}
+              className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2"
               style={{ backgroundColor: NAV.btnSolid }}
             >
-              {recognizing ? "Разпознавам..." : "Използвай тази снимка →"}
+              Използвай тази снимка →
             </button>
             <button
               onClick={handleRetake}
-              disabled={recognizing}
-              className="btn-press w-full rounded-xl py-3 font-medium text-base disabled:opacity-60"
+              className="btn-press w-full rounded-xl py-3 font-medium text-base"
+              style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
+            >
+              Снимай отново
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              disabled
+              className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2 opacity-60"
+              style={{ backgroundColor: NAV.btnSolid }}
+            >
+              Проверявам снимката...
+            </button>
+            <button
+              onClick={handleRetake}
+              className="btn-press w-full rounded-xl py-3 font-medium text-base"
               style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
             >
               Снимай отново
