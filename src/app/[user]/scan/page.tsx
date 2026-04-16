@@ -52,6 +52,14 @@ async function compressImage(file: File): Promise<{ blob: Blob; base64: string; 
   });
 }
 
+type RecognizeResult = {
+  subject: string;
+  subject_bg: string;
+  lesson: number;
+  title: string;
+  confidence: "high" | "medium" | "low";
+};
+
 export default function ScanPage() {
   const { user } = useParams<{ user: string }>();
   const router = useRouter();
@@ -60,9 +68,31 @@ export default function ScanPage() {
   const [file, setFile] = useState<File | null>(null);
   const [recognizing, setRecognizing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [quality, setQuality] = useState<"high" | "medium" | "low" | null>(null);
+  const [recognizeResult, setRecognizeResult] = useState<RecognizeResult | null>(null);
 
   function navigate(url: string) {
     setTimeout(() => startTransition(() => router.push(url)), 150);
+  }
+
+  function navigateToLoading(result: RecognizeResult) {
+    const params = new URLSearchParams({
+      subject: result.subject,
+      subject_bg: result.subject_bg,
+      lesson: String(result.lesson),
+      title: result.title,
+      confidence: result.confidence,
+    });
+    navigate(`/${user}/loading?${params}`);
+  }
+
+  function handleRetake() {
+    if (preview) URL.revokeObjectURL(preview);
+    setPreview(null);
+    setFile(null);
+    setQuality(null);
+    setRecognizeResult(null);
+    inputRef.current?.click();
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -70,6 +100,8 @@ export default function ScanPage() {
     if (!f) return;
     setFile(f);
     setError(null);
+    setQuality(null);
+    setRecognizeResult(null);
     setPreview((prev) => { if (prev) URL.revokeObjectURL(prev); return URL.createObjectURL(f); });
   }
 
@@ -77,6 +109,7 @@ export default function ScanPage() {
     if (!file) return;
     setRecognizing(true);
     setError(null);
+    setQuality(null);
 
     try {
       const { blob, base64, type } = await compressImage(file);
@@ -91,14 +124,14 @@ export default function ScanPage() {
 
       if (!res.ok || result.error) throw new Error(result.error ?? "Грешка при разпознаване");
 
-      const params = new URLSearchParams({
-        subject: result.subject,
-        subject_bg: result.subject_bg,
-        lesson: String(result.lesson),
-        title: result.title,
-        confidence: result.confidence,
-      });
-      navigate(`/${user}/loading?${params}`);
+      setQuality(result.confidence);
+      setRecognizeResult(result);
+
+      if (result.confidence === "high") {
+        navigateToLoading(result);
+      } else {
+        setRecognizing(false);
+      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Неуспешно разпознаване";
       setError(`${msg}. Опитай отново с по-ясна снимка.`);
@@ -153,6 +186,20 @@ export default function ScanPage() {
           </div>
         )}
 
+        {quality === "low" && (
+          <div className="rounded-xl p-4 mt-3" style={{ backgroundColor: NAV.surface }}>
+            <p className="text-base font-semibold" style={{ color: NAV.text }}>Не се вижда добре</p>
+            <p className="text-sm mt-1" style={{ color: NAV.textMuted }}>Снимай отново</p>
+          </div>
+        )}
+
+        {quality === "medium" && (
+          <div className="rounded-xl p-4 mt-3" style={{ backgroundColor: NAV.surface }}>
+            <p className="text-base font-semibold" style={{ color: NAV.text }}>Става, но снимката може да е по-ясна</p>
+            <p className="text-sm mt-1" style={{ color: NAV.textMuted }}>Можеш да снимаш отново</p>
+          </div>
+        )}
+
         {error && (
           <div className="rounded-xl p-4 mt-3 text-sm font-semibold" style={{ backgroundColor: "#FEE2E2", color: "#B91C1C" }}>
             {error}
@@ -176,22 +223,51 @@ export default function ScanPage() {
           </>
         ) : (
           <>
-            <button
-              onClick={handleRecognize}
-              disabled={recognizing}
-              className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-60"
-              style={{ backgroundColor: NAV.btnSolid }}
-            >
-              {recognizing ? "Разпознавам..." : "Използвай тази снимка →"}
-            </button>
-            <button
-              onClick={() => { if (preview) URL.revokeObjectURL(preview); setPreview(null); setFile(null); inputRef.current?.click(); }}
-              disabled={recognizing}
-              className="btn-press w-full rounded-xl py-3 font-medium text-base disabled:opacity-60"
-              style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
-            >
-              Снимай отново
-            </button>
+            {quality === "low" ? (
+              <button
+                onClick={handleRetake}
+                className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2"
+                style={{ backgroundColor: NAV.btnSolid }}
+              >
+                Снимай отново
+              </button>
+            ) : quality === "medium" ? (
+              <>
+                <button
+                  onClick={() => recognizeResult && navigateToLoading(recognizeResult)}
+                  className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2"
+                  style={{ backgroundColor: NAV.btnSolid }}
+                >
+                  Продължи →
+                </button>
+                <button
+                  onClick={handleRetake}
+                  className="btn-press w-full rounded-xl py-3 font-medium text-base"
+                  style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
+                >
+                  Снимай отново
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={handleRecognize}
+                  disabled={recognizing}
+                  className="btn-press w-full rounded-xl py-3.5 text-white font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+                  style={{ backgroundColor: NAV.btnSolid }}
+                >
+                  {recognizing ? "Разпознавам..." : "Използвай тази снимка →"}
+                </button>
+                <button
+                  onClick={handleRetake}
+                  disabled={recognizing}
+                  className="btn-press w-full rounded-xl py-3 font-medium text-base disabled:opacity-60"
+                  style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
+                >
+                  Снимай отново
+                </button>
+              </>
+            )}
             <input ref={inputRef} type="file" accept="image/*" capture="environment" onChange={handleFileChange} className="hidden" />
           </>
         )}
