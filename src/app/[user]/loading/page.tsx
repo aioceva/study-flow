@@ -16,7 +16,7 @@ export default function LoadingPage() {
   const title = searchParams.get("title") ?? "";
   const confidence = searchParams.get("confidence") ?? "high";
 
-  const [status, setStatus] = useState<"checking" | "generating" | "quiz" | "done" | "cached" | "error">("checking");
+  const [status, setStatus] = useState<"checking" | "preparing" | "generating" | "quiz" | "done" | "cached" | "error">("checking");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -44,8 +44,8 @@ export default function LoadingPage() {
         return;
       }
 
-      // Стъпка 2: Генерираме адаптация
-      setStatus("generating");
+      // Стъпка 2: Извличаме концептната карта
+      setStatus("preparing");
       const imageBase64 = sessionStorage.getItem("scan_image_base64");
       const imageType = sessionStorage.getItem("scan_image_type") ?? "image/jpeg";
 
@@ -55,10 +55,25 @@ export default function LoadingPage() {
         return;
       }
 
-      // Конвертираме base64 обратно към File
+      // Конвертираме base64 обратно към File (споделяме за всички стъпки)
       const byteArray = Uint8Array.from(atob(imageBase64), (c) => c.charCodeAt(0));
       const blob = new Blob([byteArray], { type: imageType });
       const imageFile = new File([blob], "lesson.jpg", { type: imageType });
+
+      const prepFormData = new FormData();
+      prepFormData.append("image", imageFile);
+      prepFormData.append("user", user);
+      prepFormData.append("subject", subject);
+      prepFormData.append("lesson", lesson);
+      prepFormData.append("image_quality", confidence);
+
+      const prepRes = await fetch("/api/prepare", { method: "POST", body: prepFormData });
+      if (!prepRes.ok) throw new Error("Грешка при анализ на страницата");
+      const prepData = await prepRes.json();
+      const conceptMap = prepData.concept_map ?? [];
+
+      // Стъпка 3: Генерираме адаптация
+      setStatus("generating");
 
       const genFormData = new FormData();
       genFormData.append("image", imageFile);
@@ -80,7 +95,7 @@ export default function LoadingPage() {
 
       sessionStorage.setItem("adaptation", JSON.stringify(adaptation));
 
-      // Стъпка 3: Генерираме quiz (изчакваме — нужен е за урока)
+      // Стъпка 4: Генерираме quiz (изчакваме — нужен е за урока)
       setStatus("quiz");
       const quizRes = await fetch("/api/quiz", {
         method: "POST",
@@ -95,7 +110,7 @@ export default function LoadingPage() {
       fetch("/api/adaptation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user, subject, lesson, adaptation, quiz, image_quality: confidence }),
+        body: JSON.stringify({ user, subject, lesson, adaptation, quiz, image_quality: confidence, concept_map: conceptMap }),
       }).catch(() => console.error("GitHub save failed"));
 
       // Стъпка 4: Готово — навигираме
@@ -119,6 +134,7 @@ export default function LoadingPage() {
 
   const messages: Record<typeof status, string> = {
     checking: "Проверяваме дали си учил това...",
+    preparing: "Анализираме страницата...",
     generating: "Подготвяме твоя урок...",
     quiz: "Финални щрихи...",
     done: "Готово!",
@@ -136,8 +152,8 @@ export default function LoadingPage() {
             <p className="text-sm" style={{ color: NAV.textMuted }}>Изчакай около 30 секунди.</p>
           )}
           <div className="mt-8 flex gap-2">
-            {(["checking", "generating", "quiz", "done"] as const).map((s, i) => {
-              const steps = ["checking", "generating", "quiz", "done", "cached"];
+            {(["checking", "preparing", "generating", "quiz", "done"] as const).map((s, i) => {
+              const steps = ["checking", "preparing", "generating", "quiz", "done", "cached"];
               const currentIdx = steps.indexOf(status);
               const stepIdx = i;
               return (
