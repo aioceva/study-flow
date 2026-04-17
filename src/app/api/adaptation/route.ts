@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
 // POST /api/adaptation — записва adaptation.json и quiz.json
 export async function POST(req: NextRequest) {
   try {
-    const { user, subject, lesson, adaptation, quiz } = await req.json();
+    const { user, subject, lesson, adaptation, quiz, image_quality } = await req.json();
 
     if (!user || !subject || !lesson || !adaptation) {
       return NextResponse.json({ error: "Липсват данни" }, { status: 400 });
@@ -59,6 +59,9 @@ export async function POST(req: NextRequest) {
     await writeJSON(`${basePath}/adaptation.json`, adaptation);
     if (quiz) {
       await writeJSON(`${basePath}/quiz.json`, quiz);
+    }
+    if (image_quality) {
+      await writeJSON(`${basePath}/adaptation-context.json`, { image_quality });
     }
 
     // Актуализираме индекса

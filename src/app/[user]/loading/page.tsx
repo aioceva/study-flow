@@ -14,6 +14,7 @@ export default function LoadingPage() {
   const subjectBg = searchParams.get("subject_bg") ?? "";
   const lesson = searchParams.get("lesson") ?? "0";
   const title = searchParams.get("title") ?? "";
+  const confidence = searchParams.get("confidence") ?? "high";
 
   const [status, setStatus] = useState<"checking" | "generating" | "quiz" | "done" | "cached" | "error">("checking");
   const [error, setError] = useState<string | null>(null);
@@ -94,7 +95,7 @@ export default function LoadingPage() {
       fetch("/api/adaptation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user, subject, lesson, adaptation, quiz }),
+        body: JSON.stringify({ user, subject, lesson, adaptation, quiz, image_quality: confidence }),
       }).catch(() => console.error("GitHub save failed"));
 
       // Стъпка 4: Готово — навигираме
