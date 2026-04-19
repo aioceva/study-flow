@@ -199,7 +199,7 @@ export default function ConfirmPage() {
         )}
 
         {/* Карта 3: Проверка на знанията */}
-        {hasSessions ? (
+        {hasSessions && !adaptationMissing ? (
           <button
             onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}${mode === "test" ? "&mode=test" : ""}`)}
             className="btn-press w-full text-left"
