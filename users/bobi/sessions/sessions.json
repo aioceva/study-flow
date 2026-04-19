@@ -795,6 +795,19 @@
         1,
         4
       ]
+    },
+    {
+      "date": "2026-04-19",
+      "subject": "bio",
+      "lesson": 45,
+      "started_at": "09:43",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        17,
+        19
+      ]
     }
   ]
 }
