@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { nextStep, prevStep, nextButtonLabel } from "@/lib/navigation";
+import { nextStep, prevStep } from "@/lib/navigation";
 
 const user = "bobi";
 const params = "subject=bio&lesson=5";
@@ -29,13 +29,6 @@ describe("nextStep", () => {
 
   it("goes to done after last card of module 4", () => {
     expect(nextStep(user, 4, 5, params)).toBe("/bobi/done?subject=bio&lesson=5");
-  });
-
-  it("goes to done with mode=review prefix when in review mode", () => {
-    const reviewParams = "subject=bio&lesson=5&mode=review";
-    const result = nextStep(user, 4, 5, reviewParams);
-    expect(result).toContain("/bobi/done");
-    expect(result).toContain("mode=review");
   });
 
   it("returns home for unknown module", () => {
@@ -71,26 +64,5 @@ describe("prevStep", () => {
 
   it("returns home for unknown module", () => {
     expect(prevStep(user, 5, 1, params)).toBe("/bobi");
-  });
-});
-
-describe("nextButtonLabel", () => {
-  it("shows Напред → for non-last cards", () => {
-    expect(nextButtonLabel(1, 1, false)).toBe("Напред →");
-    expect(nextButtonLabel(2, 3, false)).toBe("Напред →");
-    expect(nextButtonLabel(3, 5, false)).toBe("Напред →");
-  });
-
-  it("shows Провери дали запомни → on last card of module 2 (non-review)", () => {
-    expect(nextButtonLabel(2, 5, false)).toBe("Провери дали запомни →");
-  });
-
-  it("shows Провери дали запомни → on last card of module 4 (non-review)", () => {
-    expect(nextButtonLabel(4, 5, false)).toBe("Провери дали запомни →");
-  });
-
-  it("shows Напред → in review mode regardless of card position", () => {
-    expect(nextButtonLabel(2, 5, true)).toBe("Напред →");
-    expect(nextButtonLabel(4, 5, true)).toBe("Напред →");
   });
 });

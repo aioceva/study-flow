@@ -11,7 +11,6 @@ export default function DonePage() {
   const saved = useRef(false);
 
   const mode = searchParams.get("mode");
-  const isReview = mode === "review";
   const isTest = mode === "test";
   const subject = searchParams.get("subject") ?? "";
   const lesson = searchParams.get("lesson") ?? "";
@@ -27,7 +26,7 @@ export default function DonePage() {
   }
 
   useEffect(() => {
-    if (saved.current || isReview) return;
+    if (saved.current) return;
     saved.current = true;
 
     const dur = Math.max(Math.round((Date.now() - startTime.current) / 60000), 1);
@@ -55,7 +54,7 @@ export default function DonePage() {
         },
       }),
     }).catch(console.error);
-  }, [user, subject, lesson, isReview]);
+  }, [user, subject, lesson]);
 
   useEffect(() => {
     fetch(`/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`)
@@ -98,34 +97,6 @@ export default function DonePage() {
     </div>
   );
 
-  // ── Review mode ─────────────────────────────────────────────────────────────
-  if (isReview) {
-    return (
-      <div className="flex flex-col" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
-        {lessonHeader}
-        <div className="flex-1 flex flex-col items-center justify-center px-5 gap-4 text-center">
-          <div className="flex items-center justify-center rounded-2xl" style={{ width: 80, height: 80, backgroundColor: "#EBF4FF" }}>
-            <span style={{ fontSize: 40 }}>🏆</span>
-          </div>
-          <div>
-            <h1 className="font-bold text-2xl mb-1" style={{ color: NAV.text }}>Готово!</h1>
-            <p className="text-sm" style={{ color: NAV.textMuted }}>Прегледа целия урок.</p>
-          </div>
-        </div>
-        <div className="flex-none px-5 pb-8">
-          <button
-            onClick={() => navigate(`/${user}${isTest ? "?mode=test" : ""}`)}
-            className="btn-press w-full rounded-2xl py-4 text-white font-medium text-base text-center"
-            style={{ backgroundColor: NAV.btnSolid }}
-          >
-            Към началото
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Learn mode ──────────────────────────────────────────────────────────────
   return (
     <div className="flex flex-col" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
       {lessonHeader}

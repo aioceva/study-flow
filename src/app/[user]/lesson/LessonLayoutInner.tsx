@@ -36,7 +36,6 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const moduleId = isCardPage ? parseInt(segments[2]) : 1;
   const cardId   = isCardPage ? parseInt(segments[3]) : 1;
   const params   = searchParams.toString();
-  const isReview = searchParams.get("mode") === "review";
   const isTest   = searchParams.get("mode") === "test";
   const home     = isTest ? `/${user}?mode=test` : `/${user}`;
 
