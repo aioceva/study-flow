@@ -808,6 +808,16 @@
         17,
         19
       ]
+    },
+    {
+      "date": "2026-04-19",
+      "subject": "chem",
+      "lesson": 11,
+      "started_at": "14:39",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
