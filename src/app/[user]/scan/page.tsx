@@ -160,6 +160,11 @@ export default function ScanPage() {
             </svg>
           </button>
           <h1 className="text-xl font-bold" style={{ color: NAV.text }}>Сканирай урок</h1>
+          {mode === "test" && (
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: "#FCD34D", color: "#78350F" }}>
+              🔧 Test
+            </span>
+          )}
         </div>
         <Link
           href={`/${user}${mode === "test" ? "?mode=test" : ""}`}
