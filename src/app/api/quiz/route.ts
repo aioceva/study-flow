@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
 
     const response = await client.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 4096,
+      max_tokens: 8192,
       messages: [
         {
           role: "user",
@@ -50,10 +50,17 @@ export async function POST(req: NextRequest) {
     const text = response.content[0].type === "text" ? response.content[0].text : "";
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
+      console.error("Quiz: no JSON in response. stop_reason:", response.stop_reason, "text[:200]:", text.slice(0, 200));
       return NextResponse.json({ error: "Неуспешно генериране на quiz" }, { status: 422 });
     }
 
-    const parsed = JSON.parse(jsonMatch[0]);
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(jsonMatch[0]);
+    } catch (parseErr) {
+      console.error("Quiz: JSON parse failed. stop_reason:", response.stop_reason, "match[:200]:", jsonMatch[0].slice(0, 200));
+      return NextResponse.json({ error: "Неуспешно генериране на quiz — невалиден JSON" }, { status: 422 });
+    }
     if (!validateQuiz(parsed)) {
       console.error("Invalid quiz structure from Claude:", JSON.stringify(parsed).slice(0, 300));
       return NextResponse.json({ error: "Неуспешно генериране на quiz — невалидна структура" }, { status: 422 });
