@@ -6,6 +6,8 @@ export function nextStep(
 ): string {
   const sp = new URLSearchParams(params);
   const isReview = sp.get("mode") === "review";
+  const isTest = sp.get("mode") === "test";
+  const home = isTest ? `/${user}?mode=test` : `/${user}`;
 
   if (cardId < 5) {
     return `/${user}/lesson/${moduleId}/${cardId + 1}?${params}`;
@@ -16,7 +18,7 @@ export function nextStep(
   if (moduleId === 4) return isReview
     ? `/${user}/done?mode=review&${params}`
     : `/${user}/done?${params}`;
-  return `/${user}`;
+  return home;
 }
 
 export function prevStep(
@@ -27,15 +29,17 @@ export function prevStep(
 ): string {
   const sp = new URLSearchParams(params);
   const isReview = sp.get("mode") === "review";
+  const isTest = sp.get("mode") === "test";
+  const home = isTest ? `/${user}?mode=test` : `/${user}`;
 
   if (cardId > 1) {
     return `/${user}/lesson/${moduleId}/${cardId - 1}?${params}`;
   }
-  if (moduleId === 1) return `/${user}`;
+  if (moduleId === 1) return home;
   if (moduleId === 2) return `/${user}/lesson/separator?from=1&to=2&${params}`;
   if (moduleId === 3) return `/${user}/lesson/2/5?${params}`;
   if (moduleId === 4) return `/${user}/lesson/separator?from=3&to=4&${params}`;
-  return `/${user}`;
+  return home;
 }
 
 export function nextButtonLabel(moduleId: number, cardId: number, isReview: boolean): string {

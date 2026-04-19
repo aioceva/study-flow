@@ -37,6 +37,8 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const cardId   = isCardPage ? parseInt(segments[3]) : 1;
   const params   = searchParams.toString();
   const isReview = searchParams.get("mode") === "review";
+  const isTest   = searchParams.get("mode") === "test";
+  const home     = isTest ? `/${user}?mode=test` : `/${user}`;
 
   const sepFrom  = isSeparator ? parseInt(searchParams.get("from") ?? "1") : 1;
   const sepTo    = isSeparator ? parseInt(searchParams.get("to")   ?? "2") : 2;
@@ -119,7 +121,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   // ── Home icon (shared) ─────────────────────────────────────────────────────
   const homeIcon = (
     <button
-      onClick={() => navigate(`/${user}`)}
+      onClick={() => navigate(home)}
       className="btn-press w-10 h-10 flex items-center justify-center"
       style={{ opacity: 0.4 }}
       aria-label="Начало"

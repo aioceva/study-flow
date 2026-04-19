@@ -13,6 +13,7 @@ export default function ReinforcementResultPage() {
   const total = parseInt(searchParams.get("total") ?? "10");
   const subject = searchParams.get("subject") ?? "";
   const lesson = searchParams.get("lesson") ?? "";
+  const mode = searchParams.get("mode");
 
   function navigate(url: string) {
     setTimeout(() => startTransition(() => router.push(url)), 150);
@@ -29,7 +30,7 @@ export default function ReinforcementResultPage() {
       {/* Хедър */}
       <div className="flex-none flex items-center justify-end px-4 py-3">
         <button
-          onClick={() => navigate(`/${user}`)}
+          onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
           className="btn-press w-8 h-8 flex items-center justify-center"
           style={{ opacity: 0.4 }}
           aria-label="Начало"
@@ -75,7 +76,7 @@ export default function ReinforcementResultPage() {
       <div className="flex-none px-4 pb-6 pt-3 space-y-2">
         {!perfect && (
           <button
-            onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}`)}
+            onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}${mode === "test" ? "&mode=test" : ""}`)}
             className="btn-press w-full rounded-xl py-4 text-white font-medium text-base"
             style={{ backgroundColor: NAV.btnSolid }}
           >
@@ -83,7 +84,7 @@ export default function ReinforcementResultPage() {
           </button>
         )}
         <button
-          onClick={() => navigate(`/${user}`)}
+          onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
           className="btn-press w-full rounded-xl py-4 font-medium text-base"
           style={{
             backgroundColor: perfect ? NAV.btnSolid : NAV.surface,

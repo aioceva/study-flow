@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
-import { preparePrompt } from "@/prompts/prepare";
+import { preparePrompt, promptSet } from "@/prompts";
 import { writeJSON } from "@/lib/github";
 
 type ConceptEntry = { concept: string; importance: "key" | "secondary" };
@@ -87,6 +87,7 @@ export async function POST(req: NextRequest) {
         lesson: parseInt(lesson),
         generated_at: new Date().toISOString(),
         version: "1.0",
+        prompt_set: promptSet,
       },
       image_quality: imageQuality || "high",
       concept_map: result.concept_map,

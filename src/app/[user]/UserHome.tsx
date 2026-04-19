@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, startTransition } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Sessions, Subject, NAV } from "@/types";
 import Link from "next/link";
 import { LessonCard } from "@/components/LessonCard";
@@ -39,6 +39,8 @@ const GROUP_LABELS: Record<string, string> = {
 export default function UserHome() {
   const { user } = useParams<{ user: string }>();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode");
   const [tiles, setTiles] = useState<LessonTile[]>([]);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -133,6 +135,11 @@ export default function UserHome() {
           <span className="block w-5 h-0.5 rounded" style={{ backgroundColor: NAV.text }} />
         </button>
         <h1 className="font-bold text-xl flex-1" style={{ color: NAV.text }}>Здравей, {displayName}! 👋</h1>
+        {mode === "test" && (
+          <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: "#FCD34D", color: "#78350F" }}>
+            🔧 Test
+          </span>
+        )}
         <FeedbackButton user={user} />
       </div>
 
@@ -141,7 +148,7 @@ export default function UserHome() {
 
         {/* Сканирай бутон */}
         <button
-          onClick={() => navigate(`/${user}/scan`)}
+          onClick={() => navigate(`/${user}/scan${mode === "test" ? "?mode=test" : ""}`)}
           className="btn-press w-full rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-medium text-base mb-5"
           style={{ backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
         >
@@ -172,7 +179,7 @@ export default function UserHome() {
                       subject={tile.subject}
                       lesson={tile.lesson}
                       title={tile.title}
-                      onClick={() => navigate(`/${user}/confirm?subject=${tile.subject}&lesson=${tile.lesson}&title=${encodeURIComponent(tile.title)}`)}
+                      onClick={() => navigate(`/${user}/confirm?subject=${tile.subject}&lesson=${tile.lesson}&title=${encodeURIComponent(tile.title)}${mode === "test" ? "&mode=test" : ""}`)}
                     />
                   ))}
                 </div>

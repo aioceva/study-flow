@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { Adaptation, Quiz } from "@/types";
-import { quizPrompt } from "@/prompts/quiz";
+import { quizPrompt, promptSet } from "@/prompts";
 
 function validateQuiz(obj: unknown): obj is Quiz {
   if (!obj || typeof obj !== "object") return false;
@@ -58,7 +58,11 @@ export async function POST(req: NextRequest) {
       console.error("Invalid quiz structure from Claude:", JSON.stringify(parsed).slice(0, 300));
       return NextResponse.json({ error: "Неуспешно генериране на quiz — невалидна структура" }, { status: 422 });
     }
-    return NextResponse.json(parsed);
+    const quiz: typeof parsed = {
+      ...parsed,
+      meta: { ...parsed.meta, prompt_set: promptSet },
+    };
+    return NextResponse.json(quiz);
   } catch (err) {
     console.error("Quiz error:", err);
     return NextResponse.json({ error: "Грешка при генериране на quiz" }, { status: 500 });

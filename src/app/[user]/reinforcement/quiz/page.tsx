@@ -25,6 +25,7 @@ export default function ReinforcementQuizPage() {
 
   const subject      = searchParams.get("subject") ?? "";
   const lesson       = searchParams.get("lesson")  ?? "";
+  const mode         = searchParams.get("mode");
   const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
 
   function navigate(url: string) {
@@ -135,7 +136,7 @@ export default function ReinforcementQuizPage() {
           },
         }),
       }).catch(console.error);
-      navigate(`/${user}/reinforcement/result?score=${finalScore}&total=${questions.length}&subject=${subject}&lesson=${lesson}`);
+      navigate(`/${user}/reinforcement/result?score=${finalScore}&total=${questions.length}&subject=${subject}&lesson=${lesson}${mode === "test" ? "&mode=test" : ""}`);
     } else {
       setCurrent((c) => c + 1);
       setPhase("answering");
@@ -183,7 +184,7 @@ export default function ReinforcementQuizPage() {
     <div className="flex-none" style={{ backgroundColor: bgColor, borderBottom: `0.5px solid ${NAV.border}` }}>
       <div className="flex items-center px-4 pt-3 pb-2">
         <button
-          onClick={() => navigate(`/${user}`)}
+          onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
           className="btn-press flex items-center gap-2 flex-1 min-w-0"
           aria-label="Назад"
         >
@@ -194,7 +195,7 @@ export default function ReinforcementQuizPage() {
             {subjectLabel} · Урок {lesson}
           </span>
         </button>
-        <button onClick={() => navigate(`/${user}`)} className="btn-press w-8 h-8 flex items-center justify-center" style={{ opacity: 0.4 }} aria-label="Начало">
+        <button onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)} className="btn-press w-8 h-8 flex items-center justify-center" style={{ opacity: 0.4 }} aria-label="Начало">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
             <path d="M9 21V12h6v9" />

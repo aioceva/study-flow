@@ -73,7 +73,7 @@ export default function ConfirmPage() {
       {/* Хедър */}
       <div className="flex-none flex items-center justify-between px-4 py-3">
         <button
-          onClick={() => navigate(`/${user}`)}
+          onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
           className="btn-press flex items-center gap-2"
           aria-label="Назад"
         >
@@ -85,7 +85,7 @@ export default function ConfirmPage() {
           </h1>
         </button>
         <button
-          onClick={() => navigate(`/${user}`)}
+          onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
           className="btn-press w-8 h-8 flex items-center justify-center"
           style={{ opacity: 0.4 }}
           aria-label="Начало"
@@ -175,7 +175,7 @@ export default function ConfirmPage() {
         {/* Карта 3: Проверка на знанията */}
         {hasSessions ? (
           <button
-            onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}`)}
+            onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}${mode === "test" ? "&mode=test" : ""}`)}
             className="btn-press w-full text-left"
             style={cardStyle}
             type="button"

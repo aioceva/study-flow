@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
-import { generatePrompt } from "@/prompts/generate";
+import { generatePrompt, promptSet } from "@/prompts";
 import { readJSON, writeJSON, writeBinaryFile } from "@/lib/github";
 import type { Adaptation } from "@/types";
 
@@ -110,7 +110,10 @@ export async function POST(req: NextRequest) {
       console.error("Invalid adaptation structure from Claude:", JSON.stringify(parsed).slice(0, 300));
       return NextResponse.json({ error: "Неуспешно генериране — невалидна структура" }, { status: 422 });
     }
-    const adaptation = parsed;
+    const adaptation: typeof parsed = {
+      ...parsed,
+      meta: { ...parsed.meta, prompt_set: promptSet },
+    };
 
     // Записваме per-user брояча за деня (пропуска се в test mode)
     if (!isTestMode) {
