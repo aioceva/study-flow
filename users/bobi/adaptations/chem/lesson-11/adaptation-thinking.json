@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "user": "bobi",
+    "subject": "chem",
+    "lesson": 11,
+    "generated_at": "2026-04-19T14:18:30.658Z",
+    "prompt_set": "2026-04-19_active",
+    "mode": "test",
+    "version": "1.0"
+  },
+  "thinking": "The user wants me to adapt the content from a Bulgarian chemistry textbook page (Lesson 11 - Chemical Equations) for a child with dyslexia named Bobi. I need to create exactly 4 modules with exactly 5 cards each, following the specific format rules.\n\nLet me analyze the content from the textbook:\n1. Chemical equations - what they are\n2. Reactants and products\n3. Law of conservation of mass\n4. Balancing chemical equations\n5. Coefficients\n\nLet me create the JSON structure:\n\nModule 1: Какво е химично уравнение (What is a chemical equation)\n\n\nModule 2: Реактанти и продукти (Reactants and products)\nModule 3: Законът за запазване на масата (Law of conservation of mass)\nModule 4: Изравняване на уравнения (Balancing equations)\n\nNow I'm developing 5 cards for each module with simple, clear language suitable for a child with dyslexia, starting with foundational concepts like chemical reactions and equations, then moving through reactants and products, conservation of mass, and finally balancing techniques. Finishing up Module 4 with the remaining cards about how coefficients are placed, the rules governing them, and how to verify that an equation is properly balanced."
+}
