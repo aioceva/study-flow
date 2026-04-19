@@ -15,6 +15,7 @@ export default function LoadingPage() {
   const lesson = searchParams.get("lesson") ?? "0";
   const title = searchParams.get("title") ?? "";
   const confidence = searchParams.get("confidence") ?? "high";
+  const mode = searchParams.get("mode");
 
   const [status, setStatus] = useState<"checking" | "preparing" | "generating" | "quiz" | "done" | "cached" | "error">("checking");
   const [error, setError] = useState<string | null>(null);
@@ -35,13 +36,22 @@ export default function LoadingPage() {
       );
       const cacheData = await cacheRes.json();
 
-      if (cacheData.exists) {
-        // Заредено от кеш — без нови AI calls
+      if (cacheData.exists && mode !== "test") {
+        // Normal mode: заредено от кеш — без нови AI calls
         setStatus("cached");
         sessionStorage.setItem("adaptation", JSON.stringify(cacheData.adaptation));
         sessionStorage.setItem("quiz", JSON.stringify(cacheData.quiz));
         setTimeout(() => navigateToConfirm(), 1200);
         return;
+      }
+
+      if (cacheData.exists && mode === "test") {
+        // Test mode: архивираме старата версия преди да генерираме нова
+        await fetch("/api/archive-lesson", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user, subject, lesson }),
+        });
       }
 
       // Стъпка 2: Извличаме концептната карта
@@ -82,6 +92,7 @@ export default function LoadingPage() {
       genFormData.append("lesson", lesson);
       genFormData.append("title", title);
       genFormData.append("user", user);
+      if (mode === "test") genFormData.append("mode", "test");
 
       const genRes = await fetch("/api/generate", { method: "POST", body: genFormData });
       if (genRes.status === 429) {
@@ -128,8 +139,9 @@ export default function LoadingPage() {
   }
 
   function navigateToConfirm() {
-    const params = new URLSearchParams({ subject, subject_bg: subjectBg, lesson, title });
-    router.replace(`/${user}/confirm?${params}`);
+    const paramsObj: Record<string, string> = { subject, subject_bg: subjectBg, lesson, title };
+    if (mode === "test") paramsObj.mode = "test";
+    router.replace(`/${user}/confirm?${new URLSearchParams(paramsObj)}`);
   }
 
   const messages: Record<typeof status, string> = {

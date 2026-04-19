@@ -12,6 +12,7 @@ export default function ConfirmPage() {
   const subject = searchParams.get("subject") ?? "";
   const lesson = searchParams.get("lesson") ?? "";
   const title = searchParams.get("title") ?? "";
+  const mode = searchParams.get("mode");
   const params = searchParams.toString();
 
   const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
@@ -95,6 +96,27 @@ export default function ConfirmPage() {
           </svg>
         </button>
       </div>
+
+      {/* Test Mode Banner */}
+      {mode === "test" && (
+        <div className="flex-none mx-4 mb-1 rounded-xl px-3 py-2" style={{ backgroundColor: "#FEF3C7", border: "1px solid #FCD34D" }}>
+          <p className="text-xs font-bold mb-1" style={{ color: "#92400E" }}>🔧 Test Mode · Lesson файлове</p>
+          <div className="flex flex-wrap gap-2">
+            {["adaptation.json", "quiz.json", "adaptation-context.json", "original.jpg"].map((file) => (
+              <a
+                key={file}
+                href={`/api/lesson-file?user=${user}&subject=${subject}&lesson=${lesson}&file=${file}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs px-2 py-0.5 rounded-full font-medium"
+                style={{ backgroundColor: "#FCD34D", color: "#78350F" }}
+              >
+                {file}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Карти */}
       <div className="flex-1 overflow-y-auto px-4 pt-1 pb-6 space-y-3">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useRef, useState, startTransition } from "react";
 import { NAV } from "@/types";
 import Link from "next/link";
@@ -63,6 +63,8 @@ type RecognizeResult = {
 export default function ScanPage() {
   const { user } = useParams<{ user: string }>();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode");
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -76,14 +78,15 @@ export default function ScanPage() {
   }
 
   function navigateToLoading(result: RecognizeResult) {
-    const params = new URLSearchParams({
+    const paramsObj: Record<string, string> = {
       subject: result.subject,
       subject_bg: result.subject_bg,
       lesson: String(result.lesson),
       title: result.title,
       confidence: result.confidence,
-    });
-    navigate(`/${user}/loading?${params}`);
+    };
+    if (mode === "test") paramsObj.mode = "test";
+    navigate(`/${user}/loading?${new URLSearchParams(paramsObj)}`);
   }
 
   function openCamera() {

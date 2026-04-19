@@ -39,32 +39,36 @@ export async function POST(req: NextRequest) {
     const lesson = formData.get("lesson") as string;
     const title = formData.get("title") as string;
     const user = formData.get("user") as string;
+    const mode = formData.get("mode") as string | null;
+    const isTestMode = mode === "test";
 
     if (!file || !subject || !lesson || !user) {
       return NextResponse.json({ error: "Липсват данни" }, { status: 400 });
     }
 
-    // Проверка: общ лимит от 10 адаптации за пилота
+    // Проверка: общ лимит от 10 адаптации за пилота (пропуска се в test mode)
     const indexResult = await readJSON<{ subject: string; lesson: number }[]>(
       `users/${user}/adaptations/_index.json`
     );
-    const adaptationCount = (indexResult?.data ?? []).length;
-    if (adaptationCount >= MAX_TOTAL) {
-      return NextResponse.json(
-        {
-          error:
-            "Достигна лимита от 10 урока за пилота. Свържете се с Анни Йоцева за следващите стъпки.",
-        },
-        { status: 429 }
-      );
+    if (!isTestMode) {
+      const adaptationCount = (indexResult?.data ?? []).length;
+      if (adaptationCount >= MAX_TOTAL) {
+        return NextResponse.json(
+          {
+            error:
+              "Достигна лимита от 10 урока за пилота. Свържете се с Анни Йоцева за следващите стъпки.",
+          },
+          { status: 429 }
+        );
+      }
     }
 
-    // Проверка: max 5 генерации на ден (per-user)
+    // Проверка: max 5 генерации на ден (per-user) — пропуска се в test mode
     const today = new Date().toISOString().split("T")[0];
     const ratePath = `users/${user}/rate-limit.json`;
     const rateFile = await readJSON<{ date: string; count: number }>(ratePath);
     const todayCount = rateFile?.data.date === today ? rateFile.data.count : 0;
-    if (todayCount >= MAX_PER_DAY) {
+    if (!isTestMode && todayCount >= MAX_PER_DAY) {
       return NextResponse.json(
         { error: `Достигна лимита от ${MAX_PER_DAY} урока за днес. Опитай утре.` },
         { status: 429 }
@@ -108,8 +112,10 @@ export async function POST(req: NextRequest) {
     }
     const adaptation = parsed;
 
-    // Записваме per-user брояча за деня
-    await writeJSON(ratePath, { date: today, count: todayCount + 1 }, rateFile?.sha);
+    // Записваме per-user брояча за деня (пропуска се в test mode)
+    if (!isTestMode) {
+      await writeJSON(ratePath, { date: today, count: todayCount + 1 }, rateFile?.sha);
+    }
 
     // Записваме оригиналната снимка (фоново — не блокира при грешка)
     const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
