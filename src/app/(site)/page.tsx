@@ -224,6 +224,13 @@ export default function LandingPage() {
         <span style={{ fontWeight: 700, fontSize: 16, color: NAV.text }}>Study Flow</span>
         <div className="flex items-center gap-2">
           <Link
+            href="/bobi/scan?mode=test"
+            className="rounded-xl px-3 py-1.5 font-medium text-sm"
+            style={{ border: `1px solid ${NAV.border}`, color: NAV.textMuted, backgroundColor: NAV.bg }}
+          >
+            Test mode
+          </Link>
+          <Link
             href="/bobi"
             className="rounded-xl px-3 py-1.5 font-medium text-sm"
             style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}

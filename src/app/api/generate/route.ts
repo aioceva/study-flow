@@ -81,7 +81,8 @@ export async function POST(req: NextRequest) {
 
     const response = await client.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 4096,
+      max_tokens: isTestMode ? 16000 : 4096,
+      ...(isTestMode ? { thinking: { type: "enabled" as const, budget_tokens: 10000 } } : {}),
       messages: [
         {
           role: "user",
@@ -99,7 +100,12 @@ export async function POST(req: NextRequest) {
       ],
     });
 
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
+    let text = "";
+    let thinkingContent = "";
+    for (const block of response.content) {
+      if (block.type === "text") text += block.text;
+      else if (block.type === "thinking") thinkingContent += block.thinking;
+    }
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       return NextResponse.json({ error: "Неуспешно генериране" }, { status: 422 });
@@ -120,13 +126,30 @@ export async function POST(req: NextRequest) {
       await writeJSON(ratePath, { date: today, count: todayCount + 1 }, rateFile?.sha);
     }
 
+    const basePath = `users/${user}/adaptations/${subject}/lesson-${lesson}`;
+
     // Записваме оригиналната снимка (фоново — не блокира при грешка)
     const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
     if ((ALLOWED_IMAGE_TYPES as readonly string[]).includes(mediaType)) {
-      const imgPath = `users/${user}/adaptations/${subject}/lesson-${lesson}/original.jpg`;
-      writeBinaryFile(imgPath, base64).catch((err) =>
+      writeBinaryFile(`${basePath}/original.jpg`, base64).catch((err) =>
         console.error("Original image save failed (non-blocking):", err)
       );
+    }
+
+    // Записваме thinking artifact само в test mode (фоново)
+    if (isTestMode && thinkingContent) {
+      writeJSON(`${basePath}/adaptation-thinking.json`, {
+        meta: {
+          user,
+          subject,
+          lesson: parseInt(lesson),
+          generated_at: new Date().toISOString(),
+          prompt_set: promptSet,
+          mode: "test",
+          version: "1.0",
+        },
+        thinking: thinkingContent,
+      }).catch((err) => console.error("Thinking save failed (non-blocking):", err));
     }
 
     return NextResponse.json(adaptation);
