@@ -5,6 +5,7 @@ const isCI = !!process.env.CI;
 export default defineConfig({
   testDir: "./tests/e2e",
   expect: { timeout: 15000 },
+  use: { screenshot: "only-on-failure" },
   projects: [
     {
       name: isCI ? "chromium-mobile" : "webkit-iphone",

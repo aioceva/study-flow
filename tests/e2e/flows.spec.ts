@@ -39,6 +39,7 @@ test("Test 1: Home page renders and shows lesson card", async ({ page }) => {
   await mockSessions(page);
 
   await page.goto(`/${USER}`);
+  await page.waitForLoadState("networkidle");
 
   await expect(page.getByText(`Здравей, Bobi!`)).toBeVisible();
   await expect(page.getByText("Фотосинтеза")).toBeVisible();
