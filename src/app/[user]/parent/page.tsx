@@ -56,11 +56,12 @@ export default async function ParentPage({
   searchParams,
 }: {
   params: Promise<{ user: string }>;
-  searchParams: Promise<{ week?: string }>;
+  searchParams: Promise<{ week?: string; mode?: string }>;
 }) {
   const { user } = await params;
   const sp = await searchParams;
   const weekOffset = Math.min(0, parseInt(sp.week ?? "0", 10) || 0);
+  const mode = sp.mode === "test" ? "test" : null;
   const displayName = user.charAt(0).toUpperCase() + user.slice(1);
 
   // Зареди сесии
@@ -159,7 +160,7 @@ export default async function ParentPage({
       <div className="flex-none flex items-center justify-between px-4 py-3">
         <div className="flex items-center" style={{ gap: 8 }}>
           <Link
-            href={`/${user}`}
+            href={`/${user}${mode === "test" ? "?mode=test" : ""}`}
             className="btn-press w-8 h-8 flex items-center justify-center"
             style={{ opacity: 0.55 }}
             aria-label="Назад"
@@ -174,7 +175,7 @@ export default async function ParentPage({
           </h1>
         </div>
         <Link
-          href={`/${user}`}
+          href={`/${user}${mode === "test" ? "?mode=test" : ""}`}
           aria-label="Начало"
           style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 40, height: 40 }}
         >
@@ -195,7 +196,7 @@ export default async function ParentPage({
           {/* Навигация: ← месец → */}
           <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
             <Link
-              href={`/${user}/parent?week=${weekOffset - 1}`}
+              href={`/${user}/parent?week=${weekOffset - 1}${mode === "test" ? "&mode=test" : ""}`}
               className="btn-press w-8 h-8 flex items-center justify-center"
               style={{ opacity: 0.55 }}
               aria-label="Предишна седмица"
@@ -212,7 +213,7 @@ export default async function ParentPage({
               <div className="w-8 h-8" style={{ opacity: 0 }} aria-hidden />
             ) : (
               <Link
-                href={`/${user}/parent?week=${weekOffset + 1}`}
+                href={`/${user}/parent?week=${weekOffset + 1}${mode === "test" ? "&mode=test" : ""}`}
                 className="btn-press w-8 h-8 flex items-center justify-center"
                 style={{ opacity: 0.55 }}
                 aria-label="Следваща седмица"

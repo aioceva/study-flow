@@ -19,6 +19,7 @@ export default function ReinforcementPage() {
 
   const subject = searchParams.get("subject") ?? "";
   const lesson = searchParams.get("lesson") ?? "";
+  const mode = searchParams.get("mode");
   const params = searchParams.toString();
 
   function navigate(url: string) {
@@ -58,7 +59,7 @@ export default function ReinforcementPage() {
     <main className="min-h-screen p-6 max-w-lg mx-auto">
       <div className="flex items-center gap-3 mb-6 mt-4">
         <button
-          onClick={() => navigate(`/${user}`)}
+          onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
           className="btn-press w-8 h-8 flex items-center justify-center flex-none"
           style={{ opacity: 0.55 }}
           aria-label="Назад"

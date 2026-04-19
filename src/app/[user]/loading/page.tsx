@@ -192,7 +192,7 @@ export default function LoadingPage() {
           <h1 className="text-2xl font-bold mb-4" style={{ color: NAV.text }}>Нещо се обърка</h1>
           <p className="text-sm mb-8" style={{ color: NAV.textMuted }}>{error}</p>
           <button
-            onClick={() => navigate(`/${user}/scan`)}
+            onClick={() => navigate(`/${user}/scan${mode === "test" ? "?mode=test" : ""}`)}
             className="btn-press py-3 px-8 rounded-2xl text-white font-bold"
             style={{ backgroundColor: NAV.btnSolid }}
           >

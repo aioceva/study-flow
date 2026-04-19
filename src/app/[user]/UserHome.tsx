@@ -110,7 +110,7 @@ export default function UserHome() {
               ✕
             </button>
             <Link
-              href={`/${user}/parent`}
+              href={`/${user}/parent${mode === "test" ? "?mode=test" : ""}`}
               className="btn-press text-base font-medium py-3 px-4 rounded-xl"
               style={{ color: NAV.text, backgroundColor: NAV.surface }}
               onClick={() => setMenuOpen(false)}

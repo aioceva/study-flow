@@ -150,7 +150,7 @@ export default function ScanPage() {
       <div className="flex-none flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate(`/${user}`)}
+            onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
             className="btn-press w-8 h-8 flex items-center justify-center"
             style={{ opacity: 0.5 }}
             aria-label="Назад"
@@ -162,7 +162,7 @@ export default function ScanPage() {
           <h1 className="text-xl font-bold" style={{ color: NAV.text }}>Сканирай урок</h1>
         </div>
         <Link
-          href={`/${user}`}
+          href={`/${user}${mode === "test" ? "?mode=test" : ""}`}
           aria-label="Начало"
           style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 40, height: 40 }}
         >
