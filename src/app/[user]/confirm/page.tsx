@@ -20,6 +20,7 @@ export default function ConfirmPage() {
   const [hasSessions, setHasSessions] = useState<boolean | null>(null);
   const [lastResult, setLastResult] = useState<{ label: string; pct: number } | null>(null);
   const [adaptation, setAdaptation] = useState<Adaptation | null>(null);
+  const [adaptationMissing, setAdaptationMissing] = useState(false);
 
   useEffect(() => {
     fetch(`/api/session?user=${user}`)
@@ -49,8 +50,11 @@ export default function ConfirmPage() {
   useEffect(() => {
     fetch(`/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`)
       .then((r) => r.json())
-      .then((data) => { if (data.exists) setAdaptation(data.adaptation); })
-      .catch(() => {});
+      .then((data) => {
+        if (data.exists) setAdaptation(data.adaptation);
+        else setAdaptationMissing(true);
+      })
+      .catch(() => setAdaptationMissing(true));
   }, [user, subject, lesson]);
 
   function navigate(url: string) {
@@ -121,33 +125,55 @@ export default function ConfirmPage() {
       {/* Карти */}
       <div className="flex-1 overflow-y-auto px-4 pt-1 pb-6 space-y-3">
 
-        {/* Карта 1: Урок — тапване навсякъде */}
-        <button
-          onClick={() => navigate(`/${user}/lesson/1/1?${params}`)}
-          className="btn-press w-full text-left"
-          style={cardStyle}
-          type="button"
-        >
-          <div className="flex items-center gap-3 p-4">
-            <div className="flex-1 min-w-0">
-              <p className="text-base font-bold mb-0.5" style={{ color: NAV.text }}>{title}</p>
-              {estMin !== null && (
+        {/* Карта 1: Урок — недостъпна ако адаптацията липсва */}
+        {adaptationMissing ? (
+          <div style={{ ...cardStyle, opacity: 0.75 }}>
+            <div className="flex items-center gap-3 p-4">
+              <div className="flex-1 min-w-0">
+                <p className="text-base font-bold mb-0.5" style={{ color: NAV.text }}>{title}</p>
                 <p className="text-sm" style={{ color: NAV.textMuted }}>
-                  {modules.length} модула · {totalCards} карти · ~{estMin} мин
+                  Адаптираното съдържание не е налично. Сканирай урока отново.
                 </p>
-              )}
-            </div>
-            <div
-              className="flex-none w-12 h-12 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: NAV.btnSolid }}
-              aria-hidden="true"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                <polygon points="6,3 20,12 6,21" />
-              </svg>
+              </div>
+              <div
+                className="flex-none w-12 h-12 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: NAV.border }}
+                aria-hidden="true"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill={NAV.textMuted}>
+                  <polygon points="6,3 20,12 6,21" />
+                </svg>
+              </div>
             </div>
           </div>
-        </button>
+        ) : (
+          <button
+            onClick={() => navigate(`/${user}/lesson/1/1?${params}`)}
+            className="btn-press w-full text-left"
+            style={cardStyle}
+            type="button"
+          >
+            <div className="flex items-center gap-3 p-4">
+              <div className="flex-1 min-w-0">
+                <p className="text-base font-bold mb-0.5" style={{ color: NAV.text }}>{title}</p>
+                {estMin !== null && (
+                  <p className="text-sm" style={{ color: NAV.textMuted }}>
+                    {modules.length} модула · {totalCards} карти · ~{estMin} мин
+                  </p>
+                )}
+              </div>
+              <div
+                className="flex-none w-12 h-12 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: NAV.btnSolid }}
+                aria-hidden="true"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                  <polygon points="6,3 20,12 6,21" />
+                </svg>
+              </div>
+            </div>
+          </button>
+        )}
 
         {/* Карта 2: Модули — само ако са заредени */}
         {modules.length > 0 && (

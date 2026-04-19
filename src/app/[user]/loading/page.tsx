@@ -28,6 +28,8 @@ export default function LoadingPage() {
   }, []);
 
   async function run() {
+    let archivedRunFolder: string | null = null;
+
     try {
       // Стъпка 1: Проверяваме кеша
       setStatus("checking");
@@ -47,11 +49,15 @@ export default function LoadingPage() {
 
       if (cacheData.exists && mode === "test") {
         // Test mode: архивираме старата версия преди да генерираме нова
-        await fetch("/api/archive-lesson", {
+        const archiveRes = await fetch("/api/archive-lesson", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ user, subject, lesson }),
         });
+        if (archiveRes.ok) {
+          const archiveData = await archiveRes.json();
+          archivedRunFolder = archiveData.runFolder ?? null;
+        }
       }
 
       // Стъпка 2: Генерираме адаптация директно от снимката
@@ -91,7 +97,7 @@ export default function LoadingPage() {
 
       sessionStorage.setItem("adaptation", JSON.stringify(adaptation));
 
-      // Стъпка 4: Генерираме quiz (изчакваме — нужен е за урока)
+      // Стъпка 3: Генерираме quiz (изчакваме — нужен е за урока)
       setStatus("quiz");
       const quizRes = await fetch("/api/quiz", {
         method: "POST",
@@ -109,12 +115,27 @@ export default function LoadingPage() {
         body: JSON.stringify({ user, subject, lesson, adaptation, quiz, image_quality: confidence }),
       }).catch(() => console.error("GitHub save failed"));
 
-      // Стъпка 4: Готово — навигираме
+      // Готово — навигираме
       setStatus("done");
       setTimeout(() => navigateToConfirm(), 500);
     } catch (err) {
       console.error(err);
-      setError("Нещо се обърка. Опитай отново.");
+
+      // Ако сме архивирали урока преди грешката — връщаме старото съдържание
+      if (archivedRunFolder) {
+        try {
+          await fetch("/api/restore-lesson", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user, subject, lesson, runFolder: archivedRunFolder }),
+          });
+        } catch (restoreErr) {
+          console.error("Restore failed:", restoreErr);
+        }
+        setError("Не успях да регенерирам урока. Старото съдържание е запазено.");
+      } else {
+        setError("Нещо се обърка. Опитай отново.");
+      }
       setStatus("error");
     }
   }
