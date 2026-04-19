@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { listDirectory, copyFile, deleteFile } from "@/lib/github";
+import { listDirectory, copyFile, deleteFile, readJSON, writeJSON } from "@/lib/github";
 
 // POST /api/archive-lesson — архивира текущите lesson файлове в следващата run_NNN папка
 export async function POST(req: NextRequest) {
@@ -31,6 +31,16 @@ export async function POST(req: NextRequest) {
         // Продължаваме при грешка на отделен файл — не спираме целия процес
         console.error(`Archive failed for ${file.name}:`, err);
       }
+    }
+
+    // Маhаме записа от индекса — адаптацията вече не е в root папката
+    const indexPath = `users/${user}/adaptations/_index.json`;
+    const existing = await readJSON<{ subject: string; lesson: number; title: string; savedAt: string }[]>(indexPath);
+    if (existing) {
+      const filtered = existing.data.filter(
+        (e) => !(e.subject === subject && String(e.lesson) === String(lesson))
+      );
+      await writeJSON(indexPath, filtered, existing.sha);
     }
 
     return NextResponse.json({ archived: true, runFolder });
