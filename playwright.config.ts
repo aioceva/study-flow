@@ -4,6 +4,9 @@ const isCI = !!process.env.CI;
 
 export default defineConfig({
   testDir: "./tests/e2e",
+  use: {
+    baseURL: "http://localhost:3000",
+  },
   projects: [
     {
       name: isCI ? "chromium-mobile" : "webkit-iphone",
