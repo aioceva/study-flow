@@ -12,6 +12,7 @@ export default function DonePage() {
 
   const mode = searchParams.get("mode");
   const isReview = mode === "review";
+  const isTest = mode === "test";
   const subject = searchParams.get("subject") ?? "";
   const lesson = searchParams.get("lesson") ?? "";
   const title = searchParams.get("title") ?? "";
@@ -72,7 +73,7 @@ export default function DonePage() {
   const lessonHeader = (
     <div className="flex-none flex items-center justify-between px-4 py-3">
       <button
-        onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
+        onClick={() => navigate(`/${user}${isTest ? "?mode=test" : ""}`)}
         className="btn-press flex items-center gap-2"
         aria-label="Назад"
       >
@@ -84,7 +85,7 @@ export default function DonePage() {
         </span>
       </button>
       <button
-        onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
+        onClick={() => navigate(`/${user}${isTest ? "?mode=test" : ""}`)}
         className="btn-press w-10 h-10 flex items-center justify-center"
         style={{ opacity: 0.4 }}
         aria-label="Начало"
@@ -113,7 +114,7 @@ export default function DonePage() {
         </div>
         <div className="flex-none px-5 pb-8">
           <button
-            onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
+            onClick={() => navigate(`/${user}${isTest ? "?mode=test" : ""}`)}
             className="btn-press w-full rounded-2xl py-4 text-white font-medium text-base text-center"
             style={{ backgroundColor: NAV.btnSolid }}
           >
@@ -166,7 +167,7 @@ export default function DonePage() {
           </p>
         </div>
         <button
-          onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}${mode === "test" ? "&mode=test" : ""}`)}
+          onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}${isTest ? "&mode=test" : ""}`)}
           className="btn-press w-full rounded-2xl text-white font-medium text-base flex items-center justify-center gap-3"
           style={{ backgroundColor: NAV.btnSolid, height: 56 }}
           type="button"
@@ -180,7 +181,7 @@ export default function DonePage() {
           Провери знанията
         </button>
         <button
-          onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
+          onClick={() => navigate(`/${user}${isTest ? "?mode=test" : ""}`)}
           className="btn-press w-full rounded-2xl font-medium text-base text-center"
           style={{ backgroundColor: NAV.surface, color: NAV.text, height: 52 }}
         >
