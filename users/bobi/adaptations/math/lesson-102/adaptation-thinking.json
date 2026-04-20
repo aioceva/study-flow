@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "user": "bobi",
+    "subject": "math",
+    "lesson": 102,
+    "generated_at": "2026-04-20T15:54:04.027Z",
+    "prompt_set": "2026-04-19_active",
+    "mode": "test",
+    "version": "1.0"
+  },
+  "thinking": "The user wants me to adapt the content from a Bulgarian math textbook page (Lesson 102 - Inequalities between sides and angles of a triangle, continuation) for a child with dyslexia named Bobi. I need to create exactly 4 modules, each with exactly 5 cards, following the specific format rules.\n\nLet me analyze the content from the textbook:\n1. Main theorem: In a triangle, opposite the larger angle lies the larger side (and the converse)\n2. Corollary: The hypotenuse is the largest side in a right triangle\n3. Problems involving triangle inequalities\n4. Properties about angle bisectors and inequalities\n\n\nNow I'm structuring the content into four modules: the main rule connecting larger angles to larger sides, the reverse relationship, special triangle cases, and then practice problems to reinforce the concepts. I'm setting up the JSON structure with color-coded modules in Bulgarian to make it visually distinct and accessible for Bobi. Now I'm compiling the full JSON structure with all the module content and card details in Bulgarian."
+}
