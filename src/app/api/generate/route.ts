@@ -1,5 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+
+export const maxDuration = 180; // test mode с thinking може да отнеме 60-90s + GitHub saves
 import { generatePrompt, promptSet } from "@/prompts";
 import { readJSON, writeJSON, writeBinaryFile } from "@/lib/github";
 import type { Adaptation } from "@/types";
