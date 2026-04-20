@@ -868,6 +868,18 @@
       "type": "learn",
       "status": "completed",
       "completed": true
+    },
+    {
+      "date": "2026-04-20",
+      "subject": "chem",
+      "lesson": 22,
+      "started_at": "08:39",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        8
+      ]
     }
   ]
 }
