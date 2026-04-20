@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
     const title = formData.get("title") as string;
     const user = formData.get("user") as string;
     const mode = formData.get("mode") as string | null;
+    const confidence = formData.get("confidence") as string | null;
     const isTestMode = mode === "test";
 
     if (!file || !subject || !lesson || !user) {
@@ -128,29 +129,45 @@ export async function POST(req: NextRequest) {
 
     const basePath = `users/${user}/adaptations/${subject}/lesson-${lesson}`;
 
-    // Записваме оригиналната снимка (фоново — не блокира при грешка)
+    // Записваме оригинал + контекст паралелно (awaited — serverless функцията иначе ги прекъсва)
     const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
+    const saves: Promise<void>[] = [];
+
     if ((ALLOWED_IMAGE_TYPES as readonly string[]).includes(mediaType)) {
-      writeBinaryFile(`${basePath}/original.jpg`, base64).catch((err) =>
-        console.error("Original image save failed (non-blocking):", err)
+      saves.push(
+        writeBinaryFile(`${basePath}/original.jpg`, base64).catch((err) =>
+          console.error("Original image save failed:", err)
+        )
       );
     }
 
-    // Записваме thinking artifact само в test mode (фоново)
-    if (isTestMode && thinkingContent) {
-      writeJSON(`${basePath}/adaptation-thinking.json`, {
-        meta: {
-          user,
-          subject,
-          lesson: parseInt(lesson),
-          generated_at: new Date().toISOString(),
-          prompt_set: promptSet,
-          mode: "test",
-          version: "1.0",
-        },
-        thinking: thinkingContent,
-      }).catch((err) => console.error("Thinking save failed (non-blocking):", err));
+    if (confidence) {
+      saves.push(
+        writeJSON(`${basePath}/adaptation-context.json`, {
+          meta: { generated_at: new Date().toISOString(), prompt_set: promptSet },
+          image_quality: confidence,
+        }).catch((err) => console.error("Adaptation context save failed:", err))
+      );
     }
+
+    if (isTestMode && thinkingContent) {
+      saves.push(
+        writeJSON(`${basePath}/adaptation-thinking.json`, {
+          meta: {
+            user,
+            subject,
+            lesson: parseInt(lesson),
+            generated_at: new Date().toISOString(),
+            prompt_set: promptSet,
+            mode: "test",
+            version: "1.0",
+          },
+          thinking: thinkingContent,
+        }).catch((err) => console.error("Thinking save failed:", err))
+      );
+    }
+
+    await Promise.all(saves);
 
     return NextResponse.json(adaptation);
   } catch (err) {

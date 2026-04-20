@@ -2,7 +2,47 @@
 
 import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { zipSync } from "fflate";
 import { NAV, SUBJECT_LABELS, Subject, Sessions, Adaptation, MODULE_PROGRESS, ReinforcementSession } from "@/types";
+
+async function downloadLessonZip({ user, subject, lesson }: { user: string; subject: string; lesson: string }) {
+  const base = `/api/lesson-file?user=${user}&subject=${subject}&lesson=${lesson}`;
+  const enc = new TextEncoder();
+  const files: Record<string, Uint8Array> = {};
+
+  const jsonFiles = ["adaptation.json", "quiz.json", "adaptation-context.json", "adaptation-thinking.json"];
+  await Promise.all([
+    ...jsonFiles.map(async (file) => {
+      try {
+        const res = await fetch(`${base}&file=${file}`);
+        if (res.ok) files[file] = enc.encode(await res.text());
+      } catch { /* skip missing */ }
+    }),
+    (async () => {
+      try {
+        const res = await fetch(`${base}&file=original.jpg`);
+        if (res.ok) files["original.jpg"] = new Uint8Array(await res.arrayBuffer());
+      } catch { /* skip missing */ }
+    })(),
+    (async () => {
+      try {
+        const res = await fetch("/api/prompt-set");
+        if (res.ok) files["prompt-set.json"] = enc.encode(await res.text());
+      } catch { /* skip missing */ }
+    })(),
+  ]);
+
+  const zipped = zipSync(files);
+  const blob = new Blob([zipped as unknown as BlobPart], { type: "application/zip" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `lesson-${subject}-${lesson}.zip`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 export default function ConfirmPage() {
   const { user } = useParams<{ user: string }>();
@@ -104,20 +144,36 @@ export default function ConfirmPage() {
       {/* Test Mode Banner */}
       {mode === "test" && (
         <div className="flex-none mx-4 mb-1 rounded-xl px-3 py-2" style={{ backgroundColor: "#FEF3C7", border: "1px solid #FCD34D" }}>
-          <p className="text-xs font-bold mb-1" style={{ color: "#92400E" }}>🔧 Test Mode · Lesson файлове</p>
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-xs font-bold" style={{ color: "#92400E" }}>🔧 Test mode · Lesson files</p>
+            <button
+              onClick={() => downloadLessonZip({ user, subject, lesson })}
+              className="text-xs px-2 py-0.5 rounded-full font-medium btn-press"
+              style={{ backgroundColor: "#92400E", color: "#FEF3C7" }}
+            >
+              ↓ zip all
+            </button>
+          </div>
           <div className="flex flex-wrap gap-2">
-            {["adaptation.json", "quiz.json", "adaptation-context.json", "original.jpg"].map((file) => (
+            {["adaptation.json", "quiz.json", "adaptation-context.json", "adaptation-thinking.json", "original.jpg"].map((file) => (
               <a
                 key={file}
                 href={`/api/lesson-file?user=${user}&subject=${subject}&lesson=${lesson}&file=${file}`}
-                target="_blank"
-                rel="noopener noreferrer"
+                download={file}
                 className="text-xs px-2 py-0.5 rounded-full font-medium"
                 style={{ backgroundColor: "#FCD34D", color: "#78350F" }}
               >
                 {file}
               </a>
             ))}
+            <a
+              href="/api/prompt-set"
+              download="prompt-set.json"
+              className="text-xs px-2 py-0.5 rounded-full font-medium"
+              style={{ backgroundColor: "#FCD34D", color: "#78350F" }}
+            >
+              prompt-set.json
+            </a>
           </div>
         </div>
       )}

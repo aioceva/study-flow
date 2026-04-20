@@ -43,6 +43,15 @@ export async function writeFile(path: string, content: string, sha?: string): Pr
   }
 }
 
+export async function readBinaryFile(path: string): Promise<{ data: Buffer; sha: string } | null> {
+  const res = await githubRequest(`/${path}`);
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`GitHub read error: ${res.status}`);
+  const json = await res.json();
+  const buffer = Buffer.from((json.content as string).replace(/\n/g, ""), "base64");
+  return { data: buffer, sha: json.sha };
+}
+
 export async function readJSON<T>(path: string): Promise<{ data: T; sha: string } | null> {
   const result = await readFile(path);
   if (!result) return null;

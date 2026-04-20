@@ -84,6 +84,7 @@ export default function LoadingPage() {
       genFormData.append("title", title);
       genFormData.append("user", user);
       if (mode === "test") genFormData.append("mode", "test");
+      genFormData.append("confidence", confidence);
 
       const genRes = await fetch("/api/generate", { method: "POST", body: genFormData });
       if (genRes.status === 429) {
@@ -108,12 +109,17 @@ export default function LoadingPage() {
       const quiz = await quizRes.json();
       sessionStorage.setItem("quiz", JSON.stringify(quiz));
 
-      // Записваме в GitHub (фоново — не блокира навигацията)
-      fetch("/api/adaptation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user, subject, lesson, adaptation, quiz, image_quality: confidence }),
-      }).catch(() => console.error("GitHub save failed"));
+      // Записваме в GitHub (изчакваме — иначе браузърът abort-ва fetch-а при навигация)
+      try {
+        const saveRes = await fetch("/api/adaptation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user, subject, lesson, adaptation, quiz, image_quality: confidence }),
+        });
+        if (!saveRes.ok) console.error("GitHub save failed:", saveRes.status);
+      } catch (e) {
+        console.error("GitHub save failed:", e);
+      }
 
       // Готово — навигираме
       setStatus("done");

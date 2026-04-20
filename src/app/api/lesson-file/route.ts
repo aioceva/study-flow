@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFile } from "@/lib/github";
+import { readFile, readBinaryFile } from "@/lib/github";
 
 const ALLOWED_FILES = [
   "adaptation.json",
   "quiz.json",
   "adaptation-context.json",
+  "adaptation-thinking.json",
   "original.jpg",
   "quality-check.json",
 ];
@@ -26,17 +27,32 @@ export async function GET(req: NextRequest) {
   }
 
   const path = `users/${user}/adaptations/${subject}/lesson-${lesson}/${file}`;
-  const result = await readFile(path);
 
+  if (file.endsWith(".jpg") || file.endsWith(".jpeg") || file.endsWith(".png")) {
+    const result = await readBinaryFile(path);
+    if (!result) {
+      return NextResponse.json({ error: "Файлът не съществува" }, { status: 404 });
+    }
+    // Buffer → ArrayBuffer за NextResponse (BodyInit не приема Buffer директно)
+    const ab = result.data.buffer.slice(
+      result.data.byteOffset,
+      result.data.byteOffset + result.data.byteLength
+    ) as ArrayBuffer;
+    return new NextResponse(ab, {
+      headers: {
+        "Content-Type": file.endsWith(".png") ? "image/png" : "image/jpeg",
+        "Content-Disposition": `attachment; filename="${file}"`,
+      },
+    });
+  }
+
+  const result = await readFile(path);
   if (!result) {
     return NextResponse.json({ error: "Файлът не съществува" }, { status: 404 });
   }
 
-  if (file.endsWith(".json")) {
-    const json = JSON.parse(result.content);
-    return NextResponse.json(json);
-  }
-
-  // За binary файлове (original.jpg) — връщаме base64
-  return NextResponse.json({ base64: Buffer.from(result.content).toString("base64") });
+  const json = JSON.parse(result.content);
+  return NextResponse.json(json, {
+    headers: { "Content-Disposition": `attachment; filename="${file}"` },
+  });
 }
