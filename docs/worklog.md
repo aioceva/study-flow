@@ -28,3 +28,45 @@
 - `playwright.config.ts`: Chromium (Pixel 5) в CI, WebKit (iPhone 14) локално; `baseURL`, `expect.timeout: 15s`, screenshot on failure
 - Workflow upload на Playwright artifacts при failure за диагностика
 - Fixes: `npm install` вместо `npm ci` (lockfile sync issues), `E2E_SKIP_AUTH=true` за bypass на server-side GitHub user check в CI, `waitForLoadState('networkidle')` преди assertion на home page
+
+---
+
+## 2026-04-20
+
+**adaptation-context.json — преместване и оправяне на формат**
+- Файлът се записваше в `POST /api/adaptation` (след пълната генерация) — преместен в `POST /api/generate` (фоново, заедно с `original.jpg`), където `promptSet` е наличен
+- `confidence` се добавя към FormData в `loading/page.tsx` и се подава на generate route
+- Форматът е опростен до спецификацията: `{ meta: { generated_at, prompt_set }, image_quality }` — премахнати излишните полета `user`, `subject`, `lesson`, `version`
+- Премахнат блокът за `adaptation-context.json` от `adaptation/route.ts`; `image_quality` от destructuring
+
+**Диагностика на липсващи файлове в lesson-11**
+- Установено: `original.jpg` и `adaptation-context.json` СА записани в GitHub (commits `e945df3`, `eba43fa`) — само локално са изтрити (`D` в git status)
+- Стар commit на `adaptation-context.json` съдържаше огромен `concept_map` масив от по-стара версия на кода — текущият код вече го няма
+
+**Премахване на preparation/concept_map слоя**
+- Изтрит `POST /api/prepare` route — отпадна отделният Claude call за извличане на концепти
+- `loading/page.tsx`: премахната Стъпка 2 (prepare), `concept_map` от GitHub save, status `"preparing"` и dot индикатора
+- `api/adaptation/route.ts`: премахнат `concept_map` от `adaptation-context.json`; добавен `prompt_set` в meta
+- Адаптацията се генерира директно от снимката без текстов междинен слой
+
+**Thinking в test mode**
+- `api/generate/route.ts`: при `mode=test` Claude се вика с `thinking: { type: "enabled", budget_tokens: 10000 }` и `max_tokens: 16000`
+- Thinking output се записва fire-and-forget в `adaptation-thinking.json` само в test mode (meta: user, subject, lesson, prompt_set, mode, version)
+
+**Test mode бутон на landing page**
+- Добавен "Test mode" бутон в nav на `(site)/page.tsx`; линкира към `/bobi?mode=test`
+
+**Bug fixes — robustness при регенерация**
+- `api/restore-lesson/route.ts` (нов): при неуспешна регенерация връща архивираните файлове от `run_NNN/` обратно в root
+- `loading/page.tsx`: при грешка след архивиране → auto-restore → "Не успях да регенерирам урока. Старото съдържание е запазено."
+- `confirm/page.tsx`: при липсваща `adaptation.json` — неактивен бутон + скрит quiz
+- `archive-lesson/route.ts`: маха lesson от `_index.json` при архивиране
+- `restore-lesson/route.ts`: добавя lesson обратно в `_index.json` след restore
+- `api/quiz/route.ts`: `max_tokens: 4096 → 8192`; добавено `stop_reason` logging
+
+**mode=test пропагация — довършване**
+- `scan/page.tsx`: ← Назад + 🏠 Home; жълт `🔧 Test` badge в header
+- `loading/page.tsx`: "Опитай отново" при грешка
+- `reinforcement/page.tsx`: ← Назад
+- `UserHome.tsx`: линк към Дневник в менюто
+- `parent/page.tsx`: ← Назад, 🏠 Home, ← → седмична навигация
