@@ -848,6 +848,16 @@
       "type": "learn",
       "status": "partial",
       "completed": false
+    },
+    {
+      "date": "2026-04-20",
+      "subject": "chem",
+      "lesson": 22,
+      "started_at": "08:33",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
