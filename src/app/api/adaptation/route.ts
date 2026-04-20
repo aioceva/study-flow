@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
 // POST /api/adaptation — записва adaptation.json и quiz.json
 export async function POST(req: NextRequest) {
   try {
-    const { user, subject, lesson, adaptation, quiz, image_quality } = await req.json();
+    const { user, subject, lesson, adaptation, quiz } = await req.json();
 
     if (!user || !subject || !lesson || !adaptation) {
       return NextResponse.json({ error: "Липсват данни" }, { status: 400 });
@@ -60,20 +60,6 @@ export async function POST(req: NextRequest) {
     if (quiz) {
       await writeJSON(`${basePath}/quiz.json`, quiz);
     }
-    if (image_quality) {
-      await writeJSON(`${basePath}/adaptation-context.json`, {
-        meta: {
-          user,
-          subject,
-          lesson: parseInt(lesson),
-          generated_at: new Date().toISOString(),
-          version: "1.0",
-          prompt_set: (adaptation as Adaptation).meta?.prompt_set,
-        },
-        image_quality,
-      });
-    }
-
     // Актуализираме индекса
     const indexPath = `users/${user}/adaptations/_index.json`;
     const existing = await readJSON<IndexEntry[]>(indexPath);
