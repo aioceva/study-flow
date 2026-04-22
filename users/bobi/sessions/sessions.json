@@ -910,6 +910,16 @@
       "type": "learn",
       "status": "completed",
       "completed": true
+    },
+    {
+      "date": "2026-04-22",
+      "subject": "chem",
+      "lesson": 22,
+      "started_at": "08:50",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
