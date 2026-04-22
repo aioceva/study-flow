@@ -70,3 +70,33 @@
 - `reinforcement/page.tsx`: ← Назад
 - `UserHome.tsx`: линк към Дневник в менюто
 - `parent/page.tsx`: ← Назад, 🏠 Home, ← → седмична навигация
+
+**Bug fix — файловете на урока не се записваха в GitHub**
+
+Идентифицирани и оправени три отделни причини:
+
+1. **Browser abort на fire-and-forget fetch** (`loading/page.tsx`)
+   - `POST /api/adaptation` беше fire-and-forget; `router.replace()` след 500ms abort-ваше заявката
+   - Поправка: `await fetch("/api/adaptation", ...)` преди навигация
+
+2. **Serverless kill на background promises** (`api/generate/route.ts`)
+   - `writeBinaryFile` (original.jpg) и `writeJSON` (adaptation-context.json, thinking) бяха fire-and-forget — Vercel ги прекъсваше при return на функцията
+   - Поправка: `await Promise.all([...])` за всички три записа преди `return NextResponse.json`
+
+3. **Vercel function timeout** (`api/generate/route.ts`, `api/quiz/route.ts`)
+   - Default 60s timeout; test mode с thinking отнема 45-55s → за original.jpg (~500KB base64) не оставаше достатъчно време
+   - Поправка: `export const maxDuration = 180` в generate route, `120` в quiz route
+
+**Test mode banner — нови ресурси за сваляне**
+- `confirm/page.tsx`: заглавие "Test mode · Lesson files" (беше "Test Mode · Lesson файлове")
+- Добавени линкове: `adaptation-thinking.json`, `prompt-set.json`
+- Бутон "↓ zip all" — сваля всички lesson файлове + prompt set като ZIP (fflate)
+- `api/lesson-file/route.ts`: добавен `adaptation-thinking.json` в allowlist; `original.jpg` вече се сервира като истинско binary (Content-Type: image/jpeg) чрез нов `readBinaryFile` в `github.ts`
+- `api/prompt-set/route.ts` (нов): сервира съдържанието на активния prompt set от filesystem
+
+**Разследване — bio/lesson-55 липсваше в UI**
+- Файловете (adaptation.json, quiz.json, adaptation-context.json) бяха записани успешно в GitHub
+- `_index.json` обаче НЕ беше обновен → урокът не се виждаше в UI
+- Вероятна причина: SHA conflict при writeJSON на `_index.json` — между read и write стъпките друг commit е сменил SHA-то; грешката е изядена от try/catch в adaptation route и logger в loading page
+- Ръчна поправка: добавен bio/lesson-55 директно в `_index.json`
+- За следене: ако продължи → добавяне на retry логика за `_index.json` write
