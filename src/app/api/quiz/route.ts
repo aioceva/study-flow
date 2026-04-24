@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const maxDuration = 120;
 import { Adaptation, Quiz } from "@/types";
-import { quizPrompt, promptSet } from "@/prompts";
+import { quizPrompt } from "@/prompts/quiz";
 
 function validateQuiz(obj: unknown): obj is Quiz {
   if (!obj || typeof obj !== "object") return false;
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     }
     const quiz: typeof parsed = {
       ...parsed,
-      meta: { ...parsed.meta, prompt_set: promptSet },
+      meta: { ...parsed.meta },
     };
     return NextResponse.json(quiz);
   } catch (err) {

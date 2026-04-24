@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
-import { recognizePrompt } from "@/prompts";
+import { recognizePrompt } from "@/prompts/recognize";
 
 const client = new Anthropic();
 

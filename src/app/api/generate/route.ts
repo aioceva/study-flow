@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 
 export const maxDuration = 180; // test mode с thinking може да отнеме 60-90s + GitHub saves
-import { generatePrompt, promptSet } from "@/prompts";
+import { generatePrompt } from "@/prompts/generate";
 import { readJSON, writeJSON, writeBinaryFile } from "@/lib/github";
 import type { Adaptation } from "@/types";
 
@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
     }
     const adaptation: typeof parsed = {
       ...parsed,
-      meta: { ...parsed.meta, prompt_set: promptSet },
+      meta: { ...parsed.meta },
     };
 
     // Записваме per-user брояча за деня (пропуска се в test mode)
@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
     if (confidence) {
       saves.push(
         writeJSON(`${basePath}/adaptation-context.json`, {
-          meta: { generated_at: new Date().toISOString(), prompt_set: promptSet },
+          meta: { generated_at: new Date().toISOString() },
           image_quality: confidence,
         }).catch((err) => console.error("Adaptation context save failed:", err))
       );
@@ -160,7 +160,6 @@ export async function POST(req: NextRequest) {
             subject,
             lesson: parseInt(lesson),
             generated_at: new Date().toISOString(),
-            prompt_set: promptSet,
             mode: "test",
             version: "1.0",
           },
