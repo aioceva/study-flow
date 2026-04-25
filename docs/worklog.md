@@ -98,16 +98,19 @@
 
 ## 2026-04-25
 
-**Почистване на prompt структурата**
+**Верификация на legacy endpoint**
+- Потвърдено: `GET /api/prompt-set` се използва само в `confirm/page.tsx` (lines 29-30 и 169-175) — безопасно за изтриване при test mode cleanup
 
-- Премахнат `src/prompts/index.ts` с `resolvePromptSet()` — динамичното търсене на `*_active` папка е изтрито
-- Изтрита `src/prompts/2026-04-19_active/` папка с всичките 4 файла
-- Изтрит `prepare.ts` и `preparePrompt` export — preparation/concept_map слоят е окончателно премахнат
-- Новите flat файлове: `src/prompts/generate.ts`, `src/prompts/quiz.ts`, `src/prompts/recognize.ts` — идентично съдържание, директно местоположение
-- API routes сочат директно: `import { generatePrompt } from "@/prompts/generate"` (и т.н.)
-- `promptSet` export премахнат изцяло; `meta.prompt_set` вече не се записва в adaptation.json, quiz.json, adaptation-context.json, adaptation-thinking.json
-- `prompt_set?: string` остава optional в types за обратна съвместимост при четене на стари файлове
-- `api/prompt-set/route.ts`: премахнат `prepare.ts` от PROMPT_FILES, чете от `src/prompts/` директно, маркиран като legacy (използва се от test mode download в confirm)
+**Prompt snapshot в run папка (test mode)**
+- `api/archive-lesson/route.ts`: при архивиране на урок в test mode, копира `src/prompts/generate.ts`, `quiz.ts`, `recognize.ts` от filesystem в `run_NNN/` папката в GitHub
+- Всеки run вече съдържа точните prompt файлове използвани за генерацията
+- Грешка на отделен prompt файл не спира архивирането
+
+**Тест политика в CLAUDE.md**
+- Добавена секция `## Тестове`: чисти функции получават unit тест, route handlers получават mock описание, `vi.mock` не се въвежда без изрично искане
+- Добавена инструкция за worklog: записва се в края на всяка сесия
+
+---
 
 **Разследване — bio/lesson-55 липсваше в UI**
 - Файловете (adaptation.json, quiz.json, adaptation-context.json) бяха записани успешно в GitHub

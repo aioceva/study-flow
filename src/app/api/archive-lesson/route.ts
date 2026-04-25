@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { listDirectory, copyFile, deleteFile, readJSON, writeJSON } from "@/lib/github";
+import fs from "fs/promises";
+import path from "path";
+import { listDirectory, copyFile, deleteFile, readJSON, writeJSON, writeFile } from "@/lib/github";
 
 // POST /api/archive-lesson — архивира текущите lesson файлове в следващата run_NNN папка
 export async function POST(req: NextRequest) {
@@ -32,6 +34,21 @@ export async function POST(req: NextRequest) {
         console.error(`Archive failed for ${file.name}:`, err);
       }
     }
+
+    // Записваме snapshot на prompt файловете в run папката
+    await Promise.all(
+      ["generate.ts", "quiz.ts", "recognize.ts"].map(async (name) => {
+        try {
+          const content = await fs.readFile(
+            path.join(process.cwd(), "src", "prompts", name),
+            "utf-8"
+          );
+          await writeFile(`${lessonRoot}/${runFolder}/${name}`, content);
+        } catch (err) {
+          console.error(`Prompt snapshot failed for ${name}:`, err);
+        }
+      })
+    );
 
     // Маhаме записа от индекса — адаптацията вече не е в root папката
     const indexPath = `users/${user}/adaptations/_index.json`;
