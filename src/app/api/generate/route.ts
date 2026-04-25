@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { jsonrepair } from "jsonrepair";
 
 export const maxDuration = 180; // test mode с thinking може да отнеме 60-90s + GitHub saves
 import { generatePrompt } from "@/prompts/generate";
@@ -114,7 +115,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Неуспешно генериране" }, { status: 422 });
     }
 
-    const parsed = JSON.parse(jsonMatch[0]);
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(jsonMatch[0]);
+    } catch {
+      try {
+        parsed = JSON.parse(jsonrepair(jsonMatch[0]));
+        console.warn("Generate: JSON repaired successfully. stop_reason:", response.stop_reason);
+      } catch (repairErr) {
+        console.error("Generate: JSON repair failed. stop_reason:", response.stop_reason, "match[:300]:", jsonMatch[0].slice(0, 300));
+        return NextResponse.json({ error: "Неуспешно генериране — невалиден JSON" }, { status: 422 });
+      }
+    }
     if (!validateAdaptation(parsed)) {
       console.error("Invalid adaptation structure from Claude:", JSON.stringify(parsed).slice(0, 300));
       return NextResponse.json({ error: "Неуспешно генериране — невалидна структура" }, { status: 422 });
