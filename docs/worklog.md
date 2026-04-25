@@ -98,6 +98,17 @@
 
 ## 2026-04-25
 
+**⚠️ НЕЗАВЪРШЕНО — prompt snapshot в run папка**
+
+Имплементирано, но не е успешно изтествано. При run_001, run_002, run_003:
+- `generate.ts`, `quiz.ts`, `recognize.ts` не се копират (вероятно `fs.readFile` не намира source файловете на Vercel)
+- `original.jpg` не се записва в run папката
+- Добавени debug логове в archive-lesson и generate route за диагностика
+- Добавен `outputFileTracingIncludes` в `next.config.ts` и `maxDuration = 60` в archive-lesson
+- При следващ deploy: провери Vercel logs за `[archive-lesson] cwd=...` и `[generate] original.jpg` и обнови лога
+
+---
+
 **Верификация на legacy endpoint**
 - Потвърдено: `GET /api/prompt-set` се използва само в `confirm/page.tsx` (lines 29-30 и 169-175) — безопасно за изтриване при test mode cleanup
 
