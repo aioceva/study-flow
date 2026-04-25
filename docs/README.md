@@ -1,20 +1,17 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Локално стартиране (препоръчано за тестване)
 
-First, run the development server:
+Двоен клик върху `start.bat` в root папката — стартира dev сървъра без deploy към Vercel.
+
+Алтернативно, от терминал:
 
 ```bash
+npm install   # само първия път
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Приложението е достъпно на [http://localhost:3000](http://localhost:3000).
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
