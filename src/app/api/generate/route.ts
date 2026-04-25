@@ -143,33 +143,35 @@ export async function POST(req: NextRequest) {
 
     const basePath = `users/${user}/adaptations/${subject}/lesson-${lesson}`;
 
-    // Записваме оригинал + контекст паралелно (awaited — serverless функцията иначе ги прекъсва)
+    // Записваме оригинал + контекст sequential — GitHub Contents API връща 409 при паралелни writes в същата папка
     const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
-    const saves: Promise<void>[] = [];
 
     if ((ALLOWED_IMAGE_TYPES as readonly string[]).includes(mediaType)) {
       console.log(`[generate] saving original.jpg mediaType=${mediaType} base64len=${base64.length}`);
-      saves.push(
-        writeBinaryFile(`${basePath}/original.jpg`, base64)
-          .then(() => console.log("[generate] original.jpg saved ok"))
-          .catch((err) => console.error("[generate] original.jpg save failed:", err))
-      );
+      try {
+        await writeBinaryFile(`${basePath}/original.jpg`, base64);
+        console.log("[generate] original.jpg saved ok");
+      } catch (err) {
+        console.error("[generate] original.jpg save failed:", err);
+      }
     } else {
       console.warn(`[generate] skipping original.jpg — unsupported mediaType=${mediaType}`);
     }
 
     if (confidence) {
-      saves.push(
-        writeJSON(`${basePath}/adaptation-context.json`, {
+      try {
+        await writeJSON(`${basePath}/adaptation-context.json`, {
           meta: { generated_at: new Date().toISOString() },
           image_quality: confidence,
-        }).catch((err) => console.error("Adaptation context save failed:", err))
-      );
+        });
+      } catch (err) {
+        console.error("Adaptation context save failed:", err);
+      }
     }
 
     if (isTestMode && thinkingContent) {
-      saves.push(
-        writeJSON(`${basePath}/adaptation-thinking.json`, {
+      try {
+        await writeJSON(`${basePath}/adaptation-thinking.json`, {
           meta: {
             user,
             subject,
@@ -179,11 +181,11 @@ export async function POST(req: NextRequest) {
             version: "1.0",
           },
           thinking: thinkingContent,
-        }).catch((err) => console.error("Thinking save failed:", err))
-      );
+        });
+      } catch (err) {
+        console.error("Thinking save failed:", err);
+      }
     }
-
-    await Promise.all(saves);
 
     return NextResponse.json(adaptation);
   } catch (err) {

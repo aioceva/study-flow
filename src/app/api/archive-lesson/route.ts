@@ -38,21 +38,20 @@ export async function POST(req: NextRequest) {
     }
 
     // Записваме snapshot на prompt файловете в run папката
+    // Sequential — GitHub Contents API връща 409 при паралелни writes в същата папка
     const cwd = process.cwd();
     console.log(`[archive-lesson] cwd=${cwd} runFolder=${runFolder}`);
-    await Promise.all(
-      ["generate.ts", "quiz.ts", "recognize.ts"].map(async (name) => {
-        const filePath = path.join(cwd, "src", "prompts", name);
-        try {
-          const content = await fs.readFile(filePath, "utf-8");
-          console.log(`[archive-lesson] prompt read ok: ${name} (${content.length} chars)`);
-          await writeFile(`${lessonRoot}/${runFolder}/${name}`, content);
-          console.log(`[archive-lesson] prompt saved: ${runFolder}/${name}`);
-        } catch (err) {
-          console.error(`[archive-lesson] prompt snapshot failed for ${name} (path=${filePath}):`, err);
-        }
-      })
-    );
+    for (const name of ["generate.ts", "quiz.ts", "recognize.ts"]) {
+      const filePath = path.join(cwd, "src", "prompts", name);
+      try {
+        const content = await fs.readFile(filePath, "utf-8");
+        console.log(`[archive-lesson] prompt read ok: ${name} (${content.length} chars)`);
+        await writeFile(`${lessonRoot}/${runFolder}/${name}`, content);
+        console.log(`[archive-lesson] prompt saved: ${runFolder}/${name}`);
+      } catch (err) {
+        console.error(`[archive-lesson] prompt snapshot failed for ${name} (path=${filePath}):`, err);
+      }
+    }
 
     // Маhаме записа от индекса — адаптацията вече не е в root папката
     const indexPath = `users/${user}/adaptations/_index.json`;
