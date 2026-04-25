@@ -148,11 +148,14 @@ export async function POST(req: NextRequest) {
     const saves: Promise<void>[] = [];
 
     if ((ALLOWED_IMAGE_TYPES as readonly string[]).includes(mediaType)) {
+      console.log(`[generate] saving original.jpg mediaType=${mediaType} base64len=${base64.length}`);
       saves.push(
-        writeBinaryFile(`${basePath}/original.jpg`, base64).catch((err) =>
-          console.error("Original image save failed:", err)
-        )
+        writeBinaryFile(`${basePath}/original.jpg`, base64)
+          .then(() => console.log("[generate] original.jpg saved ok"))
+          .catch((err) => console.error("[generate] original.jpg save failed:", err))
       );
+    } else {
+      console.warn(`[generate] skipping original.jpg — unsupported mediaType=${mediaType}`);
     }
 
     if (confidence) {
