@@ -37,7 +37,8 @@ export async function writeFile(path: string, content: string, sha?: string): Pr
     method: "PUT",
     body: JSON.stringify(body),
   });
-  if (res.status === 409 && !sha) {
+  // 409 = parent tree SHA сменен (race), 422 = файлът вече съществува без подаден sha
+  if ((res.status === 409 || res.status === 422) && !sha) {
     const existing = await readFile(path);
     if (existing) {
       await writeFile(path, content, existing.sha);
@@ -129,7 +130,7 @@ export async function writeBinaryFile(path: string, base64Content: string, sha?:
     method: "PUT",
     body: JSON.stringify(body),
   });
-  if (res.status === 409 && !sha) {
+  if ((res.status === 409 || res.status === 422) && !sha) {
     const existing = await readBinaryFile(path);
     if (existing) {
       await writeBinaryFile(path, base64Content, existing.sha);
