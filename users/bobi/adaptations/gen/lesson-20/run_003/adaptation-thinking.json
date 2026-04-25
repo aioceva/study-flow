@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "user": "bobi",
+    "subject": "gen",
+    "lesson": 20,
+    "generated_at": "2026-04-25T06:58:42.781Z",
+    "mode": "test",
+    "version": "1.0"
+  },
+  "thinking": "The user wants me to adapt the content from a Bulgarian geography textbook page about \"Political Map of Europe and the Balkan Peninsula - Path to Cooperation\" for a child with dyslexia named Bobi. I need to follow specific rules and return only valid JSON.\n\nLet me analyze the content from the textbook:\n1. Political map of Europe formed over long period\n2. After WWII, Europe divided into West and East\n3. USSR divided into 15 states, Yugoslavia into 6, Czechoslovakia into 2\n4. European Union - founded May 9, 1949 as Council of Europe, EU from 1957\n\n\n5. EU has 27 members, European Parliament in Strasbourg\n6. Countries grouped by: geographic position (continental, island), size (large, medium, small), form of government (republics, monarchies)\n7. NATO - military organization with 32 members\n8. Balkan Peninsula has 11 countries\n\nNow I'm organizing this into four learning modules: one covering how Europe's political map developed, another focused on the European Union and its structure, a third explaining how countries are classified by their characteristics, and a fourth about major organizations like NATO and the Balkan Peninsula. Now I'm structuring the fourth module around major European organizations, covering the Council of Europe, NATO, and Bulgaria's specific roles within these institutions along with regional cooperation frameworks."
+}
