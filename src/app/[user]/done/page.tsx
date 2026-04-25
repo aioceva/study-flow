@@ -12,9 +12,14 @@ export default function DonePage() {
 
   const mode = searchParams.get("mode");
   const isTest = mode === "test";
+  const run = searchParams.get("run");
   const subject = searchParams.get("subject") ?? "";
   const lesson = searchParams.get("lesson") ?? "";
   const title = searchParams.get("title") ?? "";
+
+  function homeUrl() {
+    return isTest ? `/${user}?mode=test` : `/${user}`;
+  }
 
   const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
   const startTime = useRef(Date.now());
@@ -31,6 +36,9 @@ export default function DonePage() {
 
     const dur = Math.max(Math.round((Date.now() - startTime.current) / 60000), 1);
     setDuration(dur);
+
+    // Run mode не записва в sessions — read-only test преглед
+    if (run) return;
 
     const now = new Date();
 
@@ -54,10 +62,13 @@ export default function DonePage() {
         },
       }),
     }).catch(console.error);
-  }, [user, subject, lesson]);
+  }, [user, subject, lesson, run]);
 
   useEffect(() => {
-    fetch(`/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`)
+    const url = run
+      ? `/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}&run=${run}`
+      : `/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`;
+    fetch(url)
       .then((r) => r.json())
       .then((data) => {
         if (data.exists && data.adaptation) {
@@ -66,13 +77,13 @@ export default function DonePage() {
         }
       })
       .catch(() => {});
-  }, [user, subject, lesson]);
+  }, [user, subject, lesson, run]);
 
   // ── Shared header ────────────────────────────────────────────────────────────
   const lessonHeader = (
     <div className="flex-none flex items-center justify-between px-4 py-3">
       <button
-        onClick={() => navigate(`/${user}${isTest ? "?mode=test" : ""}`)}
+        onClick={() => navigate(homeUrl())}
         className="btn-press flex items-center gap-2"
         aria-label="Назад"
       >
@@ -84,7 +95,7 @@ export default function DonePage() {
         </span>
       </button>
       <button
-        onClick={() => navigate(`/${user}${isTest ? "?mode=test" : ""}`)}
+        onClick={() => navigate(homeUrl())}
         className="btn-press w-10 h-10 flex items-center justify-center"
         style={{ opacity: 0.4 }}
         aria-label="Начало"
@@ -138,7 +149,12 @@ export default function DonePage() {
           </p>
         </div>
         <button
-          onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}${isTest ? "&mode=test" : ""}`)}
+          onClick={() => {
+            const sp = new URLSearchParams({ subject, lesson, title });
+            if (isTest) sp.set("mode", "test");
+            if (run) sp.set("run", run);
+            navigate(`/${user}/reinforcement/quiz?${sp.toString()}`);
+          }}
           className="btn-press w-full rounded-2xl text-white font-medium text-base flex items-center justify-center gap-3"
           style={{ backgroundColor: NAV.btnSolid, height: 56 }}
           type="button"
@@ -152,7 +168,7 @@ export default function DonePage() {
           Провери знанията
         </button>
         <button
-          onClick={() => navigate(`/${user}${isTest ? "?mode=test" : ""}`)}
+          onClick={() => navigate(homeUrl())}
           className="btn-press w-full rounded-2xl font-medium text-base text-center"
           style={{ backgroundColor: NAV.surface, color: NAV.text, height: 52 }}
         >

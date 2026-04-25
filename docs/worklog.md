@@ -4,6 +4,25 @@
 
 ---
 
+## 2026-04-25
+
+**Test Artifacts Panel — динамичен + run преглед**
+- Test panel в `confirm/page.tsx`: collapsible, винаги видим header с "🔧 Test mode" + (ако е активен run) името на run-а; "↓ zip all" винаги в header-а
+- Файловете в panel-а са динамични — fetch към нов `GET /api/lesson-files-list?user&subject&lesson[&run]`; pill-ове само за реално съществуващи файлове в папката
+- Промптите са 3 отделни pill-а (`generate.ts`, `quiz.ts`, `recognize.ts`); в root mode идват от текущите `src/prompts/` (нов `GET /api/prompt-file?name=`); в run mode — snapshot-натите в run папката
+- Списък с run папки (`run_001`, `run_002`...) — само в root mode; клик отваря urok-а в нов таб с `?mode=test&run=run_NNN`
+- ZIP включва всички реално присъстващи файлове + (в root mode) текущите промпти; име: `lesson-{subject}-{lesson}[-run_NNN].zip`
+
+**Run mode като read-only test преглед**
+- `?run=run_NNN` се поддържа в confirm + lesson + quiz + done; пропагира се през `searchParams.toString()` в lesson и през ръчно сглобени URL-и в quiz/done навигацията
+- `/api/adaptation` и `/api/lesson-file` приемат optional `run` param с regex валидация `^run_\d{3}$`
+- `LessonLayoutInner` в run mode пропуска sessionStorage кеша (за да не презапише root урок в друг таб) и НЕ записва partial session
+- `done/page.tsx`, `reinforcement/quiz/page.tsx` — НЕ записват в `/api/session` ако `run` е в URL
+- `/api/lesson-file` whitelist разширен по разширение (`.json`, `.jpg`, `.png`, `.webp`, `.ts`, `.md`) с path-traversal защита
+- Премахнат legacy `/api/prompt-set/route.ts` (вече ненужен — заменен от `/api/prompt-file`)
+
+---
+
 ## 2026-04-19
 
 **Test Mode (mode=test)**

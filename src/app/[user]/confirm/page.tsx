@@ -5,39 +5,61 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { zipSync } from "fflate";
 import { NAV, SUBJECT_LABELS, Subject, Sessions, Adaptation, MODULE_PROGRESS, ReinforcementSession } from "@/types";
 
-async function downloadLessonZip({ user, subject, lesson }: { user: string; subject: string; lesson: string }) {
-  const base = `/api/lesson-file?user=${user}&subject=${subject}&lesson=${lesson}`;
+const PROMPT_FILES = ["generate.ts", "quiz.ts", "recognize.ts"];
+
+function lessonFileUrl(user: string, subject: string, lesson: string, file: string, run: string | null): string {
+  const base = `/api/lesson-file?user=${user}&subject=${subject}&lesson=${lesson}&file=${file}`;
+  return run ? `${base}&run=${run}` : base;
+}
+
+function promptFileUrl(name: string, user: string, subject: string, lesson: string, run: string | null): string {
+  if (run) {
+    // В run mode промптовете са snapshot-нати в самата run папка
+    return lessonFileUrl(user, subject, lesson, name, run);
+  }
+  return `/api/prompt-file?name=${name}`;
+}
+
+async function downloadLessonZip({
+  user, subject, lesson, run, files,
+}: { user: string; subject: string; lesson: string; run: string | null; files: string[] }) {
   const enc = new TextEncoder();
-  const files: Record<string, Uint8Array> = {};
+  const out: Record<string, Uint8Array> = {};
 
-  const jsonFiles = ["adaptation.json", "quiz.json", "adaptation-context.json", "adaptation-thinking.json"];
-  await Promise.all([
-    ...jsonFiles.map(async (file) => {
+  await Promise.all(
+    files.map(async (file) => {
       try {
-        const res = await fetch(`${base}&file=${file}`);
-        if (res.ok) files[file] = enc.encode(await res.text());
+        const res = await fetch(lessonFileUrl(user, subject, lesson, file, run));
+        if (!res.ok) return;
+        if (/\.(jpg|jpeg|png|webp)$/i.test(file)) {
+          out[file] = new Uint8Array(await res.arrayBuffer());
+        } else {
+          out[file] = enc.encode(await res.text());
+        }
       } catch { /* skip missing */ }
-    }),
-    (async () => {
-      try {
-        const res = await fetch(`${base}&file=original.jpg`);
-        if (res.ok) files["original.jpg"] = new Uint8Array(await res.arrayBuffer());
-      } catch { /* skip missing */ }
-    })(),
-    (async () => {
-      try {
-        const res = await fetch("/api/prompt-set");
-        if (res.ok) files["prompt-set.json"] = enc.encode(await res.text());
-      } catch { /* skip missing */ }
-    })(),
-  ]);
+    })
+  );
 
-  const zipped = zipSync(files);
+  // Промпти: в run mode идват от самия zip-нат списък файлове (вече добавени);
+  // в root mode ги дърпаме от локалния /api/prompt-file.
+  if (!run) {
+    await Promise.all(
+      PROMPT_FILES.map(async (name) => {
+        try {
+          const res = await fetch(promptFileUrl(name, user, subject, lesson, null));
+          if (!res.ok) return;
+          out[name] = enc.encode(await res.text());
+        } catch { /* skip */ }
+      })
+    );
+  }
+
+  const zipped = zipSync(out);
   const blob = new Blob([zipped as unknown as BlobPart], { type: "application/zip" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `lesson-${subject}-${lesson}.zip`;
+  a.download = run ? `lesson-${subject}-${lesson}-${run}.zip` : `lesson-${subject}-${lesson}.zip`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -53,6 +75,8 @@ export default function ConfirmPage() {
   const lesson = searchParams.get("lesson") ?? "";
   const title = searchParams.get("title") ?? "";
   const mode = searchParams.get("mode");
+  const run = searchParams.get("run");
+  const isTest = mode === "test";
   const params = searchParams.toString();
 
   const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
@@ -62,7 +86,17 @@ export default function ConfirmPage() {
   const [adaptation, setAdaptation] = useState<Adaptation | null>(null);
   const [adaptationMissing, setAdaptationMissing] = useState(false);
 
+  // Test panel state
+  const [panelOpen, setPanelOpen] = useState(true);
+  const [testFiles, setTestFiles] = useState<string[]>([]);
+  const [testRuns, setTestRuns] = useState<string[]>([]);
+
   useEffect(() => {
+    // Run mode не пише в sessions — пропускаме fetch-а за чистота
+    if (run) {
+      setHasSessions(true);
+      return;
+    }
     fetch(`/api/session?user=${user}`)
       .then((r) => r.json())
       .then((data: Sessions) => {
@@ -85,20 +119,52 @@ export default function ConfirmPage() {
         }
       })
       .catch(() => setHasSessions(false));
-  }, [user, subject, lesson]);
+  }, [user, subject, lesson, run]);
 
   useEffect(() => {
-    fetch(`/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`)
+    const url = run
+      ? `/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}&run=${run}`
+      : `/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`;
+    fetch(url)
       .then((r) => r.json())
       .then((data) => {
         if (data.exists) setAdaptation(data.adaptation);
         else setAdaptationMissing(true);
       })
       .catch(() => setAdaptationMissing(true));
-  }, [user, subject, lesson]);
+  }, [user, subject, lesson, run]);
+
+  // Test mode: динамичен листинг на файлове и run папки
+  useEffect(() => {
+    if (!isTest || !user || !subject || !lesson) return;
+    const url = run
+      ? `/api/lesson-files-list?user=${user}&subject=${subject}&lesson=${lesson}&run=${run}`
+      : `/api/lesson-files-list?user=${user}&subject=${subject}&lesson=${lesson}`;
+    fetch(url)
+      .then((r) => r.json())
+      .then((data: { files?: string[]; runs?: string[] }) => {
+        setTestFiles(data.files ?? []);
+        setTestRuns(data.runs ?? []);
+      })
+      .catch(() => { /* skip */ });
+  }, [isTest, user, subject, lesson, run]);
 
   function navigate(url: string) {
     setTimeout(() => startTransition(() => router.push(url)), 150);
+  }
+
+  function homeUrl() {
+    return isTest ? `/${user}?mode=test` : `/${user}`;
+  }
+
+  function runOpenUrl(runName: string) {
+    const sp = new URLSearchParams();
+    sp.set("subject", subject);
+    sp.set("lesson", lesson);
+    if (title) sp.set("title", title);
+    sp.set("mode", "test");
+    sp.set("run", runName);
+    return `/${user}/confirm?${sp.toString()}`;
   }
 
   const modules = adaptation?.modules ?? [];
@@ -111,13 +177,21 @@ export default function ConfirmPage() {
     borderRadius: 16,
   };
 
+  // Файлове без промптите (промптите са отделна група в panel-а)
+  const dataFiles = testFiles.filter((f) => !PROMPT_FILES.includes(f));
+  const promptFilesPresent = run
+    ? testFiles.filter((f) => PROMPT_FILES.includes(f))
+    : PROMPT_FILES; // root mode: винаги показваме трите от src/prompts
+
+  // ZIP включва точно файловете, които са в папката + (в root mode) промптите от src/prompts
+  // testFiles вече съдържа промптите в run mode; в root mode добавяме ги в downloadLessonZip
   return (
     <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.surface }}>
 
       {/* Хедър */}
       <div className="flex-none flex items-center justify-between px-4 py-3">
         <button
-          onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
+          onClick={() => navigate(homeUrl())}
           className="btn-press flex items-center gap-2"
           aria-label="Назад"
         >
@@ -129,7 +203,7 @@ export default function ConfirmPage() {
           </h1>
         </button>
         <button
-          onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
+          onClick={() => navigate(homeUrl())}
           className="btn-press w-8 h-8 flex items-center justify-center"
           style={{ opacity: 0.4 }}
           aria-label="Начало"
@@ -142,39 +216,95 @@ export default function ConfirmPage() {
       </div>
 
       {/* Test Mode Banner */}
-      {mode === "test" && (
+      {isTest && (
         <div className="flex-none mx-4 mb-1 rounded-xl px-3 py-2" style={{ backgroundColor: "#FEF3C7", border: "1px solid #FCD34D" }}>
-          <div className="flex items-center justify-between mb-1">
-            <p className="text-xs font-bold" style={{ color: "#92400E" }}>🔧 Test mode · Lesson files</p>
+          <div className="flex items-center justify-between">
             <button
-              onClick={() => downloadLessonZip({ user, subject, lesson })}
+              onClick={() => setPanelOpen((v) => !v)}
+              className="btn-press flex items-center gap-1.5 flex-1 text-left"
+              aria-expanded={panelOpen}
+              aria-label={panelOpen ? "Сгъни test panel" : "Разгъни test panel"}
+            >
+              <svg
+                width="10" height="10" viewBox="0 0 12 12"
+                style={{ color: "#92400E", transform: panelOpen ? "rotate(90deg)" : "none", transition: "transform 0.15s" }}
+                fill="currentColor"
+              >
+                <path d="M3 1l6 5-6 5V1z" />
+              </svg>
+              <p className="text-xs font-bold" style={{ color: "#92400E" }}>
+                🔧 Test mode{run ? ` · ${run}` : " · Lesson files"}
+              </p>
+            </button>
+            <button
+              onClick={() => downloadLessonZip({ user, subject, lesson, run, files: testFiles })}
               className="text-xs px-2 py-0.5 rounded-full font-medium btn-press"
               style={{ backgroundColor: "#92400E", color: "#FEF3C7" }}
             >
               ↓ zip all
             </button>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {["adaptation.json", "quiz.json", "adaptation-context.json", "adaptation-thinking.json", "original.jpg"].map((file) => (
-              <a
-                key={file}
-                href={`/api/lesson-file?user=${user}&subject=${subject}&lesson=${lesson}&file=${file}`}
-                download={file}
-                className="text-xs px-2 py-0.5 rounded-full font-medium"
-                style={{ backgroundColor: "#FCD34D", color: "#78350F" }}
-              >
-                {file}
-              </a>
-            ))}
-            <a
-              href="/api/prompt-set"
-              download="prompt-set.json"
-              className="text-xs px-2 py-0.5 rounded-full font-medium"
-              style={{ backgroundColor: "#FCD34D", color: "#78350F" }}
-            >
-              prompt-set.json
-            </a>
-          </div>
+
+          {panelOpen && (
+            <div className="mt-2 flex flex-col gap-2">
+              {/* Файлове на урока */}
+              {dataFiles.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {dataFiles.map((file) => (
+                    <a
+                      key={file}
+                      href={lessonFileUrl(user, subject, lesson, file, run)}
+                      download={file}
+                      className="text-xs px-2 py-0.5 rounded-full font-medium"
+                      style={{ backgroundColor: "#FCD34D", color: "#78350F" }}
+                    >
+                      {file}
+                    </a>
+                  ))}
+                </div>
+              )}
+
+              {/* Промпти */}
+              {promptFilesPresent.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {promptFilesPresent.map((name) => (
+                    <a
+                      key={name}
+                      href={promptFileUrl(name, user, subject, lesson, run)}
+                      download={name}
+                      className="text-xs px-2 py-0.5 rounded-full font-medium"
+                      style={{ backgroundColor: "#FDE68A", color: "#78350F" }}
+                    >
+                      {name}
+                    </a>
+                  ))}
+                </div>
+              )}
+
+              {/* Списък run-ове — само в root mode */}
+              {!run && testRuns.length > 0 && (
+                <div className="pt-1" style={{ borderTop: "1px dashed #FCD34D" }}>
+                  <p className="text-[10px] font-bold uppercase tracking-wider mb-1 mt-1" style={{ color: "#92400E" }}>
+                    Runs
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {testRuns.map((r) => (
+                      <a
+                        key={r}
+                        href={runOpenUrl(r)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs px-2 py-0.5 rounded-full font-medium"
+                        style={{ backgroundColor: "#FFFFFF", color: "#78350F", border: "1px solid #FCD34D" }}
+                      >
+                        {r} ↗
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
@@ -257,7 +387,7 @@ export default function ConfirmPage() {
         {/* Карта 3: Проверка на знанията */}
         {hasSessions && !adaptationMissing ? (
           <button
-            onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}&title=${encodeURIComponent(title)}${mode === "test" ? "&mode=test" : ""}`)}
+            onClick={() => navigate(`/${user}/reinforcement/quiz?${params}`)}
             className="btn-press w-full text-left"
             style={cardStyle}
             type="button"

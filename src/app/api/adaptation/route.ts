@@ -16,6 +16,7 @@ export async function GET(req: NextRequest) {
   const user = searchParams.get("user");
   const subject = searchParams.get("subject");
   const lesson = searchParams.get("lesson");
+  const run = searchParams.get("run");
 
   if (!user) {
     return NextResponse.json({ error: "Липсва user" }, { status: 400 });
@@ -27,7 +28,12 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ lessons: index?.data ?? [] });
   }
 
-  const basePath = `users/${user}/adaptations/${subject}/lesson-${lesson}`;
+  if (run && !/^run_\d{3}$/.test(run)) {
+    return NextResponse.json({ error: "Невалиден run" }, { status: 400 });
+  }
+
+  const lessonRoot = `users/${user}/adaptations/${subject}/lesson-${lesson}`;
+  const basePath = run ? `${lessonRoot}/${run}` : lessonRoot;
 
   const [adaptationResult, quizResult] = await Promise.all([
     readJSON<Adaptation>(`${basePath}/adaptation.json`),

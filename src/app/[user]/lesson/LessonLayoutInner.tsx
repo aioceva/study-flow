@@ -15,10 +15,12 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 
   const [adaptation, setAdaptation] = useState<Adaptation | null>(() => {
     if (typeof window === "undefined") return null;
+    const sp = new URLSearchParams(window.location.search);
+    // Run mode не използва sessionStorage кеша — винаги fetch от run папката
+    if (sp.get("run")) return null;
     const raw = sessionStorage.getItem("adaptation");
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Adaptation;
-    const sp = new URLSearchParams(window.location.search);
     const subj = sp.get("subject");
     const les = sp.get("lesson");
     if (parsed.meta?.subject !== subj || String(parsed.meta?.lesson) !== les) return null;
@@ -43,6 +45,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const sepTo    = isSeparator ? parseInt(searchParams.get("to")   ?? "2") : 2;
   const subject  = searchParams.get("subject") ?? "";
   const lesson   = searchParams.get("lesson") ?? "";
+  const run      = searchParams.get("run");
   const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
 
   const bgColor = MODULE_COLORS[moduleId] ?? "#F8F9FA";
@@ -54,26 +57,35 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 
     const subj = searchParams.get("subject");
     const les  = searchParams.get("lesson");
+    const r    = searchParams.get("run");
 
-    const raw = sessionStorage.getItem("adaptation");
-    if (raw) {
-      const cached = JSON.parse(raw) as Adaptation;
-      if (cached.meta?.subject === subj && String(cached.meta?.lesson) === les) {
-        setAdaptation(cached);
-        return;
+    // Run mode пропуска sessionStorage кеша — винаги чете от run папката
+    if (!r) {
+      const raw = sessionStorage.getItem("adaptation");
+      if (raw) {
+        const cached = JSON.parse(raw) as Adaptation;
+        if (cached.meta?.subject === subj && String(cached.meta?.lesson) === les) {
+          setAdaptation(cached);
+          return;
+        }
+        sessionStorage.removeItem("adaptation");
+        sessionStorage.removeItem("quiz");
       }
-      sessionStorage.removeItem("adaptation");
-      sessionStorage.removeItem("quiz");
     }
 
     if (!subj || !les) return;
 
-    fetch(`/api/adaptation?user=${user}&subject=${subj}&lesson=${les}`)
-      .then((r) => r.json())
+    const url = r
+      ? `/api/adaptation?user=${user}&subject=${subj}&lesson=${les}&run=${r}`
+      : `/api/adaptation?user=${user}&subject=${subj}&lesson=${les}`;
+    fetch(url)
+      .then((res) => res.json())
       .then((json) => {
         if (!json.exists) return;
-        sessionStorage.setItem("adaptation", JSON.stringify(json.adaptation));
-        if (json.quiz) sessionStorage.setItem("quiz", JSON.stringify(json.quiz));
+        if (!r) {
+          sessionStorage.setItem("adaptation", JSON.stringify(json.adaptation));
+          if (json.quiz) sessionStorage.setItem("quiz", JSON.stringify(json.quiz));
+        }
         setAdaptation(json.adaptation);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,6 +96,8 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   }
 
   function maybeRecordPartial() {
+    // Run mode не записва нищо в sessions — read-only test преглед
+    if (run) return;
     if (moduleId !== 1 || cardId !== 1) return;
     const partialKey = `partial_sent_${subject}_${lesson}`;
     if (sessionStorage.getItem(partialKey)) return;

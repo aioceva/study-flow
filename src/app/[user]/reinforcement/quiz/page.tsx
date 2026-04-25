@@ -26,6 +26,7 @@ export default function ReinforcementQuizPage() {
   const subject      = searchParams.get("subject") ?? "";
   const lesson       = searchParams.get("lesson")  ?? "";
   const mode         = searchParams.get("mode");
+  const run          = searchParams.get("run");
   const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
 
   function navigate(url: string) {
@@ -58,27 +59,35 @@ export default function ReinforcementQuizPage() {
   useEffect(() => {
     async function load() {
       let quiz: Quiz | null = null;
-      const raw = sessionStorage.getItem("quiz");
-      if (raw) {
-        const parsed = JSON.parse(raw) as Quiz;
-        if (parsed.meta.subject === subject && String(parsed.meta.lesson) === lesson) {
-          quiz = parsed;
+      // Run mode пропуска sessionStorage кеша — винаги от run папката
+      if (!run) {
+        const raw = sessionStorage.getItem("quiz");
+        if (raw) {
+          const parsed = JSON.parse(raw) as Quiz;
+          if (parsed.meta.subject === subject && String(parsed.meta.lesson) === lesson) {
+            quiz = parsed;
+          }
         }
       }
       if (!quiz) {
-        const res  = await fetch(`/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`);
+        const url = run
+          ? `/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}&run=${run}`
+          : `/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`;
+        const res  = await fetch(url);
         const json = await res.json();
         if (!json.exists || !json.quiz) return;
         quiz = json.quiz;
-        sessionStorage.setItem("quiz", JSON.stringify(quiz));
-        if (json.adaptation) sessionStorage.setItem("adaptation", JSON.stringify(json.adaptation));
+        if (!run) {
+          sessionStorage.setItem("quiz", JSON.stringify(quiz));
+          if (json.adaptation) sessionStorage.setItem("adaptation", JSON.stringify(json.adaptation));
+        }
       }
       if (!quiz) return;
       const shuffled = [...quiz.questions].sort(() => Math.random() - 0.5).slice(0, 10);
       setQuestions(shuffled);
     }
     load();
-  }, [user, subject, lesson]);
+  }, [user, subject, lesson, run]);
 
   // Capture button position when phase becomes "correct"
   useEffect(() => {
@@ -118,25 +127,36 @@ export default function ReinforcementQuizPage() {
     const isLast = current >= questions.length - 1;
     if (isLast) {
       const finalScore = scoreRef.current; // ref — винаги актуален, без stale closure
-      const now = new Date();
-      fetch("/api/session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user,
-          session: {
-            date: now.toISOString().split("T")[0],
-            subject,
-            lesson: parseInt(lesson),
-            started_at: now.toTimeString().slice(0, 5),
-            duration_min: 1,
-            type: "reinforcement",
-            total: questions.length,
-            errors,
-          },
-        }),
-      }).catch(console.error);
-      navigate(`/${user}/reinforcement/result?score=${finalScore}&total=${questions.length}&subject=${subject}&lesson=${lesson}${mode === "test" ? "&mode=test" : ""}`);
+      // Run mode не записва нищо в sessions — read-only test преглед
+      if (!run) {
+        const now = new Date();
+        fetch("/api/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user,
+            session: {
+              date: now.toISOString().split("T")[0],
+              subject,
+              lesson: parseInt(lesson),
+              started_at: now.toTimeString().slice(0, 5),
+              duration_min: 1,
+              type: "reinforcement",
+              total: questions.length,
+              errors,
+            },
+          }),
+        }).catch(console.error);
+      }
+      const resultParams = new URLSearchParams({
+        score: String(finalScore),
+        total: String(questions.length),
+        subject,
+        lesson,
+      });
+      if (mode === "test") resultParams.set("mode", "test");
+      if (run) resultParams.set("run", run);
+      navigate(`/${user}/reinforcement/result?${resultParams.toString()}`);
     } else {
       setCurrent((c) => c + 1);
       setPhase("answering");
