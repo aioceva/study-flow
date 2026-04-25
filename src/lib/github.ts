@@ -99,9 +99,18 @@ export async function copyFile(fromPath: string, toPath: string): Promise<void> 
   const data = await res.json();
   // data.content е вече base64 (с newlines от GitHub) — запазваме го директно
   const rawBase64 = (data.content as string).replace(/\n/g, "");
+
+  // Ако target вече съществува, GitHub изисква SHA-та му за update
+  const existingRes = await githubRequest(`/${toPath}`);
+  const body: Record<string, string> = { message: `copy to ${toPath}`, content: rawBase64 };
+  if (existingRes.ok) {
+    const existing = await existingRes.json();
+    body.sha = existing.sha;
+  }
+
   const writeRes = await githubRequest(`/${toPath}`, {
     method: "PUT",
-    body: JSON.stringify({ message: `copy to ${toPath}`, content: rawBase64 }),
+    body: JSON.stringify(body),
   });
   if (!writeRes.ok) {
     const err = await writeRes.text();

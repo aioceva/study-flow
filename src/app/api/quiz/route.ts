@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { jsonrepair } from "jsonrepair";
 
 export const maxDuration = 120;
 import { Adaptation, Quiz } from "@/types";
@@ -59,9 +60,14 @@ export async function POST(req: NextRequest) {
     let parsed: unknown;
     try {
       parsed = JSON.parse(jsonMatch[0]);
-    } catch (parseErr) {
-      console.error("Quiz: JSON parse failed. stop_reason:", response.stop_reason, "match[:200]:", jsonMatch[0].slice(0, 200));
-      return NextResponse.json({ error: "Неуспешно генериране на quiz — невалиден JSON" }, { status: 422 });
+    } catch {
+      try {
+        parsed = JSON.parse(jsonrepair(jsonMatch[0]));
+        console.warn("Quiz: JSON repaired successfully. stop_reason:", response.stop_reason);
+      } catch (repairErr) {
+        console.error("Quiz: JSON repair failed. stop_reason:", response.stop_reason, "match[:300]:", jsonMatch[0].slice(0, 300));
+        return NextResponse.json({ error: "Неуспешно генериране на quiz — невалиден JSON" }, { status: 422 });
+      }
     }
     if (!validateQuiz(parsed)) {
       console.error("Invalid quiz structure from Claude:", JSON.stringify(parsed).slice(0, 300));
