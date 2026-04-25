@@ -98,14 +98,23 @@
 
 ## 2026-04-25
 
-**⚠️ НЕЗАВЪРШЕНО — prompt snapshot в run папка**
+**✅ Prompt snapshot в run папка — завършено и работещо локално**
 
-Имплементирано, но не е успешно изтествано. При run_001, run_002, run_003:
-- `generate.ts`, `quiz.ts`, `recognize.ts` не се копират (вероятно `fs.readFile` не намира source файловете на Vercel)
-- `original.jpg` не се записва в run папката
-- Добавени debug логове в archive-lesson и generate route за диагностика
-- Добавен `outputFileTracingIncludes` в `next.config.ts` и `maxDuration = 60` в archive-lesson
-- При следващ deploy: провери Vercel logs за `[archive-lesson] cwd=...` и `[generate] original.jpg` и обнови лога
+Завършена работата от предишния опит. Истинският root cause беше **GitHub Contents API conflicts** при паралелни writes, не липсващи source файлове.
+
+Диагноза и поправки:
+- `archive-lesson` и `generate` правеха `Promise.all` на няколко writes в същата папка — GitHub връщаше 409 (parent tree SHA сменен) или 422 (`sha wasn't supplied`) за част от файловете
+- **Sequential writes** в `archive-lesson/route.ts` (3 prompt файла) и `generate/route.ts` (`original.jpg` + `adaptation-context.json` + `adaptation-thinking.json`) — `Promise.all` → `for...of await`
+- **github.ts writeFile/writeBinaryFile**: retry-ът вече handle-ва и **422** освен **409** — и двете значат "файлът съществува, дай SHA"
+- **github.ts copyFile**: чете SHA на target ако съществува, иначе `restore-lesson` връщаше 422
+- **quiz/route.ts**: добавен `jsonrepair` fallback (както в generate) — Claude връщаше валиден на пръв поглед JSON, но с тривиални glitches; quiz route не ги поправяше
+
+Тествано локално с `start.bat`: всички файлове в `run_006/` присъстват — `generate.ts`, `quiz.ts`, `recognize.ts`, `adaptation.json`, `quiz.json`, `original.jpg`, `adaptation-context.json`, `adaptation-thinking.json`.
+
+**Локален dev режим**
+- `start.bat` в root: двоен клик → `npm run dev` на http://localhost:3001 (3000 често е зает)
+- `docs/README.md`: обновени инструкции за локално стартиране
+- Препоръчаният начин за тестване — без deploy към Vercel
 
 ---
 
