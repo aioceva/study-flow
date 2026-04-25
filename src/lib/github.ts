@@ -37,6 +37,13 @@ export async function writeFile(path: string, content: string, sha?: string): Pr
     method: "PUT",
     body: JSON.stringify(body),
   });
+  if (res.status === 409 && !sha) {
+    const existing = await readFile(path);
+    if (existing) {
+      await writeFile(path, content, existing.sha);
+      return;
+    }
+  }
   if (!res.ok) {
     const err = await res.text();
     throw new Error(`GitHub write error: ${res.status} ${err}`);
@@ -113,6 +120,13 @@ export async function writeBinaryFile(path: string, base64Content: string, sha?:
     method: "PUT",
     body: JSON.stringify(body),
   });
+  if (res.status === 409 && !sha) {
+    const existing = await readBinaryFile(path);
+    if (existing) {
+      await writeBinaryFile(path, base64Content, existing.sha);
+      return;
+    }
+  }
   if (!res.ok) {
     const err = await res.text();
     throw new Error(`GitHub write error: ${res.status} ${err}`);

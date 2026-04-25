@@ -3,6 +3,8 @@ import fs from "fs/promises";
 import path from "path";
 import { listDirectory, copyFile, deleteFile, readJSON, writeJSON, writeFile } from "@/lib/github";
 
+export const maxDuration = 60;
+
 // POST /api/archive-lesson — архивира текущите lesson файлове в следващата run_NNN папка
 export async function POST(req: NextRequest) {
   try {
