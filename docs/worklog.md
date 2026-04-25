@@ -94,6 +94,21 @@
 - `api/lesson-file/route.ts`: добавен `adaptation-thinking.json` в allowlist; `original.jpg` вече се сервира като истинско binary (Content-Type: image/jpeg) чрез нов `readBinaryFile` в `github.ts`
 - `api/prompt-set/route.ts` (нов): сервира съдържанието на активния prompt set от filesystem
 
+---
+
+## 2026-04-25
+
+**Почистване на prompt структурата**
+
+- Премахнат `src/prompts/index.ts` с `resolvePromptSet()` — динамичното търсене на `*_active` папка е изтрито
+- Изтрита `src/prompts/2026-04-19_active/` папка с всичките 4 файла
+- Изтрит `prepare.ts` и `preparePrompt` export — preparation/concept_map слоят е окончателно премахнат
+- Новите flat файлове: `src/prompts/generate.ts`, `src/prompts/quiz.ts`, `src/prompts/recognize.ts` — идентично съдържание, директно местоположение
+- API routes сочат директно: `import { generatePrompt } from "@/prompts/generate"` (и т.н.)
+- `promptSet` export премахнат изцяло; `meta.prompt_set` вече не се записва в adaptation.json, quiz.json, adaptation-context.json, adaptation-thinking.json
+- `prompt_set?: string` остава optional в types за обратна съвместимост при четене на стари файлове
+- `api/prompt-set/route.ts`: премахнат `prepare.ts` от PROMPT_FILES, чете от `src/prompts/` директно, маркиран като legacy (използва се от test mode download в confirm)
+
 **Разследване — bio/lesson-55 липсваше в UI**
 - Файловете (adaptation.json, quiz.json, adaptation-context.json) бяха записани успешно в GitHub
 - `_index.json` обаче НЕ беше обновен → урокът не се виждаше в UI
