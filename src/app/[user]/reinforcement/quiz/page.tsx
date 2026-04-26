@@ -215,6 +215,11 @@ export default function ReinforcementQuizPage() {
             {subjectLabel} · Урок {lesson}
           </span>
         </button>
+        {mode === "test" && (
+          <span style={{ fontSize: 11, color: "#92400E", fontWeight: 700, backgroundColor: "#FEF3C7", borderRadius: 8, padding: "2px 7px", marginRight: 4 }}>
+            Test {run ?? "unknown"}
+          </span>
+        )}
         <button onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)} className="btn-press w-8 h-8 flex items-center justify-center" style={{ opacity: 0.4 }} aria-label="Начало">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />

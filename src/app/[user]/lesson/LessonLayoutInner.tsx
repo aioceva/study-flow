@@ -164,7 +164,14 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
                 {subjectLabel} · Урок {lesson}
               </span>
             </button>
-            {homeIcon}
+            <div className="flex items-center gap-2">
+              {isTest && (
+                <span style={{ fontSize: 11, color: "#92400E", fontWeight: 700, backgroundColor: "#FEF3C7", borderRadius: 8, padding: "2px 7px" }}>
+                  Test {run ?? "unknown"}
+                </span>
+              )}
+              {homeIcon}
+            </div>
           </div>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center px-4 gap-2.5 text-center">
@@ -214,7 +221,14 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
               {subjectLabel} · Урок {lesson}
             </span>
           </button>
-          {homeIcon}
+          <div className="flex items-center gap-2">
+            {isTest && (
+              <span style={{ fontSize: 11, color: "#92400E", fontWeight: 700, backgroundColor: "#FEF3C7", borderRadius: 8, padding: "2px 7px" }}>
+                Test {run ?? "unknown"}
+              </span>
+            )}
+            {homeIcon}
+          </div>
         </div>
         {/* Модул N от 4 · Заглавие на модула */}
         <div className="px-4 pb-2">
