@@ -4,6 +4,16 @@
 
 ---
 
+## 2026-04-26
+
+**Run бадж в урок и тест хедър**
+- Добавен жълт бадж `Test run001` (или `Test unknown` ако run липсва) горе вдясно до Home иконката
+- Видим само в Test Mode (`?mode=test`); в Normal Mode не се показва
+- Засяга: `LessonLayoutInner.tsx` (card екран + separator екран) и `reinforcement/quiz/page.tsx`
+- Commit `4142961` в main
+
+---
+
 ## 2026-04-25
 
 **Test Artifacts Panel — динамичен + run преглед**
@@ -20,6 +30,11 @@
 - `done/page.tsx`, `reinforcement/quiz/page.tsx` — НЕ записват в `/api/session` ако `run` е в URL
 - `/api/lesson-file` whitelist разширен по разширение (`.json`, `.jpg`, `.png`, `.webp`, `.ts`, `.md`) с path-traversal защита
 - Премахнат legacy `/api/prompt-set/route.ts` (вече ненужен — заменен от `/api/prompt-file`)
+
+**Git**
+- Commit `648277d` в worktree клон `claude/confident-ptolemy-c58810`
+- Cherry-pick `d8b1e1b` в локален main (`C:\Projects\study-flow`) — 1 commit ahead of origin/main
+- Без push към remote; готово за локално тестване с `start.bat` → `http://localhost:3001`
 
 ---
 
