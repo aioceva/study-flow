@@ -4,6 +4,17 @@
 
 ---
 
+## 2026-04-26
+
+**Продуктова нотация — screens / flows / artifacts**
+- Нови документи: `docs/screens.md`, `docs/flows.md`, `docs/artifacts.md`
+- `screens.md` — 14 екрана в 6 модула (`site`, `home`, `scan`, `lesson`, `quiz`, `parent`); screen_id формат `module/screen` за стесняваща идентификация в задачи и бъг репорти
+- `flows.md` — Normal Mode и Test Mode (с `?run=run_NNN` read-only режим)
+- `artifacts.md` — всички файлове, които приложението създава/чете: GitHub persistent (enrollment, profile, sessions, adaptation/quiz/original/context/thinking, runs, _index, rate-limit, feedback), sessionStorage кеш, source-controlled prompts
+- Почистен `prompt_set` от целия проект (остаряла концепция): `src/types/index.ts` (2 interface-а), 4× `adaptation.json`, 4× `quiz.json`, 3× `adaptation-thinking.json`, 2× `adaptation-context.json` — 13 файла, нула останали (само worklog)
+
+---
+
 ## 2026-04-25
 
 **Test Artifacts Panel — динамичен + run преглед**

@@ -23,7 +23,6 @@ export interface Adaptation {
     lesson: number;
     generated: string;
     title: string;
-    prompt_set?: string;
   };
   modules: Module[];
 }
@@ -52,7 +51,6 @@ export interface Quiz {
     lesson: number;
     generated: string;
     total: number;
-    prompt_set?: string;
   };
   questions: QuizQuestion[];
 }
