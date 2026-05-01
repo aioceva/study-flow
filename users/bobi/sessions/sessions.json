@@ -940,6 +940,16 @@
       "type": "learn",
       "status": "completed",
       "completed": true
+    },
+    {
+      "date": "2026-05-01",
+      "subject": "gen",
+      "lesson": 20,
+      "started_at": "12:09",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
