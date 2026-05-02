@@ -39,7 +39,8 @@ export default function ReinforcementQuizPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [score,      setScore]      = useState(0);
   const [errors,     setErrors]     = useState<number[]>([]);
-  const scoreRef = useRef(0); // sync ref — избягва stale closure при async timer callbacks
+  const scoreRef        = useRef(0); // sync ref — избягва stale closure при async timer callbacks
+  const sessionStartRef = useRef<number>(Date.now());
 
   // Timer progress 0→1
   const [timerPct, setTimerPct] = useState(0);
@@ -140,7 +141,7 @@ export default function ReinforcementQuizPage() {
               subject,
               lesson: parseInt(lesson),
               started_at: now.toTimeString().slice(0, 5),
-              duration_min: 1,
+              duration_min: Math.max(Math.round((Date.now() - sessionStartRef.current) / 60000), 1),
               type: "reinforcement",
               total: questions.length,
               errors,
