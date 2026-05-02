@@ -5,6 +5,7 @@ import { jsonrepair } from "jsonrepair";
 export const maxDuration = 120;
 import { Adaptation, Quiz } from "@/types";
 import { quizPrompt } from "@/prompts/quiz";
+import { sanitizeJsonFromLLM } from "@/lib/json-sanitize";
 
 function validateQuiz(obj: unknown): obj is Quiz {
   if (!obj || typeof obj !== "object") return false;
@@ -57,15 +58,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Неуспешно генериране на quiz" }, { status: 422 });
     }
 
+    const rawJson = sanitizeJsonFromLLM(jsonMatch[0]);
     let parsed: unknown;
     try {
-      parsed = JSON.parse(jsonMatch[0]);
+      parsed = JSON.parse(rawJson);
     } catch {
       try {
-        parsed = JSON.parse(jsonrepair(jsonMatch[0]));
+        parsed = JSON.parse(jsonrepair(rawJson));
         console.warn("Quiz: JSON repaired successfully. stop_reason:", response.stop_reason);
-      } catch (repairErr) {
-        console.error("Quiz: JSON repair failed. stop_reason:", response.stop_reason, "match[:300]:", jsonMatch[0].slice(0, 300));
+      } catch {
+        console.error("Quiz: JSON repair failed. stop_reason:", response.stop_reason, "len:", rawJson.length, "tail[-200]:", rawJson.slice(-200));
         return NextResponse.json({ error: "Неуспешно генериране на quiz — невалиден JSON" }, { status: 422 });
       }
     }

@@ -4,6 +4,7 @@ import { jsonrepair } from "jsonrepair";
 
 export const maxDuration = 180; // test mode с thinking може да отнеме 60-90s + GitHub saves
 import { generatePrompt } from "@/prompts/generate";
+import { sanitizeJsonFromLLM } from "@/lib/json-sanitize";
 import { readJSON, writeJSON, writeBinaryFile } from "@/lib/github";
 import type { Adaptation } from "@/types";
 
@@ -115,16 +116,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Неуспешно генериране" }, { status: 422 });
     }
 
+    const rawJson = sanitizeJsonFromLLM(jsonMatch[0]);
     let parsed: unknown;
     try {
-      parsed = JSON.parse(jsonMatch[0]);
-    } catch {
+      parsed = JSON.parse(rawJson);
+    } catch (e1) {
+      console.warn("Generate: JSON.parse(sanitized) failed:", String(e1));
       try {
-        parsed = JSON.parse(jsonrepair(jsonMatch[0]));
-        console.warn("Generate: JSON repaired successfully. stop_reason:", response.stop_reason);
-      } catch (repairErr) {
-        console.error("Generate: JSON repair failed. stop_reason:", response.stop_reason, "match[:300]:", jsonMatch[0].slice(0, 300));
-        return NextResponse.json({ error: "Неуспешно генериране — невалиден JSON" }, { status: 422 });
+        parsed = JSON.parse(jsonrepair(rawJson));
+        console.warn("Generate: repaired sanitized JSON ok. stop_reason:", response.stop_reason);
+      } catch {
+        try {
+          parsed = JSON.parse(jsonrepair(jsonMatch[0]));
+          console.warn("Generate: repaired original JSON ok. stop_reason:", response.stop_reason);
+        } catch (e3) {
+          console.error("Generate: all strategies failed. stop_reason:", response.stop_reason, "len:", rawJson.length, "err:", String(e3), "tail[-200]:", rawJson.slice(-200));
+          return NextResponse.json({ error: "Неуспешно генериране — невалиден JSON" }, { status: 422 });
+        }
       }
     }
     if (!validateAdaptation(parsed)) {

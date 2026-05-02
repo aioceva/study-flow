@@ -159,7 +159,7 @@ export default function LoadingPage() {
   const messages: Record<typeof status, string> = {
     checking: "Проверяваме дали си учил това...",
     generating: "Подготвяме твоя урок...",
-    quiz: "Финални щрихи...",
+    quiz: "Почти е готов...",
     done: "Готово!",
     cached: "Намерихме твоя урок! ✓",
     error: error ?? "Грешка",
@@ -172,7 +172,7 @@ export default function LoadingPage() {
           <div className="text-6xl mb-8 animate-bounce">📚</div>
           <h1 className="text-2xl font-bold mb-4" style={{ color: NAV.text }}>{messages[status]}</h1>
           {status === "generating" && (
-            <p className="text-sm" style={{ color: NAV.textMuted }}>Изчакай около 30 секунди.</p>
+            <p className="text-sm" style={{ color: NAV.textMuted }}>Изчакай около 4 минути.</p>
           )}
           <div className="mt-8 flex gap-2">
             {(["checking", "generating", "quiz", "done"] as const).map((s, i) => {
