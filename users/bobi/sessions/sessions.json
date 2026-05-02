@@ -950,6 +950,22 @@
       "type": "learn",
       "status": "partial",
       "completed": false
+    },
+    {
+      "date": "2026-05-02",
+      "subject": "gen",
+      "lesson": 20,
+      "started_at": "17:41",
+      "duration_min": 2,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        3,
+        10,
+        4,
+        17,
+        16
+      ]
     }
   ]
 }
