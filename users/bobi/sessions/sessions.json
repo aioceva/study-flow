@@ -995,6 +995,21 @@
       "type": "learn",
       "status": "partial",
       "completed": false
+    },
+    {
+      "date": "2026-05-02",
+      "subject": "bio",
+      "lesson": 45,
+      "started_at": "18:51",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        1,
+        18,
+        16,
+        15
+      ]
     }
   ]
 }
