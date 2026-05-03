@@ -1,0 +1,491 @@
+{
+  "meta": {
+    "user": "bobi",
+    "subject": "chem",
+    "lesson": 12,
+    "generated": "2026-05-03",
+    "total": 20
+  },
+  "questions": [
+    {
+      "id": 1,
+      "module_id": 1,
+      "card_id": 1,
+      "question": "Колко метала има в алкалната група?",
+      "options": [
+        {
+          "id": "a",
+          "text": "4 метала",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "6 метала",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "8 метала",
+          "correct": false
+        }
+      ],
+      "explanation": "Алкалната група съдържа точно 6 метала: литий, натрий, калий, рубидий, цезий и франций."
+    },
+    {
+      "id": 2,
+      "module_id": 1,
+      "card_id": 3,
+      "question": "Кой алкален метал реагира с вода най-бурно?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Литий",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Натрий",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Цезий",
+          "correct": true
+        }
+      ],
+      "explanation": "От литий към цезий активността расте, затова цезият е най-активен и реагира най-бурно."
+    },
+    {
+      "id": 3,
+      "module_id": 1,
+      "card_id": 5,
+      "question": "Кой метал от алкалната група е най-важен и го срещаме навсякъде около нас?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Калий",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Литий",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Натрий",
+          "correct": true
+        }
+      ],
+      "explanation": "Натрият е най-важният алкален метал — среща се в храната, морето и човешкото тяло."
+    },
+    {
+      "id": 4,
+      "module_id": 2,
+      "card_id": 1,
+      "question": "Какво се получава, когато натрият изгори в кислород?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Натриев хлорид (NaCl)",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Натриев оксид (Na₂O)",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Натриев сулфид (Na₂S)",
+          "correct": false
+        }
+      ],
+      "explanation": "При реакцията 4Na + O₂ → 2Na₂O натрият и кислородът образуват натриев оксид."
+    },
+    {
+      "id": 5,
+      "module_id": 2,
+      "card_id": 4,
+      "question": "Какво се получава, когато натрий реагира с вода?",
+      "options": [
+        {
+          "id": "a",
+          "text": "NaOH и H₂",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "NaCl и H₂",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Na₂O и H₂O",
+          "correct": false
+        }
+      ],
+      "explanation": "При реакцията 2Na + 2H₂O → 2NaOH + H₂ се получават натриева основа и водороден газ."
+    },
+    {
+      "id": 6,
+      "module_id": 2,
+      "card_id": 5,
+      "question": "Какво се получава при реакцията на натрий със солна киселина (HCl)?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Na₂O и H₂O",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "NaOH и Cl₂",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "NaCl и H₂",
+          "correct": true
+        }
+      ],
+      "explanation": "При реакцията 2Na + 2HCl → 2NaCl + H₂ се получават готварска сол и водород."
+    },
+    {
+      "id": 7,
+      "module_id": 3,
+      "card_id": 1,
+      "question": "Как изглежда натриевият оксид (Na₂O)?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Жълта течност",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Бяло твърдо вещество",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Прозрачен газ",
+          "correct": false
+        }
+      ],
+      "explanation": "Натриевият оксид Na₂O е бяло твърдо вещество, което се образува при горенето на натрий."
+    },
+    {
+      "id": 8,
+      "module_id": 3,
+      "card_id": 2,
+      "question": "Какво се получава, когато натриев оксид (Na₂O) реагира с вода?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Na₂CO₃",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "NaCl",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "NaOH",
+          "correct": true
+        }
+      ],
+      "explanation": "При реакцията Na₂O + H₂O → 2NaOH основният оксид реагира с вода и дава натриева основа."
+    },
+    {
+      "id": 9,
+      "module_id": 3,
+      "card_id": 4,
+      "question": "Какво се получава, когато Na₂O реагира с въглероден диоксид (CO₂)?",
+      "options": [
+        {
+          "id": "a",
+          "text": "NaOH",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Na₂CO₃",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "NaCl",
+          "correct": false
+        }
+      ],
+      "explanation": "При реакцията Na₂O + CO₂ → Na₂CO₃ се получава натриев карбонат, известен като сода."
+    },
+    {
+      "id": 10,
+      "module_id": 4,
+      "card_id": 1,
+      "question": "За какво се използва натриевата основа (NaOH) в практиката?",
+      "options": [
+        {
+          "id": "a",
+          "text": "За направата на стъкло",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "За направата на сапун",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "За направата на тор",
+          "correct": false
+        }
+      ],
+      "explanation": "NaOH е суровина при производството на сапун, затова е толкова важна в промишлеността."
+    },
+    {
+      "id": 11,
+      "module_id": 4,
+      "card_id": 3,
+      "question": "Какъв цвят приема лакмусът в разтвор на NaOH?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Червен",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Жълт",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Син",
+          "correct": true
+        }
+      ],
+      "explanation": "Лакмусът става син в основен разтвор — това е класически начин да разпознаем основа."
+    },
+    {
+      "id": 12,
+      "module_id": 4,
+      "card_id": 4,
+      "question": "Как се казва реакцията между NaOH и киселина?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Окисление",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Неутрализация",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Разлагане",
+          "correct": false
+        }
+      ],
+      "explanation": "Когато основа и киселина реагират, реакцията се казва неутрализация — взаимно се неутрализират."
+    },
+    {
+      "id": 13,
+      "module_id": 0,
+      "card_id": null,
+      "question": "Каква е общата формула на оксидите на алкалните метали?",
+      "options": [
+        {
+          "id": "a",
+          "text": "MO",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "M₂O",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "MO₂",
+          "correct": false
+        }
+      ],
+      "explanation": "Алкалните метали имат валентност 1, затова оксидите им имат формула M₂O (два атома метал на един кислород)."
+    },
+    {
+      "id": 14,
+      "module_id": 0,
+      "card_id": null,
+      "question": "Защо натрият се съхранява в петрол?",
+      "options": [
+        {
+          "id": "a",
+          "text": "За да не изсъхне",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "За да не се стопи",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "За да не реагира с вода и въздух",
+          "correct": true
+        }
+      ],
+      "explanation": "Натрият реагира бурно с водата и кислорода от въздуха, затова се пази под петрол, който го изолира."
+    },
+    {
+      "id": 15,
+      "module_id": 0,
+      "card_id": null,
+      "question": "Кое съединение на натрия е известно като готварска сол?",
+      "options": [
+        {
+          "id": "a",
+          "text": "NaOH",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Na₂O",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "NaCl",
+          "correct": true
+        }
+      ],
+      "explanation": "NaCl е натриев хлорид — именно това е готварската сол, която използваме всеки ден."
+    },
+    {
+      "id": 16,
+      "module_id": 0,
+      "card_id": null,
+      "question": "Какво се получава при реакцията 2NaOH + CO₂?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Na₂O + H₂O",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Na₂CO₃ + H₂O",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "NaCl + H₂O",
+          "correct": false
+        }
+      ],
+      "explanation": "NaOH абсорбира CO₂ от въздуха и образува Na₂CO₃ (сода) и вода."
+    },
+    {
+      "id": 17,
+      "module_id": 0,
+      "card_id": null,
+      "question": "Кой от следните метали е алкален?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Желязо (Fe)",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Калций (Ca)",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Калий (K)",
+          "correct": true
+        }
+      ],
+      "explanation": "Калият е алкален метал и се намира в I група на периодичната таблица, заедно с натрия и литий."
+    },
+    {
+      "id": 18,
+      "module_id": 0,
+      "card_id": null,
+      "question": "Какви йони се отделят при дисоциацията на NaOH във вода?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Na⁺ и Cl⁻",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Na⁺ и OH⁻",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Na⁻ и OH⁺",
+          "correct": false
+        }
+      ],
+      "explanation": "При разтваряне NaOH се разпада на Na⁺ и OH⁻ йони — именно OH⁻ прави разтвора основен."
+    },
+    {
+      "id": 19,
+      "module_id": 0,
+      "card_id": null,
+      "question": "Кое от следните описва правилно алкалните метали?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Газове без цвят и мирис",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Твърди, сребристи и блестящи метали",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Течни кафяви вещества",
+          "correct": false
+        }
+      ],
+      "explanation": "Алкалните метали са твърди, сребристи и блестящи — можем да ги познаем по характерния им вид."
+    },
+    {
+      "id": 20,
+      "module_id": 0,
+      "card_id": null,
+      "question": "Какво се получава при реакцията на натрий със сяра?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Na₂O (натриев оксид)",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "NaCl (натриев хлорид)",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Na₂S (натриев сулфид)",
+          "correct": true
+        }
+      ],
+      "explanation": "При реакцията 2Na + S → Na₂S натрият реагира със сярата и образува натриев сулфид."
+    }
+  ]
+}
