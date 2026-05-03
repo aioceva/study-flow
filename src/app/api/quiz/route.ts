@@ -62,13 +62,19 @@ export async function POST(req: NextRequest) {
     let parsed: unknown;
     try {
       parsed = JSON.parse(rawJson);
-    } catch {
+    } catch (e1) {
+      console.warn("Quiz: JSON.parse(sanitized) failed:", String(e1));
       try {
         parsed = JSON.parse(jsonrepair(rawJson));
-        console.warn("Quiz: JSON repaired successfully. stop_reason:", response.stop_reason);
+        console.warn("Quiz: repaired sanitized JSON ok. stop_reason:", response.stop_reason);
       } catch {
-        console.error("Quiz: JSON repair failed. stop_reason:", response.stop_reason, "len:", rawJson.length, "tail[-200]:", rawJson.slice(-200));
-        return NextResponse.json({ error: "Неуспешно генериране на quiz — невалиден JSON" }, { status: 422 });
+        try {
+          parsed = JSON.parse(jsonrepair(jsonMatch[0]));
+          console.warn("Quiz: repaired original JSON ok. stop_reason:", response.stop_reason);
+        } catch (e3) {
+          console.error("Quiz: all strategies failed. stop_reason:", response.stop_reason, "len:", rawJson.length, "err:", String(e3), "tail[-200]:", rawJson.slice(-200));
+          return NextResponse.json({ error: "Неуспешно генериране на quiz — невалиден JSON" }, { status: 422 });
+        }
       }
     }
     if (!validateQuiz(parsed)) {
