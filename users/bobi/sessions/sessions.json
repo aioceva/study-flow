@@ -1038,6 +1038,16 @@
         8,
         7
       ]
+    },
+    {
+      "date": "2026-05-03",
+      "subject": "gen",
+      "lesson": 20,
+      "started_at": "10:52",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
