@@ -1078,6 +1078,22 @@
       "type": "learn",
       "status": "completed",
       "completed": true
+    },
+    {
+      "date": "2026-05-03",
+      "subject": "chem",
+      "lesson": 12,
+      "started_at": "11:05",
+      "duration_min": 3,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        1,
+        17,
+        8,
+        5,
+        4
+      ]
     }
   ]
 }
