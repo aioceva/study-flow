@@ -1110,6 +1110,16 @@
         5,
         4
       ]
+    },
+    {
+      "date": "2026-05-04",
+      "subject": "chem",
+      "lesson": 12,
+      "started_at": "10:21",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
