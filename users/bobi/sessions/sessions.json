@@ -1150,6 +1150,19 @@
       "type": "learn",
       "status": "completed",
       "completed": true
+    },
+    {
+      "date": "2026-05-07",
+      "subject": "phys",
+      "lesson": 24,
+      "started_at": "12:19",
+      "duration_min": 2,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        3,
+        17
+      ]
     }
   ]
 }
