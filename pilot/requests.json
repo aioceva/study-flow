@@ -4,5 +4,12 @@
     "grade": "6",
     "email": "elitova43@gmail.com",
     "requestedAt": "2026-05-03"
+  },
+  {
+    "name": "Иван Иванов",
+    "grade": "8",
+    "email": "annio@abv.bg",
+    "readingSupport": "low_support",
+    "requestedAt": "2026-05-07"
   }
 ]
