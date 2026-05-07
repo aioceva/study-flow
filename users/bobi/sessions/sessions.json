@@ -1140,6 +1140,16 @@
       "type": "learn",
       "status": "partial",
       "completed": false
+    },
+    {
+      "date": "2026-05-07",
+      "subject": "phys",
+      "lesson": 24,
+      "started_at": "12:16",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "completed",
+      "completed": true
     }
   ]
 }
