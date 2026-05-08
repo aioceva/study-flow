@@ -1173,6 +1173,26 @@
       "type": "learn",
       "status": "partial",
       "completed": false
+    },
+    {
+      "date": "2026-05-08",
+      "subject": "gen",
+      "lesson": 20,
+      "started_at": "08:32",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        4,
+        20,
+        17,
+        3,
+        10,
+        11,
+        13,
+        16,
+        5
+      ]
     }
   ]
 }
