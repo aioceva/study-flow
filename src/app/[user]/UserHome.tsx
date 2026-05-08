@@ -88,16 +88,14 @@ export default function UserHome({ readingTheme: initialTheme = DEFAULT_THEME }:
 
   async function handleThemeChange(newTheme: string) {
     setTheme(newTheme);
-    try {
-      await fetch(`/api/profile?user=${user}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ readingTheme: newTheme }),
-      });
-    } catch {
-      // ignore — theme shows optimistically, will persist on next full load
+    const res = await fetch(`/api/profile?user=${user}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ readingTheme: newTheme }),
+    }).catch(() => null);
+    if (res?.ok) {
+      startTransition(() => router.refresh());
     }
-    startTransition(() => router.refresh());
   }
 
   const groups: { key: string; label: string; tiles: LessonTile[] }[] = [];

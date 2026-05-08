@@ -245,7 +245,7 @@ export default function ReinforcementQuizPage() {
   if (phase === "fact") {
     const correctText = q.options.find((o) => o.correct)?.text ?? "";
     return (
-      <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: "#EBF4FF" }}>
+      <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: "var(--theme-bg)" }}>
         {topbar("var(--theme-bg)")}
         <div className="flex-1 flex flex-col items-center justify-center px-6 gap-5 text-center">
           <span style={{ fontSize: 52, lineHeight: 1 }}>💡</span>

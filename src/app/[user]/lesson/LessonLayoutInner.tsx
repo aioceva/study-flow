@@ -3,7 +3,7 @@
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, startTransition, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
-import { Adaptation, MODULE_COLORS, MODULE_SURFACE, MODULE_PROGRESS, MODULE_BTN, NAV, SUBJECT_LABELS, Subject } from "@/types";
+import { Adaptation, MODULE_BTN, NAV, SUBJECT_LABELS, Subject } from "@/types";
 import { FeedbackButton } from "@/components/FeedbackButton";
 import { nextStep, prevStep } from "@/lib/navigation";
 
@@ -48,7 +48,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const run      = searchParams.get("run");
   const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
 
-  const bgColor = MODULE_COLORS[moduleId] ?? "#F8F9FA";
+  const bgColor = "var(--theme-bg)";
   const isFirst = moduleId === 1 && cardId === 1;
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -367,7 +367,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
               style={{
                 width: step === cardId ? 24 : 8,
                 height: 8,
-                backgroundColor: step === cardId ? MODULE_SURFACE[moduleId] : NAV.border,
+                backgroundColor: step === cardId ? "var(--theme-btn)" : NAV.border,
               }}
             />
           ))}
@@ -400,7 +400,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 
 function Section({ icon, label, text, moduleId }: { icon: string; label: string; text: string; moduleId: number }) {
   return (
-    <div className="rounded-xl p-3" style={{ backgroundColor: MODULE_SURFACE[moduleId] ?? "#F0F0F0", boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
+    <div className="rounded-xl p-3" style={{ backgroundColor: "var(--theme-surface)", boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
       <p className="text-sm font-medium uppercase tracking-wide mb-0.5" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>
         {icon} {label}
       </p>

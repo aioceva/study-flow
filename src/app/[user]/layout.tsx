@@ -37,6 +37,7 @@ export default async function UserLayout({
         "--theme-text-muted":   theme.textMuted,
         "--theme-btn":          theme.btn,
         "--theme-btn-secondary": theme.btnSecondary,
+        "--theme-surface":      theme.card,
         "--theme-card-border":  theme.cardBorder,
       } as React.CSSProperties}
     >
