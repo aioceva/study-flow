@@ -28,7 +28,7 @@ export async function GET() {
 // POST /api/join — register new child
 export async function POST(req: NextRequest) {
   try {
-    const { name, grade, readingColor } = await req.json();
+    const { name, grade, readingSupport } = await req.json();
 
     if (!name?.trim() || !grade) {
       return NextResponse.json({ error: "Липсват данни" }, { status: 400 });
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
       writeJSON(`users/${slug}/profile.json`, {
         name: name.trim(),
         grade,
-        readingColor: readingColor ?? "#FFFFFF",
+        readingSupport: readingSupport ?? "low_support",
         joinedAt,
       }),
       writeJSON("pilot/enrollment.json", updatedEnrollment, enrollmentResult?.sha),
