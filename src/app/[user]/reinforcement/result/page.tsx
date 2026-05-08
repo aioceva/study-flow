@@ -4,6 +4,38 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { startTransition } from "react";
 import { NAV } from "@/types";
 
+const LEVELS = [
+  {
+    stars: [1, 0.5, 0.5],
+    title: "Добро начало!",
+    sub: "Има още много интересни неща в урока.\nПрочети отново и пробвай пак.",
+  },
+  {
+    stars: [1, 1, 0.5],
+    title: "Чудесен резултат!",
+    sub: "Половината урок е вече твой!\nПробвай пак и числото ще се покачи.",
+  },
+  {
+    stars: [1, 1, 1],
+    title: "Браво!",
+    sub: "Много добре се справи!\nПробвай пак — въпросите са различни всеки път!",
+  },
+];
+
+function StarIcon({ opacity }: { opacity: number }) {
+  return (
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity }}>
+      <polygon
+        points="18,3 22.5,13.5 34,14.5 25.5,22.5 28,34 18,28 8,34 10.5,22.5 2,14.5 13.5,13.5"
+        fill="#F0B429"
+        stroke="#F0B429"
+        strokeWidth="1"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export default function ReinforcementResultPage() {
   const { user } = useParams<{ user: string }>();
   const router = useRouter();
@@ -19,10 +51,9 @@ export default function ReinforcementResultPage() {
     setTimeout(() => startTransition(() => router.push(url)), 150);
   }
 
-  const missed = total - score;
   const percent = Math.round((score / total) * 100);
-  const perfect = score === total;
-  const emoji = perfect ? "🏆" : percent >= 80 ? "🌟" : "💪";
+  const levelIdx = percent <= 33 ? 0 : percent <= 66 ? 1 : 2;
+  const { stars, title, sub } = LEVELS[levelIdx];
 
   return (
     <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
@@ -45,51 +76,43 @@ export default function ReinforcementResultPage() {
       {/* Съдържание */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 text-center" style={{ gap: 14 }}>
 
-        <div style={{ fontSize: 36 }}>{emoji}</div>
+        {/* Звезди */}
+        <div style={{ display: "flex", gap: 8 }}>
+          {stars.map((opacity, i) => <StarIcon key={i} opacity={opacity} />)}
+        </div>
 
-        <h1 className="text-xl font-bold" style={{ color: NAV.text }}>Браво!</h1>
+        <h1 className="text-xl font-bold" style={{ color: NAV.text }}>{title}</h1>
 
-        <p style={{ fontSize: 34, fontWeight: 700, color: NAV.text, lineHeight: 1, letterSpacing: "-0.01em" }}>
-          {percent}%
+        <p style={{ fontSize: 14, color: NAV.textMuted, lineHeight: 1.6, maxWidth: 240, whiteSpace: "pre-line" }}>
+          {sub}
         </p>
 
         {/* Progress bar */}
-        <div className="w-full rounded-full overflow-hidden" style={{ height: 8, backgroundColor: NAV.surface }}>
-          <div
-            className="rounded-full"
-            style={{ width: `${percent}%`, height: "100%", backgroundColor: NAV.btnSolid }}
-          />
+        <div className="w-full" style={{ marginBottom: 4 }}>
+          <div className="rounded-full overflow-hidden" style={{ height: 8, backgroundColor: NAV.surface }}>
+            <div
+              className="rounded-full"
+              style={{ width: `${percent}%`, height: "100%", backgroundColor: NAV.btnSolid }}
+            />
+          </div>
+          <p style={{ fontSize: 13, color: "#888780", textAlign: "right", marginTop: 4 }}>{percent}%</p>
         </div>
-
-        {/* Обобщение */}
-        {perfect ? (
-          <p className="text-base" style={{ color: NAV.textMuted }}>Всичко правилно</p>
-        ) : (
-          <p className="text-base" style={{ color: NAV.textMuted }}>
-            Ти научи {missed} {missed === 1 ? "нещо" : "неща"} днес
-          </p>
-        )}
 
       </div>
 
       {/* Бутони */}
       <div className="flex-none px-4 pb-6 pt-3 space-y-2">
-        {!perfect && (
-          <button
-            onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}${mode === "test" ? "&mode=test" : ""}`)}
-            className="btn-press w-full rounded-xl py-4 text-white font-medium text-base"
-            style={{ backgroundColor: NAV.btnSolid }}
-          >
-            Опитай пак →
-          </button>
-        )}
+        <button
+          onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}${mode === "test" ? "&mode=test" : ""}`)}
+          className="btn-press w-full rounded-xl py-4 text-white font-medium text-base"
+          style={{ backgroundColor: NAV.btnSolid }}
+        >
+          Опитай пак →
+        </button>
         <button
           onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
           className="btn-press w-full rounded-xl py-4 font-medium text-base"
-          style={{
-            backgroundColor: perfect ? NAV.btnSolid : NAV.surface,
-            color: perfect ? "#FFFFFF" : NAV.text,
-          }}
+          style={{ backgroundColor: NAV.surface, color: NAV.text }}
         >
           Към началото
         </button>
