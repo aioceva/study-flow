@@ -1163,6 +1163,16 @@
         3,
         17
       ]
+    },
+    {
+      "date": "2026-05-08",
+      "subject": "phys",
+      "lesson": 24,
+      "started_at": "07:52",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
