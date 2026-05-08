@@ -1210,6 +1210,16 @@
         8,
         7
       ]
+    },
+    {
+      "date": "2026-05-08",
+      "subject": "gen",
+      "lesson": 20,
+      "started_at": "12:36",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
