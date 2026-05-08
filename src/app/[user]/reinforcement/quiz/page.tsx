@@ -319,14 +319,14 @@ export default function ReinforcementQuizPage() {
 
             if (revealed) {
               if (isCorrectOpt) {
-                bg        = "#E8F9F1";
+                bg        = "var(--quiz-correct-bg)";
                 iconChar  = "✓";
-                iconColor = "#3B9E6A";
+                iconColor = "var(--quiz-correct-text)";
                 animStyle = { animation: "correct-pop 0.3s ease forwards" };
               } else if (isSelectedWrong) {
-                bg        = "#FDF0F0";
+                bg        = "var(--quiz-wrong-bg)";
                 iconChar  = "✕";
-                iconColor = "#C07070";
+                iconColor = "var(--quiz-wrong-text)";
                 animStyle = { animation: "shake 0.4s ease" };
               }
             }

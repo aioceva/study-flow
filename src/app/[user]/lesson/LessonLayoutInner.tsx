@@ -3,7 +3,7 @@
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, startTransition, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
-import { Adaptation, MODULE_BTN, NAV, SUBJECT_LABELS, Subject } from "@/types";
+import { Adaptation, NAV, SUBJECT_LABELS, Subject } from "@/types";
 import { FeedbackButton } from "@/components/FeedbackButton";
 import { nextStep, prevStep } from "@/lib/navigation";
 
@@ -348,9 +348,9 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
               </button>
             </div>
             <div className="space-y-1.5">
-              <Section icon="📌" label="Какво е"      text={card.what}    moduleId={moduleId} />
-              <Section icon="💡" label="Защо е важно" text={card.why}     moduleId={moduleId} />
-              <Section icon="✏️" label="Пример"       text={card.example} moduleId={moduleId} />
+              <Section icon="📌" label="Какво е"      text={card.what}    />
+              <Section icon="💡" label="Защо е важно" text={card.why}     />
+              <Section icon="✏️" label="Пример"       text={card.example} />
             </div>
           </div>
         )}
@@ -398,10 +398,10 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   );
 }
 
-function Section({ icon, label, text, moduleId }: { icon: string; label: string; text: string; moduleId: number }) {
+function Section({ icon, label, text }: { icon: string; label: string; text: string }) {
   return (
     <div className="rounded-xl p-3" style={{ backgroundColor: "var(--theme-surface)", boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
-      <p className="text-sm font-medium uppercase tracking-wide mb-0.5" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>
+      <p className="text-sm font-medium uppercase tracking-wide mb-0.5" style={{ color: "var(--theme-accent)", opacity: 0.8 }}>
         {icon} {label}
       </p>
       <p className="text-base leading-relaxed" style={{ color: NAV.text }}>{text}</p>
