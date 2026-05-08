@@ -1193,6 +1193,23 @@
         16,
         5
       ]
+    },
+    {
+      "date": "2026-05-08",
+      "subject": "gen",
+      "lesson": 20,
+      "started_at": "12:35",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        17,
+        20,
+        9,
+        2,
+        8,
+        7
+      ]
     }
   ]
 }
