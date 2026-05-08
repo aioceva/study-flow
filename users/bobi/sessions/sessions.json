@@ -1250,6 +1250,23 @@
       "type": "learn",
       "status": "partial",
       "completed": false
+    },
+    {
+      "date": "2026-05-08",
+      "subject": "phys",
+      "lesson": 24,
+      "started_at": "14:35",
+      "duration_min": 4,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        7,
+        10,
+        18,
+        17,
+        2,
+        9
+      ]
     }
   ]
 }
