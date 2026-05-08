@@ -14,6 +14,12 @@ const NAV = {
 
 const GRADES = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 
+const READING_OPTIONS: { value: string; label: string }[] = [
+  { value: "low_support", label: "Чете текст лесно" },
+  { value: "medium_support", label: "Чете текст с леки затруднения" },
+  { value: "high_support", label: "Трудно чете текст" },
+];
+
 const P: React.CSSProperties = { fontSize: 15, color: NAV.textMuted, lineHeight: 1.65, margin: 0 };
 const LABEL: React.CSSProperties = { fontSize: 13, color: NAV.textMuted, fontWeight: 500, display: "block", marginBottom: 8 };
 
@@ -21,12 +27,13 @@ export function JoinWizard() {
   const [name, setName] = useState("");
   const [grade, setGrade] = useState("");
   const [email, setEmail] = useState("");
+  const [readingSupport, setReadingSupport] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
-  const canSubmit = name.trim().length > 0 && grade !== "" && email.trim().length > 0 && agreed && !loading;
+  const canSubmit = name.trim().length > 0 && grade !== "" && email.trim().length > 0 && readingSupport !== "" && agreed && !loading;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -37,7 +44,7 @@ export function JoinWizard() {
       const res = await fetch("/api/pilot-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), grade, email: email.trim() }),
+        body: JSON.stringify({ name: name.trim(), grade, email: email.trim(), readingSupport }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -188,6 +195,31 @@ export function JoinWizard() {
                   }}
                 >
                   {g}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Reading support */}
+          <div>
+            <label style={LABEL}>Ниво на четене</label>
+            <div className="flex flex-col gap-2">
+              {READING_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setReadingSupport(opt.value)}
+                  className="btn-press rounded-xl"
+                  style={{
+                    padding: "10px 16px",
+                    fontSize: 15,
+                    textAlign: "left",
+                    backgroundColor: readingSupport === opt.value ? NAV.btnSolid : NAV.surface,
+                    color: readingSupport === opt.value ? "#FFFFFF" : NAV.text,
+                    border: readingSupport === opt.value ? `1px solid ${NAV.btnSolid}` : `1px solid ${NAV.border}`,
+                  }}
+                >
+                  {opt.label}
                 </button>
               ))}
             </div>

@@ -27,12 +27,12 @@
 - **notes:** Структура: `{ user, name, grade, message, submittedAt, screen }`. Полето `screen` се подава от компонента (където е бил потребителят).
 
 ### `users/[user]/profile.json`
-- **purpose:** Профил на детето — име, клас, цвят за четене, дата на запис.
+- **purpose:** Профил на детето — име, клас, ниво на четене, дата на запис.
 - **created_by:** `POST /api/join` едновременно с добавянето в enrollment.json
 - **used_by:** `home/list` (server check за authorization), `POST /api/feedback` (взима име/клас за enrich на feedback-а)
 - **storage_location:** `users/[user]/profile.json`
 - **visible_in_test_mode:** no
-- **notes:** Структура: `{ name, grade, readingColor, joinedAt }`. Стари потребители (Боби) могат да нямат profile.json — fallback е проверка за sessions.json.
+- **notes:** Структура: `{ name, grade, readingSupport, joinedAt }`. Стари потребители (Боби) могат да нямат profile.json — fallback е проверка за sessions.json.
 
 ### `users/[user]/rate-limit.json`
 - **purpose:** Брояч на AI генерации per user per day. Лимит 5 на ден.

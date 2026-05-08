@@ -87,11 +87,14 @@ export interface Sessions {
   sessions: Session[];
 }
 
+// Ниво на четене
+export type ReadingSupport = "low_support" | "medium_support" | "high_support";
+
 // Пилот — потребителски профил
 export interface UserProfile {
   name: string;
   grade: string;
-  readingColor: string;
+  readingSupport: ReadingSupport;
   joinedAt: string;
 }
 

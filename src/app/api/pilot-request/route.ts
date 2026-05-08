@@ -5,14 +5,15 @@ interface PilotRequest {
   name: string;
   grade: string;
   email: string;
+  readingSupport: string;
   requestedAt: string;
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, grade, email } = await req.json();
+    const { name, grade, email, readingSupport } = await req.json();
 
-    if (!name?.trim() || !grade || !email?.trim()) {
+    if (!name?.trim() || !grade || !email?.trim() || !readingSupport) {
       return NextResponse.json({ error: "Липсват данни" }, { status: 400 });
     }
 
@@ -22,7 +23,7 @@ export async function POST(req: NextRequest) {
     const requestedAt = new Date().toISOString().split("T")[0];
     const updated: PilotRequest[] = [
       ...requests,
-      { name: name.trim(), grade, email: email.trim(), requestedAt },
+      { name: name.trim(), grade, email: email.trim(), readingSupport, requestedAt },
     ];
 
     await writeJSON("pilot/requests.json", updated, result?.sha);
