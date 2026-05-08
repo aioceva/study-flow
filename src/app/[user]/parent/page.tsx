@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { readJSON } from "@/lib/github";
-import { Sessions, Session, Quiz, Adaptation, NAV, SUBJECT_LABELS, Subject, ReinforcementSession } from "@/types";
+import { Sessions, Session, Quiz, Adaptation, NAV, SUBJECT_LABELS, Subject, ReinforcementSession, CARD_BG } from "@/types";
 import { SessionList, QuizMap } from "./SessionList";
 
 export const dynamic = "force-dynamic";
@@ -191,7 +191,7 @@ export default async function ParentPage({
         {/* ═══ ГОРЕН БЛОК ═══════════════════════════════════════════════ */}
 
         {/* Седмичен стрип */}
-        <div className="rounded-xl p-4" style={{ backgroundColor: "#FFFFFF", boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)" }}>
+        <div className="rounded-xl p-4" style={{ backgroundColor: CARD_BG, boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)" }}>
 
           {/* Навигация: ← месец → */}
           <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
@@ -304,7 +304,7 @@ function StatCard({
 }) {
   return (
     <div className="rounded-xl p-4 flex flex-col justify-between"
-      style={{ backgroundColor: "#FFFFFF", boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)", minHeight: 72 }}>
+      style={{ backgroundColor: CARD_BG, boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)", minHeight: 72 }}>
       <p className="text-sm" style={{ color: NAV.textMuted }}>{label}</p>
       <div>
         <p className={small ? "text-base font-bold" : "text-xl font-bold"}

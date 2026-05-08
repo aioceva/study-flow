@@ -1,6 +1,6 @@
 "use client";
 
-import { NAV, SUBJECT_LABELS, Subject } from "@/types";
+import { NAV, SUBJECT_LABELS, Subject, CARD_BG } from "@/types";
 
 const SUBJECT_COLORS: Record<string, string> = {
   math: "#4F8EF7",
@@ -39,7 +39,7 @@ export function LessonCard({
   const label = subjectLabel ?? SUBJECT_LABELS[subject as Subject] ?? subject;
 
   const cardStyle: React.CSSProperties = {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: CARD_BG,
     boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)",
   };
 

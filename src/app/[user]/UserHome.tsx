@@ -3,6 +3,7 @@
 import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Sessions, Subject, NAV } from "@/types";
+import { THEME_LABELS, DEFAULT_THEME } from "@/types/themes";
 import Link from "next/link";
 import { LessonCard } from "@/components/LessonCard";
 import { FeedbackButton } from "@/components/FeedbackButton";
@@ -21,6 +22,10 @@ interface LessonTile {
   lastDate: string;
 }
 
+interface UserHomeProps {
+  readingTheme?: string;
+}
+
 function getGroup(dateStr: string): "week" | "lastweek" | "older" {
   const date = new Date(dateStr);
   const now = new Date();
@@ -36,7 +41,7 @@ const GROUP_LABELS: Record<string, string> = {
   older:    "По-рано",
 };
 
-export default function UserHome() {
+export default function UserHome({ readingTheme: initialTheme = DEFAULT_THEME }: UserHomeProps) {
   const { user } = useParams<{ user: string }>();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -45,6 +50,7 @@ export default function UserHome() {
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [displayName, setDisplayName] = useState(user.charAt(0).toUpperCase() + user.slice(1));
+  const [theme, setTheme] = useState(initialTheme);
 
   useEffect(() => {
     Promise.all([
@@ -80,7 +86,20 @@ export default function UserHome() {
     setTimeout(() => startTransition(() => router.push(url)), 150);
   }
 
-  // Групираме по относително време
+  async function handleThemeChange(newTheme: string) {
+    setTheme(newTheme);
+    try {
+      await fetch(`/api/profile?user=${user}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ readingTheme: newTheme }),
+      });
+    } catch {
+      // ignore — theme shows optimistically, will persist on next full load
+    }
+    startTransition(() => router.refresh());
+  }
+
   const groups: { key: string; label: string; tiles: LessonTile[] }[] = [];
   for (const g of ["week", "lastweek", "older"] as const) {
     const grouped = tiles.filter((t) => getGroup(t.lastDate) === g);
@@ -88,7 +107,7 @@ export default function UserHome() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen" style={{ backgroundColor: NAV.surface }}>
+    <div className="flex flex-col min-h-screen" style={{ backgroundColor: NAV.bg }}>
 
       {/* Хамбургер overlay */}
       {menuOpen && (
@@ -98,12 +117,12 @@ export default function UserHome() {
         >
           {/* Drawer */}
           <div
-            className="w-64 h-full flex flex-col py-8 px-6"
+            className="w-64 h-full flex flex-col py-8 px-6 gap-3"
             style={{ backgroundColor: NAV.bg, borderRight: `1px solid ${NAV.border}` }}
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="btn-press self-end mb-6 p-2"
+              className="btn-press self-end mb-3 p-2"
               aria-label="Затвори менюто"
               onClick={() => setMenuOpen(false)}
               style={{ color: NAV.text }}
@@ -118,6 +137,27 @@ export default function UserHome() {
             >
               Дневник
             </Link>
+
+            {/* Тема за четене */}
+            <div>
+              <p className="text-sm font-medium mb-2 px-1" style={{ color: NAV.textMuted }}>
+                Тема за четене
+              </p>
+              <select
+                value={theme}
+                onChange={(e) => handleThemeChange(e.target.value)}
+                className="w-full rounded-xl py-2.5 px-3 text-base font-medium"
+                style={{
+                  backgroundColor: NAV.surface,
+                  color: NAV.text,
+                  border: `1px solid ${NAV.border}`,
+                }}
+              >
+                {Object.entries(THEME_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+            </div>
           </div>
           {/* Тъмен фон */}
           <div className="flex-1" style={{ backgroundColor: "rgba(0,0,0,0.4)" }} />

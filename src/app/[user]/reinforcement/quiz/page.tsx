@@ -54,8 +54,8 @@ export default function ReinforcementQuizPage() {
 
   // Alternating backgrounds (0-indexed: Q1=index0=нечетен=бял)
   const isEvenQ      = current % 2 === 1;
-  const screenBg     = isEvenQ ? NAV.surface : "#FFFFFF";
-  const defaultCardBg = isEvenQ ? "#FFFFFF"  : NAV.surface;
+  const screenBg      = isEvenQ ? NAV.surface : "var(--theme-bg)";
+  const defaultCardBg = isEvenQ ? "var(--theme-bg)" : NAV.surface;
 
   useEffect(() => {
     async function load() {
@@ -201,7 +201,7 @@ export default function ReinforcementQuizPage() {
   const showTimer = phase === "correct" || phase === "wrong";
 
   // Shared topbar JSX
-  const topbar = (bgColor = "white") => (
+  const topbar = (bgColor = "var(--theme-bg)") => (
     <div className="flex-none" style={{ backgroundColor: bgColor, borderBottom: `0.5px solid ${NAV.border}` }}>
       <div className="flex items-center px-4 pt-3 pb-2">
         <button
@@ -246,7 +246,7 @@ export default function ReinforcementQuizPage() {
     const correctText = q.options.find((o) => o.correct)?.text ?? "";
     return (
       <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: "#EBF4FF" }}>
-        {topbar("white")}
+        {topbar("var(--theme-bg)")}
         <div className="flex-1 flex flex-col items-center justify-center px-6 gap-5 text-center">
           <span style={{ fontSize: 52, lineHeight: 1 }}>💡</span>
           {q.explanation ? (
@@ -387,6 +387,30 @@ export default function ReinforcementQuizPage() {
         </div>
       </div>
 
+      {/* Footer — постоянна прогрес линия */}
+      <div
+        className="flex-none px-4 pb-5 pt-3 flex flex-col gap-2"
+        style={{ borderTop: `0.5px solid ${NAV.border}`, backgroundColor: "var(--theme-bg)" }}
+      >
+        <div style={{ width: "100%", height: 4, borderRadius: 2, backgroundColor: NAV.border }}>
+          <div style={{
+            height: "100%",
+            borderRadius: 2,
+            backgroundColor: phase === "correct" ? "#3B9E6A" : NAV.btnSolid,
+            width: showTimer
+              ? `${timerPct * 100}%`
+              : `${(current / questions.length) * 100}%`,
+            opacity: showTimer ? 1 : 0.4,
+            transition: showTimer ? "width 0.05s linear" : "none",
+          }} />
+        </div>
+        <span className="text-sm text-center" style={{
+          color: NAV.textMuted,
+          opacity: showTimer ? 0 : 1,
+        }}>
+          Докосни отговор
+        </span>
+      </div>
     </div>
   );
 }

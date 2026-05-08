@@ -94,7 +94,9 @@ export type ReadingSupport = "low_support" | "medium_support" | "high_support";
 export interface UserProfile {
   name: string;
   grade: string;
-  readingSupport: ReadingSupport;
+  readingSupport?: ReadingSupport;
+  readingColor?: string;
+  readingTheme?: string;
   joinedAt: string;
 }
 
@@ -125,17 +127,21 @@ export const SUBJECT_LABELS: Record<Subject, string> = {
   gen: "Общ",
 };
 
-// Навигационна палитра
+// Навигационна палитра — стойностите са CSS custom property references
+// CSS vars се задават от [user]/layout.tsx спрямо избраната ReadingTheme
 export const NAV = {
-  headerBg:  "#4A6FA5",
-  btnSolid:  "#4A6FA5",
-  btnBorder: "#4A6FA5",
-  surface:   "#F0F2F5",
-  bg:        "#FFFFFF",
-  text:      "#4A6FA5",
-  textMuted: "#5A6A7E",
-  border:    "#E2E5EA",
+  headerBg:  "var(--theme-btn, #4A6FA5)",
+  btnSolid:  "var(--theme-btn, #4A6FA5)",
+  btnBorder: "var(--theme-btn, #4A6FA5)",
+  surface:   "var(--theme-btn-secondary, #E8E4DD)",
+  bg:        "var(--theme-bg, #FAF8F4)",
+  text:      "var(--theme-text, #2D2D2D)",
+  textMuted: "var(--theme-text-muted, #6B6560)",
+  border:    "var(--theme-card-border, #E5E0D8)",
 };
+
+// Фон на карти/тайлове — различен от bg за по-фин layering ефект
+export const CARD_BG = "var(--theme-card, #F0EDE7)";
 
 // Фон на модул (content area)
 export const MODULE_COLORS: Record<number, string> = {

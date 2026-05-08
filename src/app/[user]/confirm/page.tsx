@@ -3,7 +3,7 @@
 import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { zipSync } from "fflate";
-import { NAV, SUBJECT_LABELS, Subject, Sessions, Adaptation, MODULE_PROGRESS, ReinforcementSession } from "@/types";
+import { NAV, SUBJECT_LABELS, Subject, Sessions, Adaptation, MODULE_PROGRESS, ReinforcementSession, CARD_BG } from "@/types";
 
 const PROMPT_FILES = ["generate.ts", "quiz.ts", "recognize.ts"];
 
@@ -172,7 +172,7 @@ export default function ConfirmPage() {
   const estMin = totalCards > 0 ? Math.round(totalCards * 0.75) : null;
 
   const cardStyle = {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: CARD_BG,
     boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)",
     borderRadius: 16,
   };

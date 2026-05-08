@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Session, LearnSession, SUBJECT_LABELS, Subject, NAV, QuizQuestion } from "@/types";
+import { Session, LearnSession, SUBJECT_LABELS, Subject, NAV, QuizQuestion, CARD_BG } from "@/types";
 
 const BG_MONTHS = [
   "януари","февруари","март","април","май","юни",
@@ -100,7 +100,7 @@ export function SessionList({
                   role={canExpand ? "button" : undefined}
                   aria-expanded={canExpand ? isOpen : undefined}
                   style={{
-                    backgroundColor: "#FFFFFF",
+                    backgroundColor: CARD_BG,
                     boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)",
                     overflow: "hidden",
                     cursor: canExpand ? "pointer" : "default",
