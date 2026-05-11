@@ -24,6 +24,12 @@ function mockSessions(page: import("@playwright/test").Page, sessions = []) {
   );
 }
 
+function mockProfile(page: import("@playwright/test").Page) {
+  return page.route(`**/api/profile?user=${USER}`, (route) =>
+    route.fulfill({ json: { name: "Боби", grade: "", readingSupport: "low_support", joinedAt: "" } })
+  );
+}
+
 function mockAdaptationDetail(page: import("@playwright/test").Page) {
   return page.route("**/api/adaptation?user=bobi&subject=bio&lesson=5", (route) =>
     route.fulfill({
@@ -37,11 +43,12 @@ function mockAdaptationDetail(page: import("@playwright/test").Page) {
 test("Test 1: Home page renders and shows lesson card", async ({ page }) => {
   await mockAdaptationList(page);
   await mockSessions(page);
+  await mockProfile(page);
 
   await page.goto(`/${USER}`);
   await page.waitForLoadState("networkidle");
 
-  await expect(page.getByText(`Здравей, Bobi!`)).toBeVisible();
+  await expect(page.getByText(`Здравей, Боби!`)).toBeVisible();
   await expect(page.getByText("Фотосинтеза")).toBeVisible();
 });
 
