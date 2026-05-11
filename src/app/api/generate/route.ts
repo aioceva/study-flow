@@ -32,7 +32,7 @@ function validateAdaptation(obj: unknown): obj is Adaptation {
 
 const client = new Anthropic();
 const MAX_PER_DAY = 5;
-const MAX_TOTAL = 10;
+const MAX_TOTAL = 20;
 
 export async function POST(req: NextRequest) {
   try {
