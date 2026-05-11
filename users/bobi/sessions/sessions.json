@@ -1329,6 +1329,24 @@
         9,
         11
       ]
+    },
+    {
+      "date": "2026-05-11",
+      "subject": "chem",
+      "lesson": 22,
+      "started_at": "15:47",
+      "duration_min": 10,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        7,
+        15,
+        1,
+        8,
+        9,
+        14,
+        2
+      ]
     }
   ]
 }
