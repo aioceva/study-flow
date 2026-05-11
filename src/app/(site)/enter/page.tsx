@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const NAV = {
   btnSolid: "#4A6FA5",
@@ -14,6 +14,8 @@ const NAV = {
 
 export default function EnterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isTestMode = searchParams.get("mode") === "test";
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,10 +32,10 @@ export default function EnterPage() {
       const res = await fetch(`/api/check-user?slug=${encodeURIComponent(slug)}`);
       const data = await res.json();
       if (data.exists) {
-        router.push(`/${slug}`);
+        router.push(`/${slug}${isTestMode ? "?mode=test" : ""}`);
       } else {
         setError(
-          `Не намерихме участник в пилотния проект с това име "${name.trim()}". Проверете дали името на латиница се изписва точно така. )`
+          `Не намерихме акаунт с името "${name.trim()}". Проверете дали името на латиница се изписва точно така.`
         );
       }
     } catch {
@@ -91,7 +93,7 @@ export default function EnterPage() {
               setName(e.target.value);
               setError(null);
             }}
-            placeholder="Например: daria"
+            placeholder="Например: dodo"
             autoComplete="off"
             autoCapitalize="none"
             style={{

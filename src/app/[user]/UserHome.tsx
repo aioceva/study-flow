@@ -44,13 +44,16 @@ export default function UserHome() {
   const [tiles, setTiles] = useState<LessonTile[]>([]);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [displayName, setDisplayName] = useState(user.charAt(0).toUpperCase() + user.slice(1));
 
   useEffect(() => {
     Promise.all([
       fetch(`/api/adaptation?user=${user}`).then((r) => r.json()),
       fetch(`/api/session?user=${user}`).then((r) => r.json()).catch(() => ({ sessions: [] })),
+      fetch(`/api/profile?user=${user}`).then((r) => r.ok ? r.json() : null).catch(() => null),
     ])
-      .then(([adaptData, sessData]: [{ lessons: IndexEntry[] }, Sessions]) => {
+      .then(([adaptData, sessData, profileData]: [{ lessons: IndexEntry[] }, Sessions, { name: string } | null]) => {
+        if (profileData?.name) setDisplayName(profileData.name);
         const lessons = adaptData.lessons ?? [];
 
         const lastDateMap = new Map<string, string>();
@@ -72,8 +75,6 @@ export default function UserHome() {
       .catch(() => setTiles([]))
       .finally(() => setLoading(false));
   }, [user]);
-
-  const displayName = user.charAt(0).toUpperCase() + user.slice(1);
 
   function navigate(url: string) {
     setTimeout(() => startTransition(() => router.push(url)), 150);
@@ -142,11 +143,15 @@ export default function UserHome() {
         )}
         <a
           href={`/help/start.html?user=${user}`}
-          className="btn-press flex items-center justify-center w-8 h-8 rounded-full text-base font-bold"
-          style={{ backgroundColor: NAV.border, color: NAV.text }}
+          className="btn-press w-8 h-8 flex items-center justify-center"
+          style={{ opacity: 0.55 }}
           aria-label="Помощ"
         >
-          ?
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12.01" y2="17" strokeWidth="3" />
+          </svg>
         </a>
         <FeedbackButton user={user} />
       </div>
