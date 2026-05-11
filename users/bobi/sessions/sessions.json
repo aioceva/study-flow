@@ -1297,6 +1297,23 @@
       "type": "learn",
       "status": "partial",
       "completed": false
+    },
+    {
+      "date": "2026-05-11",
+      "subject": "chem",
+      "lesson": 22,
+      "started_at": "15:19",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        14,
+        10,
+        8,
+        12,
+        6,
+        3
+      ]
     }
   ]
 }
