@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const NAV = {
@@ -12,7 +12,7 @@ const NAV = {
   border: "#E2E5EA",
 };
 
-export default function EnterPage() {
+function EnterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isTestMode = searchParams.get("mode") === "test";
@@ -132,5 +132,13 @@ export default function EnterPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function EnterPage() {
+  return (
+    <Suspense>
+      <EnterForm />
+    </Suspense>
   );
 }
