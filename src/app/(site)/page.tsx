@@ -231,7 +231,7 @@ export default function LandingPage() {
             Test mode
           </Link>
           <Link
-            href="/bobi"
+            href="/enter"
             className="rounded-xl px-3 py-1.5 font-medium text-sm"
             style={{ backgroundColor: NAV.surface, color: NAV.textMuted }}
           >
