@@ -300,27 +300,8 @@ export default function ReinforcementQuizPage() {
       )}
 
       {/* Съдържание */}
-      <div className="flex-1 overflow-y-auto px-5 pt-4 pb-2" style={{ backgroundColor: screenBg }}>
-        {/* Номер на въпроса — цветен label */}
-        {(() => {
-          const lc = LABEL_PALETTE[current % LABEL_PALETTE.length];
-          return (
-            <span style={{
-              display: "inline-block",
-              backgroundColor: lc.bg,
-              color: lc.color,
-              fontSize: 12,
-              fontWeight: 700,
-              lineHeight: "1.5",
-              padding: "5px 13px",
-              borderRadius: 24,
-              letterSpacing: "0.04em",
-              marginBottom: 14,
-            }}>
-              Въпрос {current + 1}
-            </span>
-          );
-        })()}
+      <div className="flex-1 overflow-y-auto" style={{ backgroundColor: screenBg }}>
+        <div className="flex flex-col min-h-full px-5 pt-4 pb-2">
         <p className="text-xl font-bold mb-4 leading-snug" style={{ color: NAV.text }}>
           {q.question}
         </p>
@@ -381,32 +362,31 @@ export default function ReinforcementQuizPage() {
             );
           })}
         </div>
+
+        {/* Номер на въпроса — центриран в оставащото пространство */}
+        <div className="flex-1 flex items-center justify-center">
+          {(() => {
+            const lc = LABEL_PALETTE[current % LABEL_PALETTE.length];
+            return (
+              <span style={{
+                display: "inline-block",
+                backgroundColor: lc.bg,
+                color: lc.color,
+                fontSize: 16,
+                fontWeight: 400,
+                lineHeight: "1.5",
+                padding: "5px 13px",
+                borderRadius: 24,
+                letterSpacing: "0.04em",
+              }}>
+                Въпрос {current + 1}
+              </span>
+            );
+          })()}
+        </div>
+        </div>
       </div>
 
-      {/* Footer — постоянна прогрес линия */}
-      <div
-        className="flex-none px-4 pb-5 pt-3 flex flex-col gap-2"
-        style={{ borderTop: `0.5px solid ${NAV.border}`, backgroundColor: "white" }}
-      >
-        <div style={{ width: "100%", height: 4, borderRadius: 2, backgroundColor: NAV.border }}>
-          <div style={{
-            height: "100%",
-            borderRadius: 2,
-            backgroundColor: phase === "correct" ? "#3B9E6A" : NAV.btnSolid,
-            width: showTimer
-              ? `${timerPct * 100}%`
-              : `${(current / questions.length) * 100}%`,
-            opacity: showTimer ? 1 : 0.4,
-            transition: showTimer ? "width 0.05s linear" : "none",
-          }} />
-        </div>
-        <span className="text-sm text-center" style={{
-          color: NAV.textMuted,
-          opacity: showTimer ? 0 : 1,
-        }}>
-          Докосни отговор
-        </span>
-      </div>
     </div>
   );
 }

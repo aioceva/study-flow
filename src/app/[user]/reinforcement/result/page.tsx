@@ -8,17 +8,20 @@ const LEVELS = [
   {
     stars: [1, 0.5, 0.5],
     title: "Добро начало!",
-    sub: "Има още много интересни неща в урока.\nПрочети отново и пробвай пак.",
+    sub: "Има още много интересни неща в урока.",
+    hint: "Прегледай отново урока и пробвай пак.",
   },
   {
     stars: [1, 1, 0.5],
     title: "Чудесен резултат!",
-    sub: "Половината урок е вече твой!\nПробвай пак и числото ще се покачи.",
+    sub: "Половината урок е вече твой!",
+    hint: "Повтори теста и ще подобриш резултата си.",
   },
   {
     stars: [1, 1, 1],
     title: "Браво!",
-    sub: "Много добре се справи!\nПробвай пак — въпросите са различни всеки път!",
+    sub: "Много добре се справи!",
+    hint: "Пробвай пак - въпросите са различни всеки път!",
   },
 ];
 
@@ -53,7 +56,7 @@ export default function ReinforcementResultPage() {
 
   const percent = Math.round((score / total) * 100);
   const levelIdx = percent <= 33 ? 0 : percent <= 66 ? 1 : 2;
-  const { stars, title, sub } = LEVELS[levelIdx];
+  const { stars, title, sub, hint } = LEVELS[levelIdx];
 
   return (
     <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
@@ -102,6 +105,7 @@ export default function ReinforcementResultPage() {
 
       {/* Бутони */}
       <div className="flex-none px-4 pb-6 pt-3 space-y-2">
+        <p className="text-center text-sm pb-1" style={{ color: "#888780" }}>{hint}</p>
         <button
           onClick={() => navigate(`/${user}/reinforcement/quiz?subject=${subject}&lesson=${lesson}${mode === "test" ? "&mode=test" : ""}`)}
           className="btn-press w-full rounded-xl py-4 text-white font-medium text-base"

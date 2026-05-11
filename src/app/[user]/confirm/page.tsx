@@ -169,7 +169,7 @@ export default function ConfirmPage() {
 
   const modules = adaptation?.modules ?? [];
   const totalCards = modules.reduce((sum, m) => sum + m.cards.length, 0);
-  const estMin = totalCards > 0 ? Math.round(totalCards * 0.6) : null;
+  const estMin = totalCards > 0 ? Math.round(totalCards * 0.75) : null;
 
   const cardStyle = {
     backgroundColor: "#FFFFFF",
@@ -398,7 +398,7 @@ export default function ConfirmPage() {
                   Проверка на знанията
                 </p>
                 <p className="text-sm" style={{ color: NAV.textMuted }}>
-                  10 въпроса · ~5 мин{lastResult && (
+                  10 въпроса · ~10 мин{lastResult && (
                     <span style={{ color: lastResult.pct >= 70 ? "#3B9E6A" : "#9A6E08" }}>
                       {" · "}{lastResult.label}
                     </span>
@@ -421,7 +421,7 @@ export default function ConfirmPage() {
                 <p className="text-xs font-medium tracking-wider uppercase mb-0.5" style={{ color: NAV.textMuted }}>
                   Проверка на знанията
                 </p>
-                <p className="text-sm" style={{ color: NAV.textMuted }}>10 въпроса · ~3 мин · отключва се след урока</p>
+                <p className="text-sm" style={{ color: NAV.textMuted }}>10 въпроса · ~10 мин · отключва се след урока</p>
               </div>
               <div
                 className="flex-none w-11 h-11 rounded-full flex items-center justify-center text-lg"
