@@ -140,6 +140,14 @@ export default function UserHome() {
             🔧 Test
           </span>
         )}
+        <a
+          href={`/help/start.html?user=${user}`}
+          className="btn-press flex items-center justify-center w-8 h-8 rounded-full text-base font-bold"
+          style={{ backgroundColor: NAV.border, color: NAV.text }}
+          aria-label="Помощ"
+        >
+          ?
+        </a>
         <FeedbackButton user={user} />
       </div>
 
