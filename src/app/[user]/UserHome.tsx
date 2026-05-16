@@ -105,7 +105,7 @@ export default function UserHome({ readingTheme: initialTheme = DEFAULT_THEME }:
   }
 
   return (
-    <div className="flex flex-col min-h-screen" style={{ backgroundColor: NAV.bg }}>
+    <div className="flex flex-col min-h-screen" style={{ backgroundColor: NAV.surface }}>
 
       {/* Хамбургер overlay */}
       {menuOpen && (

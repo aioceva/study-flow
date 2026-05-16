@@ -23,7 +23,7 @@ export default async function UserLayout({
     // fall back to default theme on any error
   }
 
-  const isDark = themeName === "dark-grey";
+  const isDefault = themeName === "default";
 
   return (
     <div
@@ -34,19 +34,38 @@ export default async function UserLayout({
         borderRight: `1px solid ${theme.cardBorder}`,
         minHeight: "100dvh",
         backgroundColor: theme.bg,
+        // Core vars — always set (fallbacks in NAV/CARD_BG already match DEFAULT values)
         "--theme-bg":            theme.bg,
-        "--theme-card":          theme.card,
         "--theme-text":          theme.text,
         "--theme-text-muted":    theme.textMuted,
         "--theme-btn":           theme.btn,
-        "--theme-accent":        theme.btn,
         "--theme-btn-secondary": theme.btnSecondary,
-        "--theme-surface":       theme.card,
+        "--theme-card":          theme.card,
         "--theme-card-border":   theme.cardBorder,
-        "--quiz-correct-bg":     isDark ? "#1a4d2e" : "#E8F9F1",
-        "--quiz-correct-text":   isDark ? "#a8e6c3" : "#3B9E6A",
-        "--quiz-wrong-bg":       isDark ? "#4d1a1a" : "#FDF0F0",
-        "--quiz-wrong-text":     isDark ? "#e6a8a8" : "#C07070",
+        // Module-override vars — only set for colored themes.
+        // For DEFAULT, these are intentionally absent so LessonLayoutInner falls back
+        // to MODULE_COLORS / MODULE_SURFACE / MODULE_BTN per-module colors.
+        ...(isDefault ? {} : {
+          "--theme-accent":       theme.btn,
+          "--theme-surface":      theme.card,
+          "--theme-lesson-bg":    theme.bg,
+          "--theme-progress-dot": theme.btn,
+        }),
+        // Quiz vars — always fixed (quiz is always white regardless of theme)
+        "--quiz-correct-bg":     "#E8F9F1",
+        "--quiz-correct-text":   "#3B9E6A",
+        "--quiz-wrong-bg":       "#FDF0F0",
+        "--quiz-wrong-text":     "#C07070",
+        "--quiz-pill-bg":        theme.quizPillBg,
+        "--quiz-pill-text":      theme.quizPillText,
+        // Badge vars
+        "--badge-learn-bg":      theme.badgeLearnBg,
+        "--badge-learn-text":    theme.badgeLearnText,
+        "--badge-partial-bg":    theme.badgePartialBg,
+        "--badge-partial-text":  theme.badgePartialText,
+        "--badge-review-bg":     theme.badgeReviewBg,
+        "--badge-review-text":   theme.badgeReviewText,
+        "--calendar-active-bg":  theme.calendarDot,
       } as React.CSSProperties}
     >
       {children}

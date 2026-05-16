@@ -238,7 +238,7 @@ export default async function ParentPage({
                     className="w-9 h-9 rounded-full flex items-center justify-center text-sm"
                     style={
                       active
-                        ? { backgroundColor: "#3B9E6A", color: "white" }
+                        ? { backgroundColor: "var(--calendar-active-bg)", color: "white" }
                         : isToday
                           ? { backgroundColor: NAV.border, color: NAV.text }
                           : { backgroundColor: NAV.surface, color: NAV.border }

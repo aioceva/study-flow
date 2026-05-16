@@ -6,72 +6,81 @@ export interface ReadingTheme {
   btn: string;
   btnSecondary: string;
   cardBorder: string;
+  badgeLearnBg: string;
+  badgeLearnText: string;
+  badgePartialBg: string;
+  badgePartialText: string;
+  badgeReviewBg: string;
+  badgeReviewText: string;
+  calendarDot: string;
+  quizPillBg: string;
+  quizPillText: string;
 }
 
 export const READING_THEMES: Record<string, ReadingTheme> = {
-  "off-white": {
-    bg:           "#FAF8F4",
-    card:         "#F0EDE7",
-    text:         "#2D2D2D",
-    textMuted:    "#6B6560",
-    btn:          "#4A6FA5",
-    btnSecondary: "#E8E4DD",
-    cardBorder:   "#E5E0D8",
+  // Идентична с main branch — оригиналната NAV палитра, бели карти
+  "default": {
+    bg:               "#FFFFFF",
+    card:             "#FFFFFF",
+    text:             "#4A6FA5",
+    textMuted:        "#5A6A7E",
+    btn:              "#4A6FA5",
+    btnSecondary:     "#F0F2F5",
+    cardBorder:       "#E2E5EA",
+    badgeLearnBg:     "#EBF4FF",
+    badgeLearnText:   "#3B7DD8",
+    badgePartialBg:   "#FEF3C7",
+    badgePartialText: "#92400E",
+    badgeReviewBg:    "#F3EEFF",
+    badgeReviewText:  "#7B5EA7",
+    calendarDot:      "#3B9E6A",
+    quizPillBg:       "#E8EAED",
+    quizPillText:     "#5A6A7E",
   },
-  "dark-grey": {
-    bg:           "#2C2C2C",
-    card:         "#3A3A3A",
-    text:         "#F0EDE8",
-    textMuted:    "#B8B4AF",
-    btn:          "#6B8CC4",
-    btnSecondary: "#444444",
-    cardBorder:   "#484848",
-  },
-  "light-pink": {
-    bg:           "#FDF0F3",
-    card:         "#F8E2E8",
-    text:         "#5C1A2A",
-    textMuted:    "#8B4A5A",
-    btn:          "#B5435C",
-    btnSecondary: "#F4D5DC",
-    cardBorder:   "#ECC8D2",
-  },
+  // 5 нюанса синьо: много светъл bg → малко по-тъмен за secondary → карти → мутиран текст → тъмен текст/бутони
   "light-blue": {
-    bg:           "#EFF5FC",
-    card:         "#DDE9F7",
-    text:         "#1A3558",
-    textMuted:    "#4A6A8A",
-    btn:          "#2B6CB0",
-    btnSecondary: "#CCE0F5",
-    cardBorder:   "#C5D9EE",
+    bg:               "#F0F7FE",
+    card:             "#B8D5F0",
+    text:             "#1B3D6A",
+    textMuted:        "#3A6090",
+    btn:              "#1B3D6A",
+    btnSecondary:     "#D8EDFF",
+    cardBorder:       "#3A6090",
+    badgeLearnBg:     "#C8E2F8",
+    badgeLearnText:   "#1B3D6A",
+    badgePartialBg:   "#FEF3C7",
+    badgePartialText: "#92400E",
+    badgeReviewBg:    "#E0D8F8",
+    badgeReviewText:  "#3A1A80",
+    calendarDot:      "#1B3D6A",
+    quizPillBg:       "#A8C8E8",
+    quizPillText:     "#1B3D6A",
   },
+  // 5 нюанса лилаво: много светъл bg → малко по-тъмен за secondary → карти → мутиран текст → тъмен текст/бутони
   "light-purple": {
-    bg:           "#F2EFF9",
-    card:         "#E5DEEF",
-    text:         "#2D1B5E",
-    textMuted:    "#5E4A8A",
-    btn:          "#6347B5",
-    btnSecondary: "#DDD4F0",
-    cardBorder:   "#D0C5E8",
-  },
-  "light-green": {
-    bg:           "#EFF6EF",
-    card:         "#DDF0DB",
-    text:         "#1A3D1A",
-    textMuted:    "#3D6B3A",
-    btn:          "#2D7A2D",
-    btnSecondary: "#CCE8CA",
-    cardBorder:   "#BFDCBC",
+    bg:               "#F3F0FD",
+    card:             "#C6B4E4",
+    text:             "#2C1668",
+    textMuted:        "#6B4FAA",
+    btn:              "#2C1668",
+    btnSecondary:     "#E5DEF8",
+    cardBorder:       "#6B4FAA",
+    badgeLearnBg:     "#D5C8F0",
+    badgeLearnText:   "#2C1668",
+    badgePartialBg:   "#FDEBD0",
+    badgePartialText: "#8A4010",
+    badgeReviewBg:    "#C8E0F5",
+    badgeReviewText:  "#1A3A70",
+    calendarDot:      "#2C1668",
+    quizPillBg:       "#B8A0D8",
+    quizPillText:     "#2C1668",
   },
 };
 
 export const THEME_LABELS: Record<string, string> = {
-  "off-white":    "Крем",
-  "dark-grey":    "Тъмно сиво",
-  "light-pink":   "Розово",
+  "default":      "По подразбиране",
   "light-blue":   "Синьо",
   "light-purple": "Лилаво",
-  "light-green":  "Зелено",
 };
 
-export const DEFAULT_THEME = "off-white";
+export const DEFAULT_THEME = "default";

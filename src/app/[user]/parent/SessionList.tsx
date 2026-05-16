@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Session, LearnSession, SUBJECT_LABELS, Subject, NAV, QuizQuestion, CARD_BG } from "@/types";
 
 const BG_MONTHS = [
@@ -31,11 +31,11 @@ function sessionErrors(s: Session): number[] {
   return s.errors ?? [];
 }
 
-function scoreColor(score: number, total: number): string {
+function scoreStyle(score: number, total: number): React.CSSProperties {
   const pct = total > 0 ? score / total : 0;
-  if (pct >= 0.8) return "#22C55E";
-  if (pct >= 0.6) return "#F59E0B";
-  return "#EF4444";
+  if (pct >= 0.8) return { color: "#22C55E" };
+  if (pct >= 0.6) return { color: "#F59E0B" };
+  return { color: "#EF4444" };
 }
 
 function toPercent(score: number, total: number): string {
@@ -83,8 +83,8 @@ export function SessionList({
               const subjectLabel = SUBJECT_LABELS[s.subject as Subject] ?? s.subject;
               const isPartial = s.type === "learn" && (s as LearnSession).status === "partial";
               const typeLabel  = isPartial ? "Започнат урок" : s.type === "learn" ? "Учене" : "Преговор";
-              const typeBg    = isPartial ? "#FEF3C7"        : s.type === "learn" ? "#EBF4FF" : "#F3EEFF";
-              const typeColor = isPartial ? "#92400E"        : s.type === "learn" ? "#3B7DD8" : "#7B5EA7";
+              const typeBg    = isPartial ? "var(--badge-partial-bg)"   : s.type === "learn" ? "var(--badge-learn-bg)"   : "var(--badge-review-bg)";
+              const typeColor = isPartial ? "var(--badge-partial-text)" : s.type === "learn" ? "var(--badge-learn-text)" : "var(--badge-review-text)";
               const quizKey   = `${s.subject}-${s.lesson}`;
               const questions = quizMap[quizKey] ?? [];
               const wrongQs   = questions.filter((q) => errors.includes(q.id));
@@ -134,7 +134,7 @@ export function SessionList({
                     <span
                       className="text-base"
                       style={{
-                        color: scoreColor(score, total),
+                        ...scoreStyle(score, total),
                         padding: "4px 10px",
                       }}
                     >
