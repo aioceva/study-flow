@@ -1447,6 +1447,26 @@
       "type": "learn",
       "status": "completed",
       "completed": true
+    },
+    {
+      "date": "2026-05-16",
+      "subject": "bio",
+      "lesson": 45,
+      "started_at": "13:43",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        18,
+        1,
+        11,
+        8,
+        9,
+        2,
+        14,
+        4,
+        19
+      ]
     }
   ]
 }
