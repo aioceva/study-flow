@@ -1647,6 +1647,16 @@
       "type": "learn",
       "status": "partial",
       "completed": false
+    },
+    {
+      "date": "2026-05-17",
+      "subject": "chem",
+      "lesson": 22,
+      "started_at": "20:08",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
