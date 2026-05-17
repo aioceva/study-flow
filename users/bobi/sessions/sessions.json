@@ -1667,6 +1667,16 @@
       "type": "learn",
       "status": "completed",
       "completed": true
+    },
+    {
+      "date": "2026-05-17",
+      "subject": "gen",
+      "lesson": 20,
+      "started_at": "20:21",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
