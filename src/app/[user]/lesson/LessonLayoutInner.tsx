@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState, startTransition } from "react";
+import { useEffect, useRef, useState, startTransition, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
 import { Adaptation, MODULE_COLORS, MODULE_SURFACE, MODULE_PROGRESS, MODULE_BTN, NAV, SUBJECT_LABELS, Subject } from "@/types";
 import { FeedbackButton } from "@/components/FeedbackButton";
@@ -50,6 +50,82 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 
   const bgColor = MODULE_COLORS[moduleId] ?? "#F8F9FA";
   const isFirst = moduleId === 1 && cardId === 1;
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const cancelledRef = useRef(false);
+  const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
+
+  // Зарежда гласовете — Chrome ги зарежда асинхронно
+  useEffect(() => {
+    const load = () => { voicesRef.current = window.speechSynthesis.getVoices(); };
+    load();
+    window.speechSynthesis.addEventListener("voiceschanged", load);
+    return () => window.speechSynthesis.removeEventListener("voiceschanged", load);
+  }, []);
+
+  const stopSpeech = useCallback(() => {
+    cancelledRef.current = true;
+    window.speechSynthesis.cancel();
+    setIsPlaying(false);
+  }, []);
+
+  useEffect(() => {
+    return () => { cancelledRef.current = true; window.speechSynthesis.cancel(); };
+  }, []);
+
+  useEffect(() => {
+    stopSpeech();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  function pickVoice(): SpeechSynthesisVoice | null {
+    const voices = voicesRef.current.length > 0
+      ? voicesRef.current
+      : window.speechSynthesis.getVoices();
+    const bg = voices.filter((v) => v.lang.startsWith("bg"));
+    return bg[0] ?? null;
+  }
+
+  function speakCard(title: string, what: string, why: string, example: string) {
+    if (isPlaying) { stopSpeech(); return; }
+
+    cancelledRef.current = false;
+    window.speechSynthesis.cancel();
+
+    const pause = (ms: number) => new Promise<void>((resolve) => {
+      const t = setTimeout(resolve, ms);
+      // Ако бъде отменено по време на пауза — resolve веднага
+      const check = setInterval(() => { if (cancelledRef.current) { clearTimeout(t); clearInterval(check); resolve(); } }, 50);
+      setTimeout(() => clearInterval(check), ms + 100);
+    });
+
+    const speak = (text: string, rate = 0.88) =>
+      new Promise<void>((resolve) => {
+        if (cancelledRef.current) { resolve(); return; }
+        const utt = new SpeechSynthesisUtterance(text);
+        utt.lang = "bg-BG";
+        utt.rate = rate;
+        utt.pitch = 1.6;
+        const voice = pickVoice();
+        if (voice) utt.voice = voice;
+        utt.onend = () => resolve();
+        utt.onerror = () => resolve();
+        window.speechSynthesis.speak(utt);
+      });
+
+    setIsPlaying(true);
+
+    (async () => {
+      await speak(title, 1.0);
+      if (!cancelledRef.current) await pause(600);
+      if (!cancelledRef.current) await speak(what, 1.05);
+      if (!cancelledRef.current) await pause(400);
+      if (!cancelledRef.current) await speak(why, 1.05);
+      if (!cancelledRef.current) await pause(400);
+      if (!cancelledRef.current) await speak(example, 1.05);
+      if (!cancelledRef.current) setIsPlaying(false);
+    })();
+  }
 
   useEffect(() => {
     if (loadedRef.current || !isCardPage) return;
@@ -246,7 +322,28 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
           </div>
         ) : (
           <div>
-            <p className="text-xl font-bold mb-2 leading-snug" style={{ color: NAV.text }}>{card.title}</p>
+            <div className="flex items-center gap-2 mb-2">
+              <p className="text-xl font-bold leading-snug" style={{ color: NAV.text }}>{card.title}</p>
+              <button
+                onClick={() => speakCard(card.title, card.what, card.why, card.example)}
+                className="btn-press flex-none flex items-center justify-center rounded-full"
+                style={{ width: 32, height: 32, backgroundColor: NAV.btnSolid, opacity: isPlaying ? 1 : 0.85 }}
+                aria-label={isPlaying ? "Спри четенето" : "Чуй картата"}
+              >
+                {isPlaying ? (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                    <rect x="5" y="4" width="4" height="16" rx="1" />
+                    <rect x="15" y="4" width="4" height="16" rx="1" />
+                  </svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="white" stroke="none"/>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                  </svg>
+                )}
+              </button>
+            </div>
             <div className="space-y-1.5">
               <Section icon="📌" label="Какво е"      text={card.what}    moduleId={moduleId} />
               <Section icon="💡" label="Защо е важно" text={card.why}     moduleId={moduleId} />
