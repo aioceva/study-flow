@@ -55,23 +55,26 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const cancelledRef = useRef(false);
   const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
 
+  const ttsSupported = typeof window !== "undefined" && "speechSynthesis" in window;
+
   // Зарежда гласовете — Chrome ги зарежда асинхронно
   useEffect(() => {
+    if (!ttsSupported) return;
     const load = () => { voicesRef.current = window.speechSynthesis.getVoices(); };
     load();
     window.speechSynthesis.addEventListener("voiceschanged", load);
     return () => window.speechSynthesis.removeEventListener("voiceschanged", load);
-  }, []);
+  }, [ttsSupported]);
 
   const stopSpeech = useCallback(() => {
     cancelledRef.current = true;
-    window.speechSynthesis.cancel();
+    if (ttsSupported) window.speechSynthesis.cancel();
     setIsPlaying(false);
-  }, []);
+  }, [ttsSupported]);
 
   useEffect(() => {
-    return () => { cancelledRef.current = true; window.speechSynthesis.cancel(); };
-  }, []);
+    return () => { cancelledRef.current = true; if (ttsSupported) window.speechSynthesis.cancel(); };
+  }, [ttsSupported]);
 
   useEffect(() => {
     stopSpeech();
@@ -87,6 +90,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   }
 
   function speakCard(title: string, what: string, why: string, example: string) {
+    if (!ttsSupported) return;
     if (isPlaying) { stopSpeech(); return; }
 
     cancelledRef.current = false;
