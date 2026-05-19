@@ -51,6 +51,8 @@ export default async function UserLayout({
           "--theme-lesson-bg":    theme.bg,
           "--theme-progress-dot": theme.btn,
         }),
+        ...(themeName === "light-purple" ? { "--theme-lesson-play-btn": "#6347B5", "--theme-lesson-sound-btn": "var(--theme-surface)", "--theme-lesson-sound-btn-shadow": "none" } : {}),
+        ...(themeName === "light-blue"   ? { "--theme-lesson-play-btn": "#2B6CB0", "--theme-lesson-sound-btn": "var(--theme-surface)", "--theme-lesson-sound-btn-shadow": "none" } : {}),
         // Quiz vars — always fixed (quiz is always white regardless of theme)
         "--quiz-correct-bg":     "#E8F9F1",
         "--quiz-correct-text":   "#3B9E6A",

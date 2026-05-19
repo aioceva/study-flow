@@ -333,7 +333,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
               <button
                 onClick={() => speakCard(card.title, card.what, card.why, card.example)}
                 className="btn-press flex-none flex items-center justify-center rounded-full"
-                style={{ width: 29, height: 29, backgroundColor: `color-mix(in srgb, ${MODULE_SURFACE[moduleId]} 50%, ${MODULE_COLORS[moduleId]} 50%)`, boxShadow: "0 1px 3px rgba(0,0,0,0.15)" }}
+                style={{ width: 29, height: 29, backgroundColor: `var(--theme-lesson-sound-btn, color-mix(in srgb, ${MODULE_SURFACE[moduleId]} 50%, ${MODULE_COLORS[moduleId]} 50%))`, boxShadow: "var(--theme-lesson-sound-btn-shadow, 0 1px 3px rgba(0,0,0,0.15))" }}
                 aria-label={isPlaying ? "Спри четенето" : "Чуй картата"}
               >
                 {isPlaying ? (

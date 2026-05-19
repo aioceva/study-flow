@@ -39,8 +39,8 @@ export const READING_THEMES: Record<string, ReadingTheme> = {
   },
   // 5 нюанса синьо: много светъл bg → малко по-тъмен за secondary → карти → мутиран текст → тъмен текст/бутони
   "light-blue": {
-    bg:               "#F0F7FE",
-    card:             "#B8D5F0",
+    bg:               "#E8F2FC",
+    card:             "#B2CFEC",
     text:             "#1B3D6A",
     textMuted:        "#3A6090",
     btn:              "#1B3D6A",
