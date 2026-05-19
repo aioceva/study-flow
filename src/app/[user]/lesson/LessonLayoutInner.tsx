@@ -312,7 +312,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
         </div>
         {/* Модул N от 4 · Заглавие на модула */}
         <div className="px-4 pb-2">
-          <span className="text-sm" style={{ color: NAV.textMuted }}>
+          <span className="text-sm" style={{ color: NAV.textMuted }} suppressHydrationWarning>
             Модул {moduleId} от 4{moduleData?.title ? ` · ${moduleData.title}` : ""}
           </span>
         </div>
@@ -331,19 +331,18 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
               <button
                 onClick={() => speakCard(card.title, card.what, card.why, card.example)}
                 className="btn-press flex-none flex items-center justify-center rounded-full"
-                style={{ width: 32, height: 32, backgroundColor: NAV.btnSolid, opacity: isPlaying ? 1 : 0.85 }}
+                style={{ width: 29, height: 29, backgroundColor: `color-mix(in srgb, ${MODULE_SURFACE[moduleId]} 50%, ${MODULE_COLORS[moduleId]} 50%)`, boxShadow: "0 1px 3px rgba(0,0,0,0.15)" }}
                 aria-label={isPlaying ? "Спри четенето" : "Чуй картата"}
               >
                 {isPlaying ? (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
-                    <rect x="5" y="4" width="4" height="16" rx="1" />
-                    <rect x="15" y="4" width="4" height="16" rx="1" />
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill={NAV.text}>
+                    <rect x="5" y="4" width="4" height="16" rx="1.5" />
+                    <rect x="15" y="4" width="4" height="16" rx="1.5" />
                   </svg>
                 ) : (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="white" stroke="none"/>
-                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill={NAV.text}/>
+                    <path d="M15 8.5a4.5 4.5 0 0 1 0 7" stroke={NAV.text} strokeWidth="2" strokeLinecap="round"/>
                   </svg>
                 )}
               </button>
