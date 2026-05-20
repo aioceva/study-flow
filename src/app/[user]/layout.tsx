@@ -56,6 +56,7 @@ export default async function UserLayout({
           "--calendar-today-border": theme.text,
           "--calendar-future-bg":    "#FFFFFF",
           "--calendar-future-text":  theme.text,
+          "--theme-card-shadow":     "0 2px 10px rgba(74, 111, 165, 0.09)",
         }),
         ...(themeName === "light-purple" ? { "--theme-lesson-chrome": "#FFFFFF", "--theme-lesson-play-btn": "#7E64CE", "--theme-lesson-play-btn-shadow": "0 6px 10px rgba(0,0,0,0.20)", "--theme-lesson-sound-btn": "var(--theme-surface)", "--theme-lesson-sound-btn-shadow": "0 6px 10px rgba(0,0,0,0.20)" } : {}),
         ...(themeName === "light-blue"   ? { "--theme-lesson-chrome": "#FFFFFF", "--theme-lesson-play-btn": "#25A896", "--theme-lesson-play-btn-shadow": "0 6px 10px rgba(0,0,0,0.20)", "--theme-lesson-sound-btn": "var(--theme-surface)", "--theme-lesson-sound-btn-shadow": "0 6px 10px rgba(0,0,0,0.20)" } : {}),

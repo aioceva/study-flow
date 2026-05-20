@@ -40,7 +40,7 @@ export function LessonCard({
 
   const cardStyle: React.CSSProperties = {
     backgroundColor: CARD_BG,
-    boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)",
+    boxShadow: "var(--theme-card-shadow, 0 2px 10px rgba(74, 111, 165, 0.09))",
   };
 
   const inner = (

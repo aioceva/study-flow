@@ -123,3 +123,11 @@ button:disabled {
 @keyframes confetti-burst-6 { 0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1} 100%{transform:translate(30px,-100px)  rotate(160deg)  scale(0.3);opacity:0} }
 @keyframes confetti-burst-7 { 0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1} 100%{transform:translate(-70px,40px)  rotate(70deg)   scale(0.3);opacity:0} }
 @keyframes confetti-burst-8 { 0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1} 100%{transform:translate(70px,40px)   rotate(-70deg)  scale(0.3);opacity:0} }
+
+@keyframes badgeModalIn {
+  from { transform: scale(0.82); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+.badge-modal-card {
+  animation: badgeModalIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
