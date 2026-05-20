@@ -1985,6 +1985,25 @@
         4,
         5
       ]
+    },
+    {
+      "date": "2026-05-20",
+      "subject": "bio",
+      "lesson": 45,
+      "started_at": "23:41",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        17,
+        2,
+        16,
+        3,
+        5,
+        10,
+        19,
+        14
+      ]
     }
   ]
 }
