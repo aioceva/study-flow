@@ -35,6 +35,8 @@ export default async function UserLayout({
         minHeight: "100dvh",
         backgroundColor: theme.bg,
         // Core vars — always set (fallbacks in NAV/CARD_BG already match DEFAULT values)
+        "--theme-content-bg":    isDefault ? "#F0F2F5" : "#FFFFFF",
+        "--theme-header-bg":     theme.headerBg,
         "--theme-bg":            theme.bg,
         "--theme-text":          theme.text,
         "--theme-text-muted":    theme.textMuted,
@@ -46,13 +48,17 @@ export default async function UserLayout({
         // For DEFAULT, these are intentionally absent so LessonLayoutInner falls back
         // to MODULE_COLORS / MODULE_SURFACE / MODULE_BTN per-module colors.
         ...(isDefault ? {} : {
-          "--theme-accent":       theme.btn,
-          "--theme-surface":      theme.card,
-          "--theme-lesson-bg":    theme.bg,
-          "--theme-progress-dot": theme.btn,
+          "--theme-accent":          theme.btn,
+          "--theme-surface":         theme.card,
+          "--theme-lesson-bg":       "#FFFFFF",
+          "--theme-progress-dot":    theme.btn,
+          "--calendar-today-bg":     "#FFFFFF",
+          "--calendar-today-border": theme.text,
+          "--calendar-future-bg":    "#FFFFFF",
+          "--calendar-future-text":  theme.text,
         }),
-        ...(themeName === "light-purple" ? { "--theme-lesson-play-btn": "#6347B5", "--theme-lesson-sound-btn": "var(--theme-surface)", "--theme-lesson-sound-btn-shadow": "none" } : {}),
-        ...(themeName === "light-blue"   ? { "--theme-lesson-play-btn": "#1A8A7A", "--theme-lesson-sound-btn": "var(--theme-surface)", "--theme-lesson-sound-btn-shadow": "none" } : {}),
+        ...(themeName === "light-purple" ? { "--theme-lesson-chrome": "#FFFFFF", "--theme-lesson-play-btn": "#7E64CE", "--theme-lesson-play-btn-shadow": "0 6px 10px rgba(0,0,0,0.20)", "--theme-lesson-sound-btn": "var(--theme-surface)", "--theme-lesson-sound-btn-shadow": "0 6px 10px rgba(0,0,0,0.20)" } : {}),
+        ...(themeName === "light-blue"   ? { "--theme-lesson-chrome": "#FFFFFF", "--theme-lesson-play-btn": "#25A896", "--theme-lesson-play-btn-shadow": "0 6px 10px rgba(0,0,0,0.20)", "--theme-lesson-sound-btn": "var(--theme-surface)", "--theme-lesson-sound-btn-shadow": "0 6px 10px rgba(0,0,0,0.20)" } : {}),
         // Quiz vars — always fixed (quiz is always white regardless of theme)
         "--quiz-correct-bg":     "#E8F9F1",
         "--quiz-correct-text":   "#3B9E6A",

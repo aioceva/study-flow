@@ -105,7 +105,7 @@ export default function UserHome({ readingTheme: initialTheme = DEFAULT_THEME }:
   }
 
   return (
-    <div className="flex flex-col min-h-screen" style={{ backgroundColor: NAV.surface }}>
+    <div className="flex flex-col min-h-screen" style={{ backgroundColor: "var(--theme-content-bg, #F0F2F5)" }}>
 
       {/* Хамбургер overlay */}
       {menuOpen && (
@@ -163,7 +163,7 @@ export default function UserHome({ readingTheme: initialTheme = DEFAULT_THEME }:
       )}
 
       {/* Хедър */}
-      <div className="px-4 pt-6 pb-5 flex items-center gap-3" style={{ backgroundColor: NAV.bg, borderBottom: `1px solid ${NAV.border}` }}>
+      <div className="px-4 pt-6 pb-5 flex items-center gap-3" style={{ backgroundColor: "var(--theme-header-bg, #FFFFFF)", borderBottom: `1px solid ${NAV.border}` }}>
         <button
           className="btn-press flex flex-col gap-1 p-1"
           aria-label="Меню"

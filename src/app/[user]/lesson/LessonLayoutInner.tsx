@@ -289,7 +289,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
     <div className="flex flex-col" style={{ backgroundColor: "var(--theme-bg)", height: "100dvh" }}>
 
       {/* Хедър: ← Предмет · Урок N + 🏠 */}
-      <div className="flex-none" style={{ backgroundColor: "var(--theme-bg)" }}>
+      <div className="flex-none" style={{ backgroundColor: "var(--theme-lesson-chrome, var(--theme-bg))" }}>
         <div className="flex items-center justify-between px-4 pt-3 pb-2">
           <button
             onClick={() => navigate(`/${user}/confirm?${params}`)}
@@ -359,7 +359,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       </div>
 
       {/* Footer: 5 точки прогрес + бутони */}
-      <div className="flex-none px-4 pb-4 pt-2" style={{ backgroundColor: "var(--theme-bg)" }}>
+      <div className="flex-none px-4 pb-4 pt-2" style={{ backgroundColor: "var(--theme-lesson-chrome, var(--theme-bg))" }}>
         {/* 5 точки — текущата е pill, останалите кръгче */}
         <div className="flex justify-center items-center gap-2 mb-2">
           {[1, 2, 3, 4, 5].map((step) => (

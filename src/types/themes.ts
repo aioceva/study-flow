@@ -1,5 +1,6 @@
 export interface ReadingTheme {
   bg: string;
+  headerBg: string;
   card: string;
   text: string;
   textMuted: string;
@@ -21,6 +22,7 @@ export const READING_THEMES: Record<string, ReadingTheme> = {
   // Идентична с main branch — оригиналната NAV палитра, бели карти
   "default": {
     bg:               "#FFFFFF",
+    headerBg:         "#FFFFFF",
     card:             "#FFFFFF",
     text:             "#4A6FA5",
     textMuted:        "#5A6A7E",
@@ -39,8 +41,9 @@ export const READING_THEMES: Record<string, ReadingTheme> = {
   },
   // 5 нюанса синьо-зелено (тюркоаз): много светъл bg → малко по-тъмен за secondary → карти → мутиран текст → тъмен текст/бутони
   "light-blue": {
-    bg:               "#E8FCFA",
-    card:             "#A8E2DD",
+    bg:               "#F2FAF8",
+    headerBg:         "#E0F2EE",
+    card:             "#C4EAE6",
     text:             "#1B6A68",
     textMuted:        "#3A908D",
     btn:              "#1B6A68",
@@ -52,14 +55,15 @@ export const READING_THEMES: Record<string, ReadingTheme> = {
     badgePartialText: "#92400E",
     badgeReviewBg:    "#E0D8F8",
     badgeReviewText:  "#3A1A80",
-    calendarDot:      "#1B6A68",
+    calendarDot:      "#228B80",
     quizPillBg:       "#A8E8E3",
     quizPillText:     "#1B6A68",
   },
   // 5 нюанса лилаво: много светъл bg → малко по-тъмен за secondary → карти → мутиран текст → тъмен текст/бутони
   "light-purple": {
-    bg:               "#F3F0FD",
-    card:             "#C6B4E4",
+    bg:               "#F6F3FC",
+    headerBg:         "#EDE8F5",
+    card:             "#E0D6F7",
     text:             "#2C1668",
     textMuted:        "#6B4FAA",
     btn:              "#2C1668",
@@ -71,7 +75,7 @@ export const READING_THEMES: Record<string, ReadingTheme> = {
     badgePartialText: "#8A4010",
     badgeReviewBg:    "#C8E0F5",
     badgeReviewText:  "#1A3A70",
-    calendarDot:      "#2C1668",
+    calendarDot:      "#3E2490",
     quizPillBg:       "#B8A0D8",
     quizPillText:     "#2C1668",
   },

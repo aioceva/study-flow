@@ -172,7 +172,7 @@ export default function ConfirmPage() {
   // ZIP включва точно файловете, които са в папката + (в root mode) промптите от src/prompts
   // testFiles вече съдържа промптите в run mode; в root mode добавяме ги в downloadLessonZip
   return (
-    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.surface }}>
+    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: "var(--theme-content-bg, #F0F2F5)" }}>
 
       {/* Хедър */}
       <div className="flex-none flex items-center justify-between px-4 py-3">
@@ -336,7 +336,7 @@ export default function ConfirmPage() {
               </div>
               <div
                 className="flex-none w-12 h-12 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: "var(--theme-lesson-play-btn, #50B8DC)" }}
+                style={{ backgroundColor: "var(--theme-lesson-play-btn, #50B8DC)", boxShadow: "var(--theme-lesson-play-btn-shadow, none)" }}
                 aria-hidden="true"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
@@ -389,7 +389,7 @@ export default function ConfirmPage() {
               </div>
               <div
                 className="flex-none w-11 h-11 rounded-full flex items-center justify-center text-lg"
-                style={{ backgroundColor: "var(--theme-lesson-play-btn, #50B8DC)" }}
+                style={{ backgroundColor: "var(--theme-lesson-play-btn, #50B8DC)", boxShadow: "var(--theme-lesson-play-btn-shadow, none)" }}
                 aria-hidden="true"
               >
                 🏆

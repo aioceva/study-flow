@@ -61,7 +61,7 @@ export function LessonCard({
           <button
             onClick={(e) => { e.stopPropagation(); onPlay(); }}
             className="btn-press flex-none w-11 h-11 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: "var(--theme-lesson-play-btn, #50B8DC)" }}
+            style={{ backgroundColor: "var(--theme-lesson-play-btn, #50B8DC)", boxShadow: "var(--theme-lesson-play-btn-shadow, none)" }}
             aria-label="Започни"
             type="button"
           >
@@ -72,7 +72,7 @@ export function LessonCard({
         ) : (
           <div
             className="flex-none w-11 h-11 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: "var(--theme-lesson-play-btn, #50B8DC)" }}
+            style={{ backgroundColor: "var(--theme-lesson-play-btn, #50B8DC)", boxShadow: "var(--theme-lesson-play-btn-shadow, none)" }}
             aria-hidden="true"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
