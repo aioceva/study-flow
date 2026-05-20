@@ -3,7 +3,7 @@
 import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { zipSync } from "fflate";
-import { NAV, SUBJECT_LABELS, Subject, Sessions, Adaptation, MODULE_PROGRESS, ReinforcementSession } from "@/types";
+import { NAV, SUBJECT_LABELS, Subject, Sessions, Adaptation, MODULE_PROGRESS, CARD_BG } from "@/types";
 
 const PROMPT_FILES = ["generate.ts", "quiz.ts", "recognize.ts"];
 
@@ -82,7 +82,6 @@ export default function ConfirmPage() {
   const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
 
   const [hasSessions, setHasSessions] = useState<boolean | null>(null);
-  const [lastResult, setLastResult] = useState<{ label: string; pct: number } | null>(null);
   const [adaptation, setAdaptation] = useState<Adaptation | null>(null);
   const [adaptationMissing, setAdaptationMissing] = useState(false);
 
@@ -105,18 +104,6 @@ export default function ConfirmPage() {
         );
         setHasSessions(relevant.length > 0);
 
-        const months = ["яну", "фев", "март", "апр", "май", "юни", "юли", "авг", "сеп", "окт", "ное", "дек"];
-        const quizSessions = relevant
-          .filter((s): s is ReinforcementSession => s.type === "reinforcement")
-          .sort((a, b) => (a.date + a.started_at) > (b.date + b.started_at) ? -1 : 1);
-        if (quizSessions.length > 0) {
-          const s = quizSessions[0];
-          const [, m, d] = s.date.split("-");
-          const dateStr = `${parseInt(d)} ${months[parseInt(m) - 1]}`;
-          const correct = s.errors.length > 0 ? s.total - s.errors.length : (s.score ?? s.total);
-          const pct = Math.round((correct / s.total) * 100);
-          setLastResult({ label: `${dateStr} · ${pct}%`, pct });
-        }
       })
       .catch(() => setHasSessions(false));
   }, [user, subject, lesson, run]);
@@ -169,10 +156,9 @@ export default function ConfirmPage() {
 
   const modules = adaptation?.modules ?? [];
   const totalCards = modules.reduce((sum, m) => sum + m.cards.length, 0);
-  const estMin = totalCards > 0 ? Math.round(totalCards * 0.75) : null;
 
   const cardStyle = {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: CARD_BG,
     boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)",
     borderRadius: 16,
   };
@@ -186,7 +172,7 @@ export default function ConfirmPage() {
   // ZIP включва точно файловете, които са в папката + (в root mode) промптите от src/prompts
   // testFiles вече съдържа промптите в run mode; в root mode добавяме ги в downloadLessonZip
   return (
-    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.surface }}>
+    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: "var(--theme-content-bg, #F0F2F5)" }}>
 
       {/* Хедър */}
       <div className="flex-none flex items-center justify-between px-4 py-3">
@@ -342,15 +328,15 @@ export default function ConfirmPage() {
             <div className="flex items-center gap-3 p-4">
               <div className="flex-1 min-w-0">
                 <p className="text-base font-bold mb-0.5" style={{ color: NAV.text }}>{title}</p>
-                {estMin !== null && (
+                {totalCards > 0 && (
                   <p className="text-sm" style={{ color: NAV.textMuted }}>
-                    {modules.length} модула · {totalCards} карти · ~{estMin} мин
+                    {totalCards} карти
                   </p>
                 )}
               </div>
               <div
                 className="flex-none w-12 h-12 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: NAV.btnSolid }}
+                style={{ backgroundColor: "var(--theme-lesson-play-btn, #50B8DC)", boxShadow: "var(--theme-lesson-play-btn-shadow, none)" }}
                 aria-hidden="true"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
@@ -398,16 +384,12 @@ export default function ConfirmPage() {
                   Проверка на знанията
                 </p>
                 <p className="text-sm" style={{ color: NAV.textMuted }}>
-                  10 въпроса · ~10 мин{lastResult && (
-                    <span style={{ color: lastResult.pct >= 70 ? "#3B9E6A" : "#9A6E08" }}>
-                      {" · "}{lastResult.label}
-                    </span>
-                  )}
+                  10 въпроса
                 </p>
               </div>
               <div
                 className="flex-none w-11 h-11 rounded-full flex items-center justify-center text-lg"
-                style={{ backgroundColor: "#50B8DC" }}
+                style={{ backgroundColor: "var(--theme-lesson-play-btn, #50B8DC)", boxShadow: "var(--theme-lesson-play-btn-shadow, none)" }}
                 aria-hidden="true"
               >
                 🏆
@@ -421,7 +403,7 @@ export default function ConfirmPage() {
                 <p className="text-xs font-medium tracking-wider uppercase mb-0.5" style={{ color: NAV.textMuted }}>
                   Проверка на знанията
                 </p>
-                <p className="text-sm" style={{ color: NAV.textMuted }}>10 въпроса · ~10 мин · отключва се след урока</p>
+                <p className="text-sm" style={{ color: NAV.textMuted }}>10 въпроса · отключва се след урока</p>
               </div>
               <div
                 className="flex-none w-11 h-11 rounded-full flex items-center justify-center text-lg"

@@ -94,7 +94,9 @@ export type ReadingSupport = "low_support" | "medium_support" | "high_support";
 export interface UserProfile {
   name: string;
   grade: string;
-  readingSupport: ReadingSupport;
+  readingSupport?: ReadingSupport;
+  readingColor?: string;
+  readingTheme?: string;
   joinedAt: string;
 }
 
@@ -125,23 +127,28 @@ export const SUBJECT_LABELS: Record<Subject, string> = {
   gen: "Общ",
 };
 
-// Навигационна палитра
+// Навигационна палитра — стойностите са CSS custom property references
+// CSS vars се задават от [user]/layout.tsx спрямо избраната ReadingTheme
+// Fallback стойностите съвпадат с оригиналната NAV палитра (main branch)
 export const NAV = {
-  headerBg:  "#4A6FA5",
-  btnSolid:  "#4A6FA5",
-  btnBorder: "#4A6FA5",
-  surface:   "#F0F2F5",
-  bg:        "#FFFFFF",
-  text:      "#4A6FA5",
-  textMuted: "#5A6A7E",
-  border:    "#E2E5EA",
+  headerBg:  "var(--theme-btn, #4A6FA5)",
+  btnSolid:  "var(--theme-btn, #4A6FA5)",
+  btnBorder: "var(--theme-btn, #4A6FA5)",
+  surface:   "var(--theme-btn-secondary, #F0F2F5)",
+  bg:        "var(--theme-bg, #FFFFFF)",
+  text:      "var(--theme-text, #4A6FA5)",
+  textMuted: "var(--theme-text-muted, #5A6A7E)",
+  border:    "var(--theme-card-border, #E2E5EA)",
 };
+
+// Фон на карти/тайлове — #FFFFFF съвпада с оригиналните бели карти
+export const CARD_BG = "var(--theme-card, #FFFFFF)";
 
 // Фон на модул (content area)
 export const MODULE_COLORS: Record<number, string> = {
   1: "#D6EEFA",
   2: "#D4F2E5",
-  3: "#FDE8CC",
+  3: "#FFF0F5",
   4: "#EAE5FA",
 };
 
@@ -149,7 +156,7 @@ export const MODULE_COLORS: Record<number, string> = {
 export const MODULE_SURFACE: Record<number, string> = {
   1: "#A5D8F0",
   2: "#A5E0C8",
-  3: "#F5C890",
+  3: "#F9C0D4",
   4: "#C8BEF0",
 };
 
@@ -157,7 +164,7 @@ export const MODULE_SURFACE: Record<number, string> = {
 export const MODULE_PROGRESS: Record<number, string> = {
   1: "#50B8DC",
   2: "#58C090",
-  3: "#E89030",
+  3: "#E8739A",
   4: "#8B7FCC",
 };
 
@@ -165,6 +172,6 @@ export const MODULE_PROGRESS: Record<number, string> = {
 export const MODULE_BTN: Record<number, string> = {
   1: "#2898C0",
   2: "#3B9E6A",
-  3: "#C06020",
+  3: "#C94F7C",
   4: "#7068B8",
 };

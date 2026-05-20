@@ -3,7 +3,7 @@
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, startTransition, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
-import { Adaptation, MODULE_COLORS, MODULE_SURFACE, MODULE_PROGRESS, MODULE_BTN, NAV, SUBJECT_LABELS, Subject } from "@/types";
+import { Adaptation, MODULE_COLORS, MODULE_SURFACE, MODULE_BTN, NAV, SUBJECT_LABELS, Subject } from "@/types";
 import { FeedbackButton } from "@/components/FeedbackButton";
 import { nextStep, prevStep } from "@/lib/navigation";
 
@@ -48,7 +48,9 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const run      = searchParams.get("run");
   const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
 
-  const bgColor = MODULE_COLORS[moduleId] ?? "#F8F9FA";
+  // DEFAULT theme: --theme-lesson-bg is unset → falls back to MODULE_COLORS
+  // Colored themes: --theme-lesson-bg is set to the theme bg color
+  const bgColor = `var(--theme-lesson-bg, ${MODULE_COLORS[moduleId] ?? "#F8F9FA"})`;
   const isFirst = moduleId === 1 && cardId === 1;
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -230,7 +232,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   if (isSeparator) {
     return (
       <div className="flex flex-col" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
-        <div className="flex-none bg-white">
+        <div className="flex-none" style={{ backgroundColor: "var(--theme-bg)" }}>
           <div className="flex items-center justify-between px-4 py-3">
             <button
               onClick={() => navigate(`/${user}/confirm?${params}`)}
@@ -284,10 +286,10 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   const card       = moduleData?.cards[cardId - 1];
 
   return (
-    <div className="flex flex-col" style={{ backgroundColor: "#ffffff", height: "100dvh" }}>
+    <div className="flex flex-col" style={{ backgroundColor: "var(--theme-bg)", height: "100dvh" }}>
 
       {/* Хедър: ← Предмет · Урок N + 🏠 */}
-      <div className="flex-none bg-white">
+      <div className="flex-none" style={{ backgroundColor: "var(--theme-lesson-chrome, var(--theme-bg))" }}>
         <div className="flex items-center justify-between px-4 pt-3 pb-2">
           <button
             onClick={() => navigate(`/${user}/confirm?${params}`)}
@@ -331,7 +333,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
               <button
                 onClick={() => speakCard(card.title, card.what, card.why, card.example)}
                 className="btn-press flex-none flex items-center justify-center rounded-full"
-                style={{ width: 29, height: 29, backgroundColor: `color-mix(in srgb, ${MODULE_SURFACE[moduleId]} 50%, ${MODULE_COLORS[moduleId]} 50%)`, boxShadow: "0 1px 3px rgba(0,0,0,0.15)" }}
+                style={{ width: 29, height: 29, backgroundColor: `var(--theme-lesson-sound-btn, color-mix(in srgb, ${MODULE_SURFACE[moduleId]} 50%, ${MODULE_COLORS[moduleId]} 50%))`, boxShadow: "var(--theme-lesson-sound-btn-shadow, 0 1px 3px rgba(0,0,0,0.15))" }}
                 aria-label={isPlaying ? "Спри четенето" : "Чуй картата"}
               >
                 {isPlaying ? (
@@ -357,7 +359,7 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
       </div>
 
       {/* Footer: 5 точки прогрес + бутони */}
-      <div className="flex-none bg-white px-4 pb-4 pt-2">
+      <div className="flex-none px-4 pb-4 pt-2" style={{ backgroundColor: "var(--theme-lesson-chrome, var(--theme-bg))" }}>
         {/* 5 точки — текущата е pill, останалите кръгче */}
         <div className="flex justify-center items-center gap-2 mb-2">
           {[1, 2, 3, 4, 5].map((step) => (
@@ -367,7 +369,9 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
               style={{
                 width: step === cardId ? 24 : 8,
                 height: 8,
-                backgroundColor: step === cardId ? MODULE_SURFACE[moduleId] : NAV.border,
+                backgroundColor: step === cardId
+                  ? `var(--theme-progress-dot, ${MODULE_SURFACE[moduleId]})`
+                  : NAV.border,
               }}
             />
           ))}
@@ -399,9 +403,13 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
 }
 
 function Section({ icon, label, text, moduleId }: { icon: string; label: string; text: string; moduleId: number }) {
+  // DEFAULT theme: --theme-surface and --theme-accent are unset → fall back to module-specific colors
+  // Colored themes: CSS vars are set to the theme card/btn color
+  const surfaceBg = `var(--theme-surface, ${MODULE_SURFACE[moduleId] ?? "#F0F0F0"})`;
+  const accentColor = `var(--theme-accent, ${MODULE_BTN[moduleId] ?? "#9A6E08"})`;
   return (
-    <div className="rounded-xl p-3" style={{ backgroundColor: MODULE_SURFACE[moduleId] ?? "#F0F0F0", boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
-      <p className="text-sm font-medium uppercase tracking-wide mb-0.5" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>
+    <div className="rounded-xl p-3" style={{ backgroundColor: surfaceBg, boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
+      <p className="text-sm font-medium uppercase tracking-wide mb-0.5" style={{ color: accentColor, opacity: 0.8 }}>
         {icon} {label}
       </p>
       <p className="text-base leading-relaxed" style={{ color: NAV.text }}>{text}</p>

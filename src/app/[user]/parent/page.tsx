@@ -1,11 +1,18 @@
 import Link from "next/link";
 import { readJSON } from "@/lib/github";
-import { Sessions, Session, Quiz, Adaptation, NAV, SUBJECT_LABELS, Subject, ReinforcementSession } from "@/types";
+import { Sessions, Session, Quiz, Adaptation, NAV, SUBJECT_LABELS, Subject, ReinforcementSession, CARD_BG } from "@/types";
 import { SessionList, QuizMap } from "./SessionList";
 
 export const dynamic = "force-dynamic";
 
 // ─── helpers ───────────────────────────────────────────────────────────────
+
+function localDateStr(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
 
 const BG_MONTHS = [
   "януари","февруари","март","април","май","юни",
@@ -33,7 +40,7 @@ function getWeekDays(weekOffset: number): { dateStr: string; label: string; dayN
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
     return {
-      dateStr: d.toISOString().slice(0, 10),
+      dateStr: localDateStr(d),
       label: ["Пн","Вт","Ср","Чт","Пт","Сб","Нд"][i],
       dayNum: d.getDate(),
     };
@@ -95,7 +102,7 @@ export default async function ParentPage({
   const monthLabel    = weekMonthLabel(weekDays);
   const isCurrentWeek = weekOffset >= 0;
   const sessionDays   = new Set(sessions.map((s) => s.date));
-  const todayStr      = new Date().toISOString().slice(0, 10);
+  const todayStr      = localDateStr(new Date());
 
   // Последно учи — дата + час
   const lastSession = sessions.at(-1);
@@ -154,7 +161,7 @@ export default async function ParentPage({
   // ── UI ──────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col" style={{ minHeight: "100dvh", backgroundColor: NAV.surface }}>
+    <div className="flex flex-col" style={{ minHeight: "100dvh", backgroundColor: "var(--theme-content-bg, #F0F2F5)" }}>
 
       {/* Хедър */}
       <div className="flex-none flex items-center justify-between px-4 py-3">
@@ -191,7 +198,7 @@ export default async function ParentPage({
         {/* ═══ ГОРЕН БЛОК ═══════════════════════════════════════════════ */}
 
         {/* Седмичен стрип */}
-        <div className="rounded-xl p-4" style={{ backgroundColor: "#FFFFFF", boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)" }}>
+        <div className="rounded-xl p-4" style={{ backgroundColor: CARD_BG, boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)" }}>
 
           {/* Навигация: ← месец → */}
           <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
@@ -238,10 +245,10 @@ export default async function ParentPage({
                     className="w-9 h-9 rounded-full flex items-center justify-center text-sm"
                     style={
                       active
-                        ? { backgroundColor: "#3B9E6A", color: "white" }
+                        ? { backgroundColor: "var(--calendar-active-bg)", color: "white" }
                         : isToday
-                          ? { backgroundColor: NAV.border, color: NAV.text }
-                          : { backgroundColor: NAV.surface, color: NAV.border }
+                          ? { backgroundColor: "var(--calendar-today-bg, var(--theme-card-border, #E2E5EA))", boxShadow: "inset 0 0 0 2px var(--calendar-today-border, transparent)", color: NAV.text }
+                          : { backgroundColor: "var(--calendar-future-bg, var(--theme-btn-secondary, #F0F2F5))", color: "var(--calendar-future-text, var(--theme-card-border, #E2E5EA))" }
                     }
                   >
                     {active ? "✓" : dayNum}
@@ -304,7 +311,7 @@ function StatCard({
 }) {
   return (
     <div className="rounded-xl p-4 flex flex-col justify-between"
-      style={{ backgroundColor: "#FFFFFF", boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)", minHeight: 72 }}>
+      style={{ backgroundColor: CARD_BG, boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)", minHeight: 72 }}>
       <p className="text-sm" style={{ color: NAV.textMuted }}>{label}</p>
       <div>
         <p className={small ? "text-base font-bold" : "text-xl font-bold"}

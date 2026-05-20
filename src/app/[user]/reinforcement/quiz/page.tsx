@@ -1,16 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState, startTransition } from "react";
+import React, { useEffect, useRef, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Quiz, QuizQuestion, NAV, SUBJECT_LABELS, Subject } from "@/types";
 
 type Phase = "answering" | "correct" | "wrong" | "fact";
 
-const LABEL_PALETTE = [
-  { bg: "#E8F4FD", color: "#3B6FA8" }, // светлосиньо
-  { bg: "#E8F9F1", color: "#2E7D5A" }, // светлозелено
-  { bg: "#F3E8FD", color: "#7B52A8" }, // светлолилаво
-];
+const DEFAULT_THEME_VARS = {
+  "--theme-bg":            "#FFFFFF",
+  "--theme-btn":           "#4A6FA5",
+  "--theme-btn-secondary": "#F0F2F5",
+  "--theme-card":          "#FFFFFF",
+  "--theme-text":          "#4A6FA5",
+  "--theme-text-muted":    "#5A6A7E",
+  "--theme-card-border":   "#E2E5EA",
+} as React.CSSProperties;
 
 const CONFETTI_COLORS = [
   "#6FA3E8", "#6DC297", "#C49020", "#A384CC",
@@ -42,20 +46,11 @@ export default function ReinforcementQuizPage() {
   const scoreRef        = useRef(0); // sync ref — избягва stale closure при async timer callbacks
   const sessionStartRef = useRef<number>(Date.now());
 
-  // Timer progress 0→1
-  const [timerPct, setTimerPct] = useState(0);
-  const timerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const rafRef    = useRef<number | null>(null);
-  const startRef  = useRef<number>(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Confetti origin (fixed position at correct btn center)
   const correctDivRef   = useRef<HTMLDivElement>(null);
   const [confettiOrigin, setConfettiOrigin] = useState<{ x: number; y: number } | null>(null);
-
-  // Alternating backgrounds (0-indexed: Q1=index0=нечетен=бял)
-  const isEvenQ      = current % 2 === 1;
-  const screenBg     = isEvenQ ? NAV.surface : "#FFFFFF";
-  const defaultCardBg = isEvenQ ? "#FFFFFF"  : NAV.surface;
 
   useEffect(() => {
     async function load() {
@@ -102,23 +97,10 @@ export default function ReinforcementQuizPage() {
 
   function clearTimers() {
     if (timerRef.current) clearTimeout(timerRef.current);
-    if (rafRef.current)   cancelAnimationFrame(rafRef.current);
   }
 
   function startTimer(durationMs: number, onEnd: () => void) {
-    setTimerPct(0);
-    startRef.current = performance.now();
-
-    function tick(now: number) {
-      const p = Math.min((now - startRef.current) / durationMs, 1);
-      setTimerPct(p);
-      if (p < 1) {
-        rafRef.current = requestAnimationFrame(tick);
-      } else {
-        onEnd();
-      }
-    }
-    rafRef.current = requestAnimationFrame(tick);
+    timerRef.current = setTimeout(onEnd, durationMs);
   }
 
   function advanceQuestion() {
@@ -162,7 +144,6 @@ export default function ReinforcementQuizPage() {
       setCurrent((c) => c + 1);
       setPhase("answering");
       setSelectedId(null);
-      setTimerPct(0);
     }
     void q;
   }
@@ -190,7 +171,7 @@ export default function ReinforcementQuizPage() {
 
   if (questions.length === 0) {
     return (
-      <div className="flex items-center justify-center" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
+      <div className="flex items-center justify-center" style={{ height: "100dvh", backgroundColor: NAV.bg, ...DEFAULT_THEME_VARS }}>
         <p style={{ color: NAV.textMuted }}>Зарежда...</p>
       </div>
     );
@@ -198,11 +179,10 @@ export default function ReinforcementQuizPage() {
 
   const q         = questions[current];
   const correctId = q.options.find((o) => o.correct)?.id;
-  const showTimer = phase === "correct" || phase === "wrong";
 
   // Shared topbar JSX
-  const topbar = (bgColor = "white") => (
-    <div className="flex-none" style={{ backgroundColor: bgColor, borderBottom: `0.5px solid ${NAV.border}` }}>
+  const topbar = () => (
+    <div className="flex-none" style={{ backgroundColor: NAV.bg, borderBottom: `0.5px solid ${NAV.border}` }}>
       <div className="flex items-center px-4 pt-3 pb-2">
         <button
           onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
@@ -245,8 +225,8 @@ export default function ReinforcementQuizPage() {
   if (phase === "fact") {
     const correctText = q.options.find((o) => o.correct)?.text ?? "";
     return (
-      <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: "#EBF4FF" }}>
-        {topbar("white")}
+      <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg, ...DEFAULT_THEME_VARS }}>
+        {topbar()}
         <div className="flex-1 flex flex-col items-center justify-center px-6 gap-5 text-center">
           <span style={{ fontSize: 52, lineHeight: 1 }}>💡</span>
           {q.explanation ? (
@@ -273,8 +253,8 @@ export default function ReinforcementQuizPage() {
 
   // ── Въпрос екран ─────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: screenBg }}>
-      {topbar("white")}
+    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg, ...DEFAULT_THEME_VARS }}>
+      {topbar()}
 
       {/* Confetti fixed overlay — рисуван спрямо бутона, извън scroll контейнера */}
       {confettiOrigin && (
@@ -300,8 +280,23 @@ export default function ReinforcementQuizPage() {
       )}
 
       {/* Съдържание */}
-      <div className="flex-1 overflow-y-auto" style={{ backgroundColor: screenBg }}>
-        <div className="flex flex-col min-h-full px-5 pt-4 pb-2">
+      <div className="flex-1 overflow-y-auto px-5 pt-4 pb-6" style={{ backgroundColor: NAV.bg }}>
+        {/* Номер на въпроса — цветен по тема */}
+        <span style={{
+          display: "inline-block",
+          backgroundColor: "var(--quiz-pill-bg)",
+          color: "var(--quiz-pill-text)",
+          fontSize: 12,
+          fontWeight: 700,
+          lineHeight: "1.5",
+          padding: "5px 13px",
+          borderRadius: 24,
+          letterSpacing: "0.04em",
+          marginBottom: 14,
+        }}>
+          Въпрос {current + 1}
+        </span>
+
         <p className="text-xl font-bold mb-4 leading-snug" style={{ color: NAV.text }}>
           {q.question}
         </p>
@@ -312,21 +307,21 @@ export default function ReinforcementQuizPage() {
             const isSelectedWrong = option.id === selectedId && !isCorrectOpt;
             const revealed        = phase !== "answering";
 
-            let bg        = defaultCardBg;
+            let bg        = NAV.surface;
             let iconChar  = "";
             let iconColor = "";
             let animStyle: React.CSSProperties = {};
 
             if (revealed) {
               if (isCorrectOpt) {
-                bg        = "#E8F9F1";
+                bg        = "var(--quiz-correct-bg)";
                 iconChar  = "✓";
-                iconColor = "#3B9E6A";
+                iconColor = "var(--quiz-correct-text)";
                 animStyle = { animation: "correct-pop 0.3s ease forwards" };
               } else if (isSelectedWrong) {
-                bg        = "#FDF0F0";
+                bg        = "var(--quiz-wrong-bg)";
                 iconChar  = "✕";
-                iconColor = "#C07070";
+                iconColor = "var(--quiz-wrong-text)";
                 animStyle = { animation: "shake 0.4s ease" };
               }
             }
@@ -361,29 +356,6 @@ export default function ReinforcementQuizPage() {
               </div>
             );
           })}
-        </div>
-
-        {/* Номер на въпроса — центриран в оставащото пространство */}
-        <div className="flex-1 flex items-center justify-center">
-          {(() => {
-            const lc = LABEL_PALETTE[current % LABEL_PALETTE.length];
-            return (
-              <span style={{
-                display: "inline-block",
-                backgroundColor: lc.bg,
-                color: lc.color,
-                fontSize: 16,
-                fontWeight: 400,
-                lineHeight: "1.5",
-                padding: "5px 13px",
-                borderRadius: 24,
-                letterSpacing: "0.04em",
-              }}>
-                Въпрос {current + 1}
-              </span>
-            );
-          })()}
-        </div>
         </div>
       </div>
 

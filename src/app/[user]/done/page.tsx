@@ -3,6 +3,7 @@
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, startTransition } from "react";
 import { SUBJECT_LABELS, Subject, NAV, Adaptation } from "@/types";
+import { FirstLessonBadgeModal } from "@/components/FirstLessonBadgeModal";
 
 export default function DonePage() {
   const { user } = useParams<{ user: string }>();
@@ -25,6 +26,12 @@ export default function DonePage() {
   const startTime = useRef(Date.now());
   const [duration, setDuration] = useState<number>(0);
   const [totalCards, setTotalCards] = useState<number | null>(null);
+  const [showBadge, setShowBadge] = useState(false);
+  const [childName, setChildName] = useState("");
+
+  function closeBadge() {
+    setShowBadge(false);
+  }
 
   function navigate(url: string) {
     setTimeout(() => startTransition(() => router.push(url)), 150);
@@ -45,7 +52,7 @@ export default function DonePage() {
     // Изчисти partial ключа — урокът е завършен
     sessionStorage.removeItem(`partial_sent_${subject}_${lesson}`);
 
-    fetch("/api/session", {
+    const sessionSave = fetch("/api/session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -62,6 +69,15 @@ export default function DonePage() {
         },
       }),
     }).catch(console.error);
+
+    // Show badge after every completed lesson
+    sessionSave
+      .then(() => fetch(`/api/profile?user=${user}`).then((r) => r.json()))
+      .then((profileData) => {
+        setChildName((profileData as { name?: string }).name ?? "");
+        setShowBadge(true);
+      })
+      .catch(() => {});
   }, [user, subject, lesson, run]);
 
   useEffect(() => {
@@ -110,6 +126,7 @@ export default function DonePage() {
 
   return (
     <div className="flex flex-col" style={{ backgroundColor: NAV.bg, height: "100dvh" }}>
+      {showBadge && <FirstLessonBadgeModal name={childName} onClose={closeBadge} />}
       {lessonHeader}
 
       {/* Центрирана зона — трофей + текст + статистика */}
