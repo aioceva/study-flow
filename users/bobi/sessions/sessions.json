@@ -2004,6 +2004,16 @@
         19,
         14
       ]
+    },
+    {
+      "date": "2026-05-20",
+      "subject": "chem",
+      "lesson": 22,
+      "started_at": "00:03",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
