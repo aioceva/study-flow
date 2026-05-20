@@ -1867,6 +1867,16 @@
       "type": "learn",
       "status": "completed",
       "completed": true
+    },
+    {
+      "date": "2026-05-20",
+      "subject": "bio",
+      "lesson": 45,
+      "started_at": "14:20",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "completed",
+      "completed": true
     }
   ]
 }
