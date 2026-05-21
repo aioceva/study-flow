@@ -3,9 +3,23 @@
 import { useEffect, useState, startTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { zipSync } from "fflate";
-import { NAV, SUBJECT_LABELS, Subject, Sessions, Adaptation, MODULE_PROGRESS, ReinforcementSession } from "@/types";
+import { NAV, SUBJECT_LABELS, Subject, Sessions, Adaptation, ReinforcementSession } from "@/types";
 
 const PROMPT_FILES = ["generate.ts", "quiz.ts", "recognize.ts"];
+
+const MODULE_DOT_COLORS: Record<number, string> = {
+  1: "#BDD8F7",
+  2: "#B4E5CC",
+  3: "#F9C0D4",
+  4: "#D4C4EE",
+};
+
+const MODULE_DOT_TEXT: Record<number, string> = {
+  1: "#1A3558",
+  2: "#1A3D1A",
+  3: "#5C1A2A",
+  4: "#2D1B5E",
+};
 
 function lessonFileUrl(user: string, subject: string, lesson: string, file: string, run: string | null): string {
   const base = `/api/lesson-file?user=${user}&subject=${subject}&lesson=${lesson}&file=${file}`;
@@ -171,12 +185,6 @@ export default function ConfirmPage() {
   const totalCards = modules.reduce((sum, m) => sum + m.cards.length, 0);
   const estMin = totalCards > 0 ? Math.round(totalCards * 0.75) : null;
 
-  const cardStyle = {
-    backgroundColor: "#FFFFFF",
-    boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)",
-    borderRadius: 16,
-  };
-
   // Файлове без промптите (промптите са отделна група в panel-а)
   const dataFiles = testFiles.filter((f) => !PROMPT_FILES.includes(f));
   const promptFilesPresent = run
@@ -186,25 +194,28 @@ export default function ConfirmPage() {
   // ZIP включва точно файловете, които са в папката + (в root mode) промптите от src/prompts
   // testFiles вече съдържа промптите в run mode; в root mode добавяме ги в downloadLessonZip
   return (
-    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.surface }}>
+    <div className="flex flex-col" style={{ height: "100dvh", backgroundColor: NAV.bg }}>
 
       {/* Хедър */}
-      <div className="flex-none flex items-center justify-between px-4 py-3">
-        <button
-          onClick={() => navigate(homeUrl())}
-          className="btn-press flex items-center gap-2"
-          aria-label="Назад"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.55 }}>
-            <path d="M19 12H5M12 5l-7 7 7 7" />
-          </svg>
+      <div className="flex-none flex items-center justify-between px-4 py-3" style={{ backgroundColor: "#F0F2F5" }}>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate(homeUrl())}
+            className="btn-press w-8 h-8 flex items-center justify-center flex-none"
+            style={{ opacity: 0.55 }}
+            aria-label="Назад"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAV.text} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+          </button>
           <h1 className="text-xl font-bold" style={{ color: NAV.text }}>
             {subjectLabel} · Урок {lesson}
           </h1>
-        </button>
+        </div>
         <button
           onClick={() => navigate(homeUrl())}
-          className="btn-press w-8 h-8 flex items-center justify-center"
+          className="btn-press w-8 h-8 flex items-center justify-center flex-none"
           style={{ opacity: 0.4 }}
           aria-label="Начало"
         >
@@ -309,129 +320,99 @@ export default function ConfirmPage() {
       )}
 
       {/* Карти */}
-      <div className="flex-1 overflow-y-auto px-4 pt-1 pb-6 space-y-3">
+      <div className="flex-1 overflow-y-auto px-4 pt-1 pb-6" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
 
-        {/* Карта 1: Урок — недостъпна ако адаптацията липсва */}
+        {/* 1. Модули карта */}
+        {modules.length > 0 && (
+          <div className="px-0 pt-1 pb-1">
+            {title && (
+              <p className="text-base" style={{ color: NAV.text, fontWeight: 600, marginBottom: 20 }}>
+                {title}
+              </p>
+            )}
+            {modules.map((m, i) => (
+              <div key={m.id} className="flex items-center gap-3 py-1.5" style={i < modules.length - 1 ? { borderBottom: "1px solid #E2E5EA" } : undefined}>
+                <div
+                  className="flex-none w-6 h-6 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: MODULE_DOT_COLORS[m.id] ?? NAV.btnSolid }}
+                >
+                  <span style={{ color: MODULE_DOT_TEXT[m.id] ?? "#1A1A2E", fontSize: 12, fontWeight: 700, lineHeight: 1 }}>{m.id}</span>
+                </div>
+                <p className="text-sm" style={{ color: NAV.text }}>{m.title}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* 2. Primary action card — Учи урока */}
         {adaptationMissing ? (
-          <div style={{ ...cardStyle, opacity: 0.75 }}>
-            <div className="flex items-center gap-3 p-4">
-              <div className="flex-1 min-w-0">
-                <p className="text-base font-bold mb-0.5" style={{ color: NAV.text }}>{title}</p>
-                <p className="text-sm" style={{ color: NAV.textMuted }}>
-                  Адаптираното съдържание не е налично. Сканирай урока отново.
+          <div className="rounded-xl" style={{ backgroundColor: "#50B8D8", opacity: 0.55, boxShadow: "0 2px 8px rgba(0,0,0,0.08)", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", backgroundColor: "rgba(255,255,255,0.12)" }} />
+            <div style={{ position: "absolute", bottom: -20, right: 20, width: 80, height: 80, borderRadius: "50%", backgroundColor: "rgba(255,255,255,0.12)" }} />
+            <div style={{ padding: "14px 18px", position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div>
+                <p style={{ color: "#FFFFFF", fontSize: 24, fontWeight: 800 }}>Учи урока</p>
+                <p className="text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>
+                  Адаптацията не е налична. Сканирай урока отново.
                 </p>
               </div>
-              <div
-                className="flex-none w-12 h-12 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: NAV.border }}
-                aria-hidden="true"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill={NAV.textMuted}>
-                  <polygon points="6,3 20,12 6,21" />
-                </svg>
-              </div>
+              <span style={{ color: "#FFFFFF", fontSize: 28, opacity: 0.7, lineHeight: 1, flexShrink: 0 }}>›</span>
             </div>
           </div>
         ) : (
           <button
             onClick={() => navigate(`/${user}/lesson/1/1?${params}`)}
-            className="btn-press w-full text-left"
-            style={cardStyle}
+            className="tile-press w-full text-left rounded-xl"
+            style={{ backgroundColor: "#50B8D8", position: "relative", overflow: "hidden" }}
             type="button"
           >
-            <div className="flex items-center gap-3 p-4">
-              <div className="flex-1 min-w-0">
-                <p className="text-base font-bold mb-0.5" style={{ color: NAV.text }}>{title}</p>
-                {estMin !== null && (
-                  <p className="text-sm" style={{ color: NAV.textMuted }}>
-                    {modules.length} модула · {totalCards} карти · ~{estMin} мин
-                  </p>
+            <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", backgroundColor: "rgba(255,255,255,0.12)" }} />
+            <div style={{ position: "absolute", bottom: -20, right: 20, width: 80, height: 80, borderRadius: "50%", backgroundColor: "rgba(255,255,255,0.12)" }} />
+            <div style={{ padding: "14px 18px", position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div>
+                <p style={{ color: "#FFFFFF", fontSize: 24, fontWeight: 800 }}>Учи урока</p>
+                {totalCards > 0 && (
+                  <div style={{ display: "inline-flex", backgroundColor: "transparent", border: "1.5px solid rgba(255,255,255,0.5)", borderRadius: 20, padding: "2px 8px", marginTop: 6 }}>
+                    <span style={{ color: "#FFFFFF", fontSize: 12, fontWeight: 600 }}>{totalCards} карти</span>
+                  </div>
                 )}
               </div>
-              <div
-                className="flex-none w-12 h-12 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: NAV.btnSolid }}
-                aria-hidden="true"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                  <polygon points="6,3 20,12 6,21" />
-                </svg>
-              </div>
+              <span style={{ color: "#FFFFFF", fontSize: 28, opacity: 0.7, lineHeight: 1, flexShrink: 0 }}>›</span>
             </div>
           </button>
         )}
 
-        {/* Карта 2: Модули — само ако са заредени */}
-        {modules.length > 0 && (
-          <div style={cardStyle}>
-            <div className="px-4 pt-3 pb-2">
-              <p className="text-xs font-medium tracking-wider uppercase" style={{ color: NAV.textMuted }}>
-                Модули
-              </p>
-            </div>
-            <div style={{ borderTop: `0.5px solid ${NAV.border}` }}>
-              {modules.map((m) => (
-                <div key={m.id} className="flex items-center gap-3 px-4 py-2.5">
-                  <div
-                    className="flex-none rounded-full"
-                    style={{ width: 10, height: 10, backgroundColor: MODULE_PROGRESS[m.id] ?? NAV.btnSolid }}
-                  />
-                  <p className="text-sm" style={{ color: NAV.text }}>{m.title}</p>
-                </div>
-              ))}
-              <div style={{ height: 8 }} />
-            </div>
-          </div>
-        )}
-
-        {/* Карта 3: Проверка на знанията */}
+        {/* 3. Secondary action card — Тест на знанията */}
         {hasSessions && !adaptationMissing ? (
           <button
             onClick={() => navigate(`/${user}/reinforcement/quiz?${params}`)}
-            className="btn-press w-full text-left"
-            style={cardStyle}
+            className="tile-press w-full text-left rounded-xl"
+            style={{ backgroundColor: NAV.surface }}
             type="button"
           >
-            <div className="flex items-center gap-3 p-4">
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium tracking-wider uppercase mb-0.5" style={{ color: NAV.textMuted }}>
-                  Проверка на знанията
-                </p>
-                <p className="text-sm" style={{ color: NAV.textMuted }}>
-                  10 въпроса · ~10 мин{lastResult && (
-                    <span style={{ color: lastResult.pct >= 70 ? "#3B9E6A" : "#9A6E08" }}>
-                      {" · "}{lastResult.label}
-                    </span>
-                  )}
-                </p>
+            <div style={{ padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div>
+                <p className="font-bold" style={{ color: NAV.text, fontSize: 18 }}>Тест на знанията</p>
+                <div style={{ display: "inline-flex", backgroundColor: NAV.border, borderRadius: 20, padding: "2px 8px", marginTop: 4 }}>
+                  <span style={{ color: NAV.textMuted, fontSize: 12, fontWeight: 600 }}>10 въпроса</span>
+                </div>
               </div>
-              <div
-                className="flex-none w-11 h-11 rounded-full flex items-center justify-center text-lg"
-                style={{ backgroundColor: "#50B8DC" }}
-                aria-hidden="true"
-              >
-                🏆
-              </div>
+              <span style={{ color: NAV.textMuted, fontSize: 22, lineHeight: 1, marginLeft: 12 }}>›</span>
             </div>
           </button>
         ) : (
-          <div style={{ ...cardStyle, opacity: 0.7 }}>
-            <div className="flex items-center gap-3 p-4">
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium tracking-wider uppercase mb-0.5" style={{ color: NAV.textMuted }}>
-                  Проверка на знанията
-                </p>
-                <p className="text-sm" style={{ color: NAV.textMuted }}>10 въпроса · ~10 мин · отключва се след урока</p>
-              </div>
-              <div
-                className="flex-none w-11 h-11 rounded-full flex items-center justify-center text-lg"
-                style={{ backgroundColor: NAV.border }}
-                aria-hidden="true"
-              >
-                🏆
+          !adaptationMissing && (
+            <div className="rounded-xl" style={{ backgroundColor: NAV.surface, opacity: 0.7, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+              <div style={{ padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div>
+                  <p className="font-bold" style={{ color: NAV.text, fontSize: 18 }}>Тест на знанията</p>
+                  <div style={{ display: "inline-flex", backgroundColor: NAV.border, borderRadius: 20, padding: "2px 8px", marginTop: 4 }}>
+                    <span style={{ color: NAV.textMuted, fontSize: 12, fontWeight: 600 }}>10 въпроса · отключва се</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )
         )}
 
       </div>

@@ -3,13 +3,13 @@
 import { NAV, SUBJECT_LABELS, Subject } from "@/types";
 
 const SUBJECT_COLORS: Record<string, string> = {
-  math: "#4F8EF7",
-  bio:  "#22C55E",
-  chem: "#F59E0B",
-  phys: "#EF4444",
-  hist: "#A78BFA",
-  lit:  "#EC4899",
-  gen:  "#94A3B8",
+  math: "#6fa3e8",
+  bio:  "#6dc297",
+  chem: "#f4a261",
+  phys: "#e57373",
+  hist: "#a384cc",
+  lit:  "#f48fb1",
+  gen:  "#50b8d8",
 };
 
 interface LessonCardProps {
@@ -18,10 +18,6 @@ interface LessonCardProps {
   title?: string;
   /** Override the auto-resolved subject label */
   subjectLabel?: string;
-  /** Show the play button — default true */
-  showPlayButton?: boolean;
-  /** If provided, play button is a real button with this action */
-  onPlay?: () => void;
   /** If provided, the entire card is a clickable button */
   onClick?: () => void;
 }
@@ -31,56 +27,36 @@ export function LessonCard({
   lesson,
   title,
   subjectLabel,
-  showPlayButton = true,
-  onPlay,
   onClick,
 }: LessonCardProps) {
-  const dotColor = SUBJECT_COLORS[subject] ?? "#94A3B8";
-  const label = subjectLabel ?? SUBJECT_LABELS[subject as Subject] ?? subject;
+  const label    = subjectLabel ?? SUBJECT_LABELS[subject as Subject] ?? subject;
+  const barColor = SUBJECT_COLORS[subject] ?? "#50b8d8";
 
   const cardStyle: React.CSSProperties = {
     backgroundColor: "#FFFFFF",
-    boxShadow: "0 2px 10px rgba(74, 111, 165, 0.09)",
+    overflow: "hidden",
   };
 
   const inner = (
-    <div className="flex items-center gap-3 p-3">
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-0.5">
-          <div className="w-2 h-2 rounded-full flex-none" style={{ backgroundColor: dotColor }} />
-          <span className="text-sm font-medium tracking-wider uppercase" style={{ color: NAV.textMuted }}>
-            {label} · Урок {lesson}
-          </span>
-        </div>
-        {title && (
-          <p className="text-base leading-snug" style={{ color: NAV.text }}>{title}</p>
-        )}
-      </div>
-      {showPlayButton && (
-        onPlay ? (
-          <button
-            onClick={(e) => { e.stopPropagation(); onPlay(); }}
-            className="btn-press flex-none w-11 h-11 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: "#50B8DC" }}
-            aria-label="Започни"
-            type="button"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <polygon points="5,3 15,9 5,15" fill="white" />
-            </svg>
-          </button>
-        ) : (
-          <div
-            className="flex-none w-11 h-11 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: "#50B8DC" }}
-            aria-hidden="true"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <polygon points="5,3 15,9 5,15" fill="white" />
-            </svg>
+    <div className="flex">
+      {/* Colored vertical bar */}
+      <div className="flex-none" style={{ width: 4, backgroundColor: barColor }} />
+      {/* Content */}
+      <div className="flex items-center gap-3 p-3 flex-1 min-w-0">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="inline-flex" style={{ backgroundColor: barColor, borderRadius: 24, padding: "3px 10px" }}>
+              <span className="text-sm font-medium tracking-wider uppercase" style={{ color: "#FFFFFF" }}>
+                {label}
+              </span>
+            </div>
+            <span className="text-sm font-medium" style={{ color: NAV.textMuted }}>· Урок {lesson}</span>
           </div>
-        )
-      )}
+          {title && (
+            <p className="text-base leading-snug" style={{ color: NAV.text }}>{title}</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 
@@ -88,7 +64,7 @@ export function LessonCard({
     return (
       <button
         onClick={onClick}
-        className="btn-press w-full rounded-xl text-left"
+        className="tile-press w-full rounded-xl text-left"
         style={cardStyle}
         type="button"
       >
@@ -98,7 +74,7 @@ export function LessonCard({
   }
 
   return (
-    <div className="w-full rounded-xl" style={cardStyle}>
+    <div className="w-full rounded-xl" style={{ ...cardStyle, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
       {inner}
     </div>
   );

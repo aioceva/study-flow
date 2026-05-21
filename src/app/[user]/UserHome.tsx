@@ -162,8 +162,8 @@ export default function UserHome() {
         {/* Сканирай бутон */}
         <button
           onClick={() => navigate(`/${user}/scan${mode === "test" ? "?mode=test" : ""}`)}
-          className="btn-press w-full rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-medium text-base mb-5"
-          style={{ backgroundColor: NAV.bg, border: `2px solid ${NAV.btnBorder}`, color: NAV.text }}
+          className="tile-press w-full flex items-center justify-center gap-2 mb-5"
+          style={{ backgroundColor: "#F0F2F5", border: "1.5px dashed #C8D4E0", borderRadius: 12, padding: "13px 16px", color: "#4A6FA5", fontWeight: 600 }}
         >
           <span className="text-base">📸</span>
           Сканирай нов урок
@@ -185,7 +185,7 @@ export default function UserHome() {
                 <p className="text-sm font-medium uppercase tracking-wider mb-2" style={{ color: NAV.textMuted }}>
                   {group.label}
                 </p>
-                <div className="space-y-2">
+                <div className="space-y-4">
                   {group.tiles.map((tile) => (
                     <LessonCard
                       key={`${tile.subject}-${tile.lesson}`}
