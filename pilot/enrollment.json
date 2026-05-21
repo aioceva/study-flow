@@ -1,12 +1,18 @@
 {
   "limit": 20,
-  "enrolled": 1,
+  "enrolled": 2,
   "participants": [
     {
       "user": "daria",
       "name": "Daria",
       "grade": "5",
       "joinedAt": "2026-05-11"
+    },
+    {
+      "user": "emil",
+      "name": "Емил Маринов",
+      "grade": "6",
+      "joinedAt": "2026-05-21"
     }
   ]
 }
