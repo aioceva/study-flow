@@ -30,11 +30,20 @@ export default function LoadingPage() {
   async function run() {
     let archivedRunFolder: string | null = null;
 
+    // Ако урокът не е разпознат (lesson=0), вземаме следващия пореден номер
+    let resolvedLesson = lesson;
+    if (lesson === "0") {
+      const indexRes = await fetch(`/api/adaptation?user=${user}`);
+      const indexData = await indexRes.json();
+      const genCount = (indexData.lessons ?? []).filter((e: { subject: string }) => e.subject === subject).length;
+      resolvedLesson = String(genCount + 1);
+    }
+
     try {
       // Стъпка 1: Проверяваме кеша
       setStatus("checking");
       const cacheRes = await fetch(
-        `/api/adaptation?user=${user}&subject=${subject}&lesson=${lesson}`
+        `/api/adaptation?user=${user}&subject=${subject}&lesson=${resolvedLesson}`
       );
       const cacheData = await cacheRes.json();
 
@@ -43,7 +52,7 @@ export default function LoadingPage() {
         setStatus("cached");
         sessionStorage.setItem("adaptation", JSON.stringify(cacheData.adaptation));
         sessionStorage.setItem("quiz", JSON.stringify(cacheData.quiz));
-        setTimeout(() => navigateToConfirm(), 1200);
+        setTimeout(() => navigateToConfirm(resolvedLesson), 1200);
         return;
       }
 
@@ -52,7 +61,7 @@ export default function LoadingPage() {
         const archiveRes = await fetch("/api/archive-lesson", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user, subject, lesson }),
+          body: JSON.stringify({ user, subject, lesson: resolvedLesson }),
         });
         if (archiveRes.ok) {
           const archiveData = await archiveRes.json();
@@ -80,7 +89,7 @@ export default function LoadingPage() {
       genFormData.append("image", imageFile);
       genFormData.append("subject", subject);
       genFormData.append("subject_bg", subjectBg);
-      genFormData.append("lesson", lesson);
+      genFormData.append("lesson", resolvedLesson);
       genFormData.append("title", title);
       genFormData.append("user", user);
       if (mode === "test") genFormData.append("mode", "test");
@@ -114,7 +123,7 @@ export default function LoadingPage() {
         const saveRes = await fetch("/api/adaptation", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user, subject, lesson, adaptation, quiz, image_quality: confidence }),
+          body: JSON.stringify({ user, subject, lesson: resolvedLesson, adaptation, quiz, image_quality: confidence }),
         });
         if (!saveRes.ok) console.error("GitHub save failed:", saveRes.status);
       } catch (e) {
@@ -123,7 +132,7 @@ export default function LoadingPage() {
 
       // Готово — навигираме
       setStatus("done");
-      setTimeout(() => navigateToConfirm(), 500);
+      setTimeout(() => navigateToConfirm(resolvedLesson), 500);
     } catch (err) {
       console.error(err);
 
@@ -133,7 +142,7 @@ export default function LoadingPage() {
           await fetch("/api/restore-lesson", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ user, subject, lesson, runFolder: archivedRunFolder }),
+            body: JSON.stringify({ user, subject, lesson: resolvedLesson, runFolder: archivedRunFolder }),
           });
         } catch (restoreErr) {
           console.error("Restore failed:", restoreErr);
@@ -150,8 +159,8 @@ export default function LoadingPage() {
     setTimeout(() => startTransition(() => router.push(url)), 150);
   }
 
-  function navigateToConfirm() {
-    const paramsObj: Record<string, string> = { subject, subject_bg: subjectBg, lesson, title };
+  function navigateToConfirm(lessonOverride?: string) {
+    const paramsObj: Record<string, string> = { subject, subject_bg: subjectBg, lesson: lessonOverride ?? lesson, title };
     if (mode === "test") paramsObj.mode = "test";
     router.replace(`/${user}/confirm?${new URLSearchParams(paramsObj)}`);
   }
