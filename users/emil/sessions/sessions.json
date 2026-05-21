@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "user": "emil"
+  },
+  "sessions": [
+    {
+      "date": "2026-05-21",
+      "subject": "bio",
+      "lesson": 0,
+      "started_at": "08:42",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
+    }
+  ]
+}
