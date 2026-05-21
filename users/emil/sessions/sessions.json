@@ -22,6 +22,16 @@
       "type": "learn",
       "status": "partial",
       "completed": false
+    },
+    {
+      "date": "2026-05-21",
+      "subject": "bio",
+      "lesson": 1,
+      "started_at": "23:23",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
