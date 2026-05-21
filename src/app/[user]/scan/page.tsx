@@ -192,7 +192,7 @@ export default function ScanPage() {
               ].map((text, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="flex-none flex items-center justify-center rounded-full" style={{ width: 24, height: 24, backgroundColor: "#A8D4F0" }}>
-                    <span style={{ color: "#0A2035", fontSize: 11, fontWeight: 700, lineHeight: 1 }}>{i + 1}</span>
+                    <span style={{ color: "#0A2035", fontSize: 11, fontWeight: 400, lineHeight: 1 }}>{i + 1}</span>
                   </div>
                   <p className="text-sm" style={{ color: NAV.textMuted }}>{text}</p>
                 </div>
