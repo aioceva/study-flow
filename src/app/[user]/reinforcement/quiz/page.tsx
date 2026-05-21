@@ -25,12 +25,21 @@ export default function ReinforcementQuizPage() {
 
   const subject      = searchParams.get("subject") ?? "";
   const lesson       = searchParams.get("lesson")  ?? "";
+  const title        = searchParams.get("title")   ?? "";
   const mode         = searchParams.get("mode");
   const run          = searchParams.get("run");
   const subjectLabel = SUBJECT_LABELS[subject as Subject] ?? subject;
 
   function navigate(url: string) {
     setTimeout(() => startTransition(() => router.push(url)), 150);
+  }
+
+  function confirmUrl() {
+    const sp = new URLSearchParams({ subject, lesson });
+    if (title) sp.set("title", title);
+    if (mode === "test") sp.set("mode", "test");
+    if (run) sp.set("run", run);
+    return `/${user}/confirm?${sp.toString()}`;
   }
 
   const [questions,  setQuestions]  = useState<QuizQuestion[]>([]);
@@ -205,7 +214,7 @@ export default function ReinforcementQuizPage() {
     <div className="flex-none" style={{ backgroundColor: bgColor, borderBottom: `0.5px solid ${NAV.border}` }}>
       <div className="flex items-center px-4 pt-3 pb-2">
         <button
-          onClick={() => navigate(`/${user}${mode === "test" ? "?mode=test" : ""}`)}
+          onClick={() => navigate(confirmUrl())}
           className="btn-press flex items-center gap-2 flex-1 min-w-0"
           aria-label="Назад"
         >
@@ -261,7 +270,7 @@ export default function ReinforcementQuizPage() {
         <div className="flex-none px-4 pb-6">
           <button
             onClick={advanceQuestion}
-            className="btn-press w-full rounded-xl text-white font-medium text-base flex items-center justify-center gap-2"
+            className="tile-press w-full rounded-xl text-white font-medium text-base flex items-center justify-center gap-2"
             style={{ backgroundColor: NAV.btnSolid, height: 56 }}
           >
             → Напред
@@ -302,11 +311,34 @@ export default function ReinforcementQuizPage() {
       {/* Съдържание */}
       <div className="flex-1 overflow-y-auto" style={{ backgroundColor: screenBg }}>
         <div className="flex flex-col min-h-full px-5 pt-4 pb-2">
+        {/* Въпрос N — top-left pill */}
+        {(() => {
+          const lc = LABEL_PALETTE[current % LABEL_PALETTE.length];
+          return (
+            <span style={{
+              display: "inline-block",
+              alignSelf: "flex-start",
+              backgroundColor: lc.bg,
+              color: lc.color,
+              fontSize: 16,
+              fontWeight: 400,
+              lineHeight: "1.5",
+              padding: "5px 13px",
+              borderRadius: 24,
+              letterSpacing: "0.04em",
+              marginBottom: 12,
+              ...(isEvenQ ? { border: "1.5px solid #C8D4E0" } : {}),
+            }}>
+              Въпрос {current + 1}
+            </span>
+          );
+        })()}
+
         <p className="text-xl font-bold mb-4 leading-snug" style={{ color: NAV.text }}>
           {q.question}
         </p>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           {q.options.map((option) => {
             const isCorrectOpt    = option.id === correctId;
             const isSelectedWrong = option.id === selectedId && !isCorrectOpt;
@@ -340,7 +372,7 @@ export default function ReinforcementQuizPage() {
                 <button
                   onClick={() => handleAnswer(option.id)}
                   disabled={phase !== "answering"}
-                  className="btn-press w-full p-4 rounded-xl text-left text-base"
+                  className="option-press w-full p-4 rounded-xl text-left text-base"
                   style={{ backgroundColor: bg, color: NAV.text, ...animStyle }}
                 >
                   <span className="mr-3 uppercase" style={{ color: NAV.textMuted }}>{option.id}.</span>
@@ -363,27 +395,6 @@ export default function ReinforcementQuizPage() {
           })}
         </div>
 
-        {/* Номер на въпроса — центриран в оставащото пространство */}
-        <div className="flex-1 flex items-center justify-center">
-          {(() => {
-            const lc = LABEL_PALETTE[current % LABEL_PALETTE.length];
-            return (
-              <span style={{
-                display: "inline-block",
-                backgroundColor: lc.bg,
-                color: lc.color,
-                fontSize: 16,
-                fontWeight: 400,
-                lineHeight: "1.5",
-                padding: "5px 13px",
-                borderRadius: 24,
-                letterSpacing: "0.04em",
-              }}>
-                Въпрос {current + 1}
-              </span>
-            );
-          })()}
-        </div>
         </div>
       </div>
 

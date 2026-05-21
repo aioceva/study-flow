@@ -181,12 +181,23 @@ export default function ScanPage() {
       {/* Съдържание */}
       <div className="flex-1 overflow-y-auto px-4 pt-2 pb-2">
         {!preview ? (
-          <div className="rounded-xl p-4 space-y-2 text-sm" style={{ backgroundColor: NAV.surface }}>
-            <p className="font-bold text-sm" style={{ color: NAV.text }}>Как да снимаш:</p>
-            <p style={{ color: NAV.textMuted }}>📄 Сложи учебника на равна, светла повърхност</p>
-            <p style={{ color: NAV.textMuted }}>💡 Увери се, че има достатъчно светлина</p>
-            <p style={{ color: NAV.textMuted }}>📐 Снимай право отгоре, без наклон</p>
-            <p style={{ color: NAV.textMuted }}>🔍 Цялата страница трябва да се вижда</p>
+          <div className="rounded-xl p-4" style={{ backgroundColor: NAV.surface }}>
+            <p style={{ color: NAV.text, fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Как да снимаш:</p>
+            <div className="space-y-3">
+              {[
+                "Сложи учебника на равна, светла повърхност",
+                "Увери се, че има достатъчно светлина",
+                "Снимай право отгоре, без наклон",
+                "Цялата страница трябва да се вижда",
+              ].map((text, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="flex-none flex items-center justify-center rounded-full" style={{ width: 24, height: 24, backgroundColor: "#A8D4F0" }}>
+                    <span style={{ color: "#0A2035", fontSize: 11, fontWeight: 700, lineHeight: 1 }}>{i + 1}</span>
+                  </div>
+                  <p className="text-sm" style={{ color: NAV.textMuted }}>{text}</p>
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           <div className="rounded-xl overflow-hidden" style={{ border: `2px solid ${NAV.border}` }}>
@@ -222,8 +233,8 @@ export default function ScanPage() {
         {!preview ? (
           <button
             onClick={openCamera}
-            className="btn-press w-full rounded-xl py-3.5 text-white font-medium text-base flex items-center justify-center gap-2"
-            style={{ backgroundColor: NAV.btnSolid }}
+            className="btn-scan w-full rounded-xl py-3.5 text-white font-medium text-base flex items-center justify-center gap-2"
+            style={{ backgroundColor: "#50B8D8" }}
           >
             <span>📷</span>
             Снимай
