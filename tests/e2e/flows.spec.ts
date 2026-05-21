@@ -59,8 +59,7 @@ test("Test 2: Confirm page renders lesson start card", async ({ page }) => {
   await page.goto(`/${USER}/confirm?subject=bio&lesson=5&title=${encodeURIComponent("Фотосинтеза")}`);
 
   await expect(page.getByText("Биология · Урок 5")).toBeVisible();
-  // Play button — SVG polygon (triangle) inside the start card
-  await expect(page.getByText('Отвори урока')).toBeVisible();
+  await expect(page.getByText('Учи урока')).toBeVisible();
 });
 
 test("Test 3: Quiz page renders question and reacts to answer", async ({ page }) => {
