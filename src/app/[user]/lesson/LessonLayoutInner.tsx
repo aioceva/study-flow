@@ -262,14 +262,14 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
         <div className="px-4 pb-6 flex gap-3">
           <button
             onClick={() => navigate(`/${user}/lesson/${sepFrom}/5?${params}`)}
-            className="btn-press flex-1 rounded-xl flex items-center justify-center text-xl"
+            className="tile-press flex-1 rounded-xl flex items-center justify-center text-xl"
             style={{ height: 52, backgroundColor: NAV.surface, color: NAV.text }}
           >
             ←
           </button>
           <button
             onClick={() => navigate(`/${user}/lesson/${sepTo}/1?${params}`)}
-            className="btn-press flex-1 rounded-xl text-white text-xl flex items-center justify-center"
+            className="tile-press flex-1 rounded-xl text-white text-xl flex items-center justify-center"
             style={{ backgroundColor: NAV.btnSolid, height: 56 }}
           >
             →
@@ -379,14 +379,14 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
               ? navigate(`/${user}/confirm?${params}`)
               : navigate(prevStep(user, moduleId, cardId, params))
             }
-            className="btn-press flex-1 rounded-xl flex items-center justify-center text-xl"
+            className="tile-press flex-1 rounded-xl flex items-center justify-center text-xl"
             style={{ height: 52, backgroundColor: NAV.surface, color: NAV.text }}
           >
             ←
           </button>
           <button
             onClick={() => { maybeRecordPartial(); navigate(nextStep(user, moduleId, cardId, params)); }}
-            className="btn-press flex-1 rounded-xl text-white text-xl flex items-center justify-center"
+            className="tile-press flex-1 rounded-xl text-white text-xl flex items-center justify-center"
             style={{ backgroundColor: NAV.btnSolid, height: 56 }}
           >
             →
@@ -398,13 +398,35 @@ export default function LessonLayoutInner({ children }: { children: React.ReactN
   );
 }
 
+const SECTION_PILL_BG: Record<number, string> = {
+  1: "#7DBFE8",
+  2: "#78C896",
+  3: "#ECA0C0",
+  4: "#BEAAE2",
+};
+
+const SECTION_LABEL_COLOR: Record<number, string> = {
+  1: "#0D3060",
+  2: "#0A3520",
+  3: "#5C1030",
+  4: "#2A0858",
+};
+
+const SECTION_BODY_TEXT: Record<number, string> = {
+  1: "#1E4878",
+  2: "#0D3820",
+  3: "#4A0C22",
+  4: "#240840",
+};
+
 function Section({ icon, label, text, moduleId }: { icon: string; label: string; text: string; moduleId: number }) {
+  const surface  = MODULE_SURFACE[moduleId] ?? "#F0F0F0";
+  const pillBg = SECTION_PILL_BG[moduleId] ?? "#E8EDF2";
+  const bodyText = SECTION_BODY_TEXT[moduleId] ?? NAV.text;
   return (
-    <div className="rounded-xl p-3" style={{ backgroundColor: MODULE_SURFACE[moduleId] ?? "#F0F0F0", boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
-      <p className="text-sm font-medium uppercase tracking-wide mb-0.5" style={{ color: MODULE_BTN[moduleId], opacity: 0.8 }}>
-        {icon} {label}
-      </p>
-      <p className="text-base leading-relaxed" style={{ color: NAV.text }}>{text}</p>
+    <div className="rounded-xl p-3" style={{ backgroundColor: surface, boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
+      <p style={{ color: bodyText, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>{icon} {label}</p>
+      <p className="text-base leading-relaxed" style={{ color: bodyText }}>{text}</p>
     </div>
   );
 }
