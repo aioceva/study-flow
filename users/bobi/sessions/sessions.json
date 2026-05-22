@@ -2476,6 +2476,26 @@
         14,
         15
       ]
+    },
+    {
+      "date": "2026-05-22",
+      "subject": "bio",
+      "lesson": 45,
+      "started_at": "16:32",
+      "duration_min": 1,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": [
+        5,
+        12,
+        13,
+        4,
+        18,
+        17,
+        3,
+        19,
+        2
+      ]
     }
   ]
 }
