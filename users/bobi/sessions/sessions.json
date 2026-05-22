@@ -2408,6 +2408,16 @@
         13,
         7
       ]
+    },
+    {
+      "date": "2026-05-22",
+      "subject": "bio",
+      "lesson": 45,
+      "started_at": "13:46",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
