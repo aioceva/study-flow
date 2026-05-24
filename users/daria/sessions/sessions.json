@@ -32,6 +32,16 @@
       "type": "reinforcement",
       "total": 10,
       "errors": []
+    },
+    {
+      "date": "2026-05-24",
+      "subject": "chem",
+      "lesson": 23,
+      "started_at": "12:22",
+      "duration_min": 52,
+      "type": "reinforcement",
+      "total": 10,
+      "errors": []
     }
   ]
 }
