@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "user": "daria"
+  },
+  "sessions": [
+    {
+      "date": "2026-05-24",
+      "subject": "chem",
+      "lesson": 23,
+      "started_at": "11:09",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
+    }
+  ]
+}
