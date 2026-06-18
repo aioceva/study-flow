@@ -2610,6 +2610,16 @@
       "type": "learn",
       "status": "partial",
       "completed": false
+    },
+    {
+      "date": "2026-06-18",
+      "subject": "chem",
+      "lesson": 11,
+      "started_at": "11:14",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
