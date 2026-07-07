@@ -2620,6 +2620,16 @@
       "type": "learn",
       "status": "partial",
       "completed": false
+    },
+    {
+      "date": "2026-07-07",
+      "subject": "math",
+      "lesson": 102,
+      "started_at": "20:42",
+      "duration_min": 1,
+      "type": "learn",
+      "status": "partial",
+      "completed": false
     }
   ]
 }
